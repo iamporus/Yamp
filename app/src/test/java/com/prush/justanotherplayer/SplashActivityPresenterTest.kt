@@ -1,33 +1,32 @@
 package com.prush.justanotherplayer
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.prush.justanotherplayer.splash.SplashActivityPresenter
 import com.prush.justanotherplayer.splash.SplashActivityView
-import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
 
 class SplashActivityPresenterTest {
+
+    @get:Rule
+    var mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     @Test
     fun shouldGotoMainActivity() {
 
         //given
-        val splashActivityView: SplashActivityView = MockSplashActivityView()
+        val splashActivityView = mock<SplashActivityView> {}
+
         val splashActivityPresenter = SplashActivityPresenter(splashActivityView)
 
         //when
         splashActivityPresenter.gotoMainActivity()
 
         //then
-        assertEquals(true, (splashActivityView as MockSplashActivityView).didGoToMainActivity)
+        verify(splashActivityView).gotoMainActivity()
     }
 
-    class MockSplashActivityView : SplashActivityView {
-
-        var didGoToMainActivity = false
-
-        override fun gotoMainActivity() {
-            didGoToMainActivity = true
-        }
-
-    }
 }
