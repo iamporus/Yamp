@@ -1,3 +1,3 @@
 package com.prush.justanotherplayer.model
 
-data class Track(val title: String)
+data class Track(val id: Long, val title: String)

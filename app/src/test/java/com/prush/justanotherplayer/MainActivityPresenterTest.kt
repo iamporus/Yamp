@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer
 
 import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.prush.justanotherplayer.model.Track
@@ -8,6 +9,7 @@ import com.prush.justanotherplayer.repositories.ITrackRepository
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
@@ -17,27 +19,27 @@ class MainActivityPresenterTest {
     var mockitoRule: MockitoRule = MockitoJUnit.rule()
 
     private lateinit var mainActivityPresenter: MainActivityPresenter
-    private lateinit var trackRepository: ITrackRepository
     private val mainActivityView = mock<IMainActivityView> {}
 
     @Before
     fun setUp() {
-        mainActivityPresenter = MainActivityPresenter(mainActivityView, trackRepository)
+
     }
 
     @Test
     fun shouldDisplayAllTracks() {
 
         val manyTracks = mutableListOf(
-            Track("First"),
-            Track("Second"),
-            Track("Third")
+            Mockito.mock(Track::class.java),
+            Mockito.mock(Track::class.java),
+            Mockito.mock(Track::class.java)
         )
 
-        trackRepository = mock {
+        val trackRepository = mock<ITrackRepository> {
             on { getAllTracks() } doReturn manyTracks
         }
 
+        mainActivityPresenter = MainActivityPresenter(mainActivityView, trackRepository)
         mainActivityPresenter.displayAllTracks()
 
         verify(mainActivityView).displayLibraryTracks(manyTracks)
@@ -46,12 +48,26 @@ class MainActivityPresenterTest {
     @Test
     fun shouldDisplayNoTracks() {
 
-        trackRepository = mock {
+        val trackRepository = mock<ITrackRepository> {
             on { getAllTracks() } doReturn mutableListOf()
         }
 
+        mainActivityPresenter = MainActivityPresenter(mainActivityView, trackRepository)
         mainActivityPresenter.displayAllTracks()
 
         verify(mainActivityView).displayEmptyLibrary()
+    }
+
+    @Test
+    fun shouldHandleExceptions() {
+
+        val trackRepository = mock<ITrackRepository> {
+            on { getAllTracks() } doThrow RuntimeException("Boom")
+        }
+
+        mainActivityPresenter = MainActivityPresenter(mainActivityView, trackRepository)
+        mainActivityPresenter.displayAllTracks()
+
+        verify(mainActivityView).displayError()
     }
 }

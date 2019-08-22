@@ -7,4 +7,6 @@ interface IMainActivityView {
     fun displayLibraryTracks(trackList: MutableList<Track>)
 
     fun displayEmptyLibrary()
+
+    fun displayError()
 }
