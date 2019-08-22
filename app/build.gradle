@@ -32,6 +32,12 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-//    testImplementation 'org.mockito:mockito-core:2.28.2'
+    // For java
+    //    testImplementation 'org.mockito:mockito-core:2.28.2'
+
+    // For kotlin
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+
+    // For mocking data/model classes which are final by default
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
 }
