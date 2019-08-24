@@ -1,5 +1,6 @@
 package com.prush.justanotherplayer
 
+import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.model.Track
 
 interface IMainActivityView {
@@ -9,4 +10,8 @@ interface IMainActivityView {
     fun displayEmptyLibrary()
 
     fun displayError()
+
+    fun getViewActivity(): AppCompatActivity
+
+    fun showPermissionRationale(permission: String)
 }
