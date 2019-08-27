@@ -41,4 +41,6 @@ dependencies {
 
     // For mocking data/model classes which are final by default
     testImplementation 'org.mockito:mockito-inline:2.13.0'
+
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
 }

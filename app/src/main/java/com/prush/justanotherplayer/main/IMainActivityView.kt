@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer
+package com.prush.justanotherplayer.main
 
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.model.Track

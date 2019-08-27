@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.prush.justanotherplayer.MainActivity
+import com.prush.justanotherplayer.main.MainActivity
 import com.prush.justanotherplayer.R
 
 class SplashActivity : AppCompatActivity(), SplashActivityView {

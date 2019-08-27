@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer
+package com.prush.justanotherplayer.main
 
 import android.content.pm.PackageManager
 import android.util.Log
