@@ -5,8 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.prush.justanotherplayer.model.Track
 
-class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter) :
+class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter, private val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<TracksRecyclerAdapter.TracksViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
@@ -23,7 +24,7 @@ class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter
     }
 
     override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        tracksListPresenter.onBindTrackRowViewAtPosition(holder, position)
+        tracksListPresenter.onBindTrackRowViewAtPosition(holder, position, itemClickListener)
     }
 
 
@@ -35,5 +36,9 @@ class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter
             titleTextView.text = title
         }
 
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(track: Track)
     }
 }

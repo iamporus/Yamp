@@ -4,11 +4,12 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
 
 class MainActivityPresenter(
-    val mainActivityView: IMainActivityView,
-    val trackRepository: ITrackRepository
+    private val mainActivityView: IMainActivityView,
+    private val trackRepository: ITrackRepository
 ) {
     private val TAG = javaClass.name
 
@@ -45,8 +46,7 @@ class MainActivityPresenter(
             } else {
                 requestPermission(permission, requestCode)
             }
-        }
-        else{
+        } else {
             //permission is granted
             displayAllTracks()
         }
@@ -66,5 +66,10 @@ class MainActivityPresenter(
 
     fun onPermissionDenied(permission: String) {
         mainActivityView.showPermissionRationale(permission)
+    }
+
+    fun onTrackSelected(track: Track) {
+        //TODO: start playback
+        Log.d(TAG, "Track selected for playback ${track.title}")
     }
 }

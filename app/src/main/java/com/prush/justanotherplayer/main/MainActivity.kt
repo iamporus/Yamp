@@ -2,7 +2,6 @@ package com.prush.justanotherplayer.main
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -13,14 +12,18 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.TrackRepository
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), IMainActivityView {
+class MainActivity : AppCompatActivity(), IMainActivityView,
+    TracksRecyclerAdapter.OnItemClickListener {
 
     private lateinit var presenter: MainActivityPresenter
     private lateinit var tracksListPresenter: TracksListPresenter
     private lateinit var adapter: TracksRecyclerAdapter
 
-    private val TAG = javaClass.name
-    private val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
+    companion object {
+        private val TAG = MainActivity::class.java.name
+        private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
+    }
+
 
     override fun displayError() {
         Log.d(TAG, "Oops. Something wrong with the sdcard.")
@@ -49,7 +52,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView {
         setContentView(R.layout.activity_main)
 
         tracksListPresenter = TracksListPresenter()
-        adapter = TracksRecyclerAdapter(tracksListPresenter)
+        adapter = TracksRecyclerAdapter(tracksListPresenter, this)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
@@ -57,13 +60,12 @@ class MainActivity : AppCompatActivity(), IMainActivityView {
         val trackRepository = TrackRepository(applicationContext)
 
         presenter = MainActivityPresenter(this, trackRepository)
-        if (Build.VERSION.SDK_INT > 15)
-            presenter.requestPermissionsWithRationale(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                READ_EXTERNAL_STORAGE_REQ_CODE
-            )
-        else
-            presenter.displayAllTracks()
+
+        presenter.requestPermissionsWithRationale(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            READ_EXTERNAL_STORAGE_REQ_CODE
+        )
+
     }
 
     override fun onRequestPermissionsResult(
@@ -93,5 +95,8 @@ class MainActivity : AppCompatActivity(), IMainActivityView {
             .show()
     }
 
+    override fun onItemClick(track: Track) {
+        presenter.onTrackSelected(track)
+    }
 
 }

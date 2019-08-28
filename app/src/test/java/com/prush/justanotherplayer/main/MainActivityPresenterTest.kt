@@ -1,11 +1,9 @@
-package com.prush.justanotherplayer
+package com.prush.justanotherplayer.main
 
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.prush.justanotherplayer.main.IMainActivityView
-import com.prush.justanotherplayer.main.MainActivityPresenter
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import org.junit.Before
@@ -81,4 +79,5 @@ class MainActivityPresenterTest {
 
         verify(mainActivityView).displayError()
     }
+
 }

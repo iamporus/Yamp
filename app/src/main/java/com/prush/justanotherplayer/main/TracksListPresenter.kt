@@ -12,10 +12,15 @@ class TracksListPresenter {
 
     fun onBindTrackRowViewAtPosition(
         holder: TracksRecyclerAdapter.TracksViewHolder,
-        position: Int
+        position: Int,
+        listener: TracksRecyclerAdapter.OnItemClickListener
     ) {
         val track = tracksList[position]
         holder.setTrackTitle(track.title)
+
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(track)
+        }
     }
 
     fun setTrackList(trackList: MutableList<Track>) {
