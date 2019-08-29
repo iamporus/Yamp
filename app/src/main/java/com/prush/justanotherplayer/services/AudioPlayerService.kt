@@ -15,6 +15,7 @@ import android.util.Log
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
@@ -23,6 +24,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.main.MainActivity
+import com.prush.justanotherplayer.model.Track
+import java.util.Collections
 
 class AudioPlayerService : Service() {
 
@@ -45,15 +48,25 @@ class AudioPlayerService : Service() {
         when (intent?.action) {
             PlaybackControls.PLAY.name -> {
 
-                val trackId = intent.getLongExtra(TRACK_ID, -1)
-                val trackTitle: String = intent.getStringExtra(TRACK_TITLE)
+                val trackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
+                val tracksList: List<Track> = intent.getSerializableExtra(TRACKS_LIST) as List<Track>
 
-                val uri: Uri? =
-                    ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, trackId)
-                val mediaSource =
-                    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                Collections.rotate(tracksList, 0 - trackPosition)
 
-                simpleExoPlayer.prepare(mediaSource)
+                val concatenatingMediaSource = ConcatenatingMediaSource()
+
+                for (track in tracksList){
+
+                    val uri: Uri? =
+                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, track.id)
+                    val mediaSource =
+                        ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+
+                    concatenatingMediaSource.addMediaSource(mediaSource)
+                }
+
+                simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ALL
+                simpleExoPlayer.prepare(concatenatingMediaSource)
                 simpleExoPlayer.playWhenReady = true
 
                 val context: Context = this
@@ -82,7 +95,10 @@ class AudioPlayerService : Service() {
                         }
 
                         override fun getCurrentContentTitle(player: Player?): String {
-                            return trackTitle
+                            if (player != null) {
+                                return tracksList[player.currentWindowIndex].title
+                            }
+                            return ""
                         }
 
                         override fun getCurrentLargeIcon(

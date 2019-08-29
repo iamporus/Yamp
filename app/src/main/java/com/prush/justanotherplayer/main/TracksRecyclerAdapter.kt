@@ -39,6 +39,9 @@ class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter
     }
 
     interface OnItemClickListener {
-        fun onItemClick(track: Track)
+        fun onItemClick(
+            tracksList: MutableList<Track>,
+            selectedTrackPosition: Int
+        )
     }
 }

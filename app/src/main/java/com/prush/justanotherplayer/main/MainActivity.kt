@@ -95,8 +95,8 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             .show()
     }
 
-    override fun onItemClick(track: Track) {
-        presenter.onTrackSelected(track)
+    override fun onItemClick(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
+        presenter.onTrackSelected(tracksList, selectedTrackPosition)
     }
 
 }

@@ -1,3 +1,5 @@
 package com.prush.justanotherplayer.model
 
-data class Track(val id: Long, val title: String)
+import java.io.Serializable
+
+data class Track(val id: Long, val title: String) : Serializable

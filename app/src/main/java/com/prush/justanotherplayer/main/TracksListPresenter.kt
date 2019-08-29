@@ -19,11 +19,11 @@ class TracksListPresenter {
         holder.setTrackTitle(track.title)
 
         holder.itemView.setOnClickListener {
-            listener.onItemClick(track)
+            listener.onItemClick(tracksList, position)
         }
     }
 
-    fun setTrackList(trackList: MutableList<Track>) {
-        tracksList = trackList
+    fun setTrackList(tracksList: MutableList<Track>) {
+        this.tracksList = tracksList
     }
 }
