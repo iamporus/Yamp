@@ -1,11 +1,16 @@
 package com.prush.justanotherplayer.main
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
+import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.services.TRACK_ID
+import com.prush.justanotherplayer.services.TRACK_TITLE
 
 class MainActivityPresenter(
     private val mainActivityView: IMainActivityView,
@@ -69,7 +74,13 @@ class MainActivityPresenter(
     }
 
     fun onTrackSelected(track: Track) {
-        //TODO: start playback
-        Log.d(TAG, "Track selected for playback ${track.title}")
+
+        Log.d(TAG, "Track selected for playback $track")
+
+        val intent = Intent(mainActivityView.getViewActivity(), AudioPlayerService::class.java)
+        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(TRACK_ID, track.id)
+        intent.putExtra(TRACK_TITLE, track.title)
+        Util.startForegroundService(mainActivityView.getViewActivity(), intent)
     }
 }

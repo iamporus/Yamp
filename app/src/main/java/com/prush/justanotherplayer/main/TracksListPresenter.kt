@@ -4,7 +4,7 @@ import com.prush.justanotherplayer.model.Track
 
 class TracksListPresenter {
 
-    private lateinit var tracksList: MutableList<Track>
+    private var tracksList: MutableList<Track> = mutableListOf()
 
     fun getTrackListCount(): Int {
         return tracksList.size

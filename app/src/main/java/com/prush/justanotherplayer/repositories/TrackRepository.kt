@@ -1,20 +1,18 @@
 package com.prush.justanotherplayer.repositories
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.provider.MediaStore
+import android.util.Log
 import com.prush.justanotherplayer.model.Track
 
 class TrackRepository(private val context: Context) : ITrackRepository {
 
 
-    @SuppressLint("Recycle")
     override fun getAllTracks(): MutableList<Track> {
 
         val trackList: MutableList<Track> = mutableListOf()
 
-        val contentResolver = context.contentResolver
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
         val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
@@ -29,26 +27,39 @@ class TrackRepository(private val context: Context) : ITrackRepository {
             MediaStore.Audio.Media.ALBUM_ID
         )
 
-        val cursor: Cursor = contentResolver.query(
+        val cursor: Cursor? = context.contentResolver.query(
             uri,
             projection,
             selection,
             null,
             null
-        ) ?: throw RuntimeException("Problem with Media Content Provider")
+        )
 
-        val titleIndex = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-        val idIndex = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
+        when {
+            cursor == null -> {
+                throw RuntimeException("Problem with Media Content Provider")
+            }
+            !cursor.moveToNext() -> {
+                Log.d("TrackRepository", "No tracks on SD Card")
+                cursor.close()
+                return trackList
+            }
+            else -> {
 
-        while (cursor.moveToNext()) {
-            val songId = cursor.getLong(idIndex)
-            val songTitle = cursor.getString(titleIndex)
+                val titleColumn = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
+                val idColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
 
-            trackList.add(Track(songId, songTitle))
+                do {
+                    val songId = cursor.getLong(idColumn)
+                    val songTitle = cursor.getString(titleColumn)
 
+                    trackList.add(Track(songId, songTitle))
+
+                } while (cursor.moveToNext())
+
+                cursor.close()
+            }
         }
-
-        cursor.close()
 
         return trackList
     }
