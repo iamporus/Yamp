@@ -1,19 +1,25 @@
 package com.prush.justanotherplayer.main
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
 
-class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter, private val itemClickListener: OnItemClickListener) :
+class TracksRecyclerAdapter(
+    private val tracksListPresenter: TracksListPresenter,
+    private val itemClickListener: OnItemClickListener
+) :
     RecyclerView.Adapter<TracksRecyclerAdapter.TracksViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
         return TracksViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                android.R.layout.simple_list_item_1,
+                R.layout.track_list_item_row,
                 parent, false
             )
         )
@@ -30,10 +36,20 @@ class TracksRecyclerAdapter(private val tracksListPresenter: TracksListPresenter
 
     class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TracksRowView {
 
-        private var titleTextView: TextView = itemView.findViewById(android.R.id.text1)
+        private var titleTextView: TextView = itemView.findViewById(R.id.textView1)
+        private var subtitleTextView: TextView = itemView.findViewById(R.id.textView2)
+        private var imageView: ImageView = itemView.findViewById(R.id.imageView)
 
         override fun setTrackTitle(title: String) {
             titleTextView.text = title
+        }
+
+        override fun setTrackAlbum(album: String) {
+            subtitleTextView.text = album
+        }
+
+        override fun setTrackAlbumArt(resource: Bitmap) {
+            imageView.setImageBitmap(resource)
         }
 
     }
