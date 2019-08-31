@@ -15,10 +15,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.main.MainActivity
 import com.prush.justanotherplayer.model.Track
 
-class CustomMediaDescriptionAdapter(
-    private val context: Context,
-    private val tracksList: List<Track>
-) :
+class MediaDescriptionAdapter(private val context: Context, private val tracksList: List<Track>) :
     PlayerNotificationManager.MediaDescriptionAdapter {
 
     override fun createCurrentContentIntent(player: Player?): PendingIntent? {

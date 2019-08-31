@@ -3,8 +3,10 @@ package com.prush.justanotherplayer.model
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import com.prush.justanotherplayer.R
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.Serializable
@@ -51,6 +53,8 @@ open class Track(cursor: Cursor) : Serializable {
     var title: String
     var artistName: String
     var albumName: String
+    var defaultAlbumArtRes: Int = R.drawable.playback_track_icon
+    var albumArtBitmap: Bitmap? = null
 
     init {
         id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))

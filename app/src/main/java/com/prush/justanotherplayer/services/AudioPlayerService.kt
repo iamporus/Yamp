@@ -6,10 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
+import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -24,6 +28,8 @@ private val TAG: String = AudioPlayerService::class.java.name
 
 class AudioPlayerService : Service() {
 
+    private lateinit var mediaSessionConnector: MediaSessionConnector
+    private lateinit var mediaSession: MediaSessionCompat
     private lateinit var playerNotificationManager: PlayerNotificationManager
     private lateinit var dataSourceFactory: DefaultDataSourceFactory
     private lateinit var simpleExoPlayer: SimpleExoPlayer
@@ -70,7 +76,7 @@ class AudioPlayerService : Service() {
                         R.string.app_name,
                         R.string.app_name,
                         1,
-                        CustomMediaDescriptionAdapter(context, tracksList),
+                        MediaDescriptionAdapter(context, tracksList),
                         object : PlayerNotificationManager.NotificationListener {
                             override fun onNotificationPosted(
                                 notificationId: Int,
@@ -89,9 +95,48 @@ class AudioPlayerService : Service() {
                         })
 
                 playerNotificationManager.setPlayer(simpleExoPlayer)
+
+                mediaSession = MediaSessionCompat(context, TAG)
+                mediaSession.isActive = true
+                playerNotificationManager.setMediaSessionToken(mediaSession.sessionToken)
+
+                mediaSessionConnector = MediaSessionConnector(mediaSession)
+                mediaSessionConnector.setQueueNavigator(object :
+                    TimelineQueueNavigator(mediaSession) {
+                    override fun getMediaDescription(
+                        player: Player?,
+                        windowIndex: Int
+                    ): MediaDescriptionCompat {
+
+                        if (player != null && tracksList[player.currentWindowIndex].albumArtBitmap == null) {
+
+                            //fetch actual metadata on background thread
+                            return getMediaDescriptionForLockScreen(
+                                context,
+                                tracksList[player.currentWindowIndex]
+                            ) { invalidateSession() }
+                        }
+
+                        //return default empty metadata to lock screen
+                        return MediaSessionConnector.DefaultMediaMetadataProvider(
+                            mediaSession.controller,
+                            TAG
+                        )
+                            .getMetadata(player).description
+                    }
+
+                })
+
+                mediaSessionConnector.setPlayer(simpleExoPlayer)
             }
         }
         return START_STICKY
+    }
+
+    fun invalidateSession(){
+        //This is to update the lock screen metadata when actual bitmap is fetched from the worker thread
+        mediaSessionConnector.invalidateMediaSessionQueue()
+        mediaSessionConnector.invalidateMediaSessionMetadata()
     }
 
     override fun onCreate() {
@@ -110,6 +155,8 @@ class AudioPlayerService : Service() {
     override fun onDestroy() {
         super.onDestroy()
 
+        mediaSession.release()
+        mediaSessionConnector.setPlayer(null)
         playerNotificationManager.setPlayer(null)
         simpleExoPlayer.release()
 
