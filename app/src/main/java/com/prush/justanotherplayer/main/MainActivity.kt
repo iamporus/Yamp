@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        setSupportActionBar(toolbar)
+
         tracksListPresenter = TracksListPresenter()
         adapter = TracksRecyclerAdapter(tracksListPresenter, this)
 
