@@ -28,6 +28,9 @@ class TrackRepository(private val context: Context) : ITrackRepository {
 
                 do {
                     trackList.add(Track(cursor))
+//                    trackList.add(Track(cursor))
+//                    trackList.add(Track(cursor))
+//                    trackList.add(Track(cursor))
 
                 } while (cursor.moveToNext())
 

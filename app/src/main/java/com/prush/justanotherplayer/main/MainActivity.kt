@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         setSupportActionBar(toolbar)
 
+//        collapsingToolbarLayout.isTitleEnabled = false
+//        toolbar.title = getString(R.string.app_name)
+
         tracksListPresenter = TracksListPresenter()
         adapter = TracksRecyclerAdapter(tracksListPresenter, this)
 
