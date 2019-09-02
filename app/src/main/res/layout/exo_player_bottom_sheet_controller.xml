@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#CC000000">
+
+    <ImageView
+            android:id="@+id/shortAlbumArtImageView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/playback_track_icon" />
+
+    <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_toStartOf="@id/shortPlaybackControls"
+            android:layout_toLeftOf="@id/shortPlaybackControls"
+            android:layout_toEndOf="@id/shortAlbumArtImageView"
+            android:layout_toRightOf="@id/shortAlbumArtImageView"
+            android:text="Drag me up, Baby!"
+            android:textColor="?android:textColorPrimary"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    <FrameLayout
+            android:id="@+id/shortPlaybackControls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
+
+        <ImageButton
+                android:id="@id/exo_play"
+                style="@style/ExoMediaButton.Play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="20dp" />
+
+        <ImageButton
+                android:id="@id/exo_pause"
+                style="@style/ExoMediaButton.Pause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="20dp" />
+
+    </FrameLayout>
+</RelativeLayout>

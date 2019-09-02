@@ -9,33 +9,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbarLayout"
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll|enterAlways">
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="@drawable/nav_menu"
+                app:title="@string/app_name">
 
-            <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="160dp"
-                    android:layout_centerInParent="true"
-                    android:src="@color/cardview_dark_background" />
-
-            <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/nav_menu"
-                    app:title="@string/app_name">
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -43,4 +26,8 @@
             android:layout_height="match_parent"
             android:padding="8dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <include
+            layout="@layout/now_playing_bottom_sheet" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
