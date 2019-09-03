@@ -44,6 +44,10 @@ fun getQuery(context: Context): Cursor? {
     )
 }
 
+fun MutableList<Track>.getTrackById(id:Long):Track?{
+    return find { track -> track.id == id }
+}
+
 open class Track(cursor: Cursor) : Serializable {
 
     var id: Long = 0

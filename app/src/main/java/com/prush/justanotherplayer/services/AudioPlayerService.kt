@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Binder
 import android.os.IBinder
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -19,6 +20,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
@@ -35,7 +37,14 @@ class AudioPlayerService : Service() {
     private lateinit var simpleExoPlayer: SimpleExoPlayer
 
     override fun onBind(intent: Intent?): IBinder? {
-        return null
+        return AudioServiceBinder()
+    }
+
+    inner class AudioServiceBinder : Binder() {
+
+        fun getPlayerInstance(): SimpleExoPlayer {
+            return simpleExoPlayer
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -59,7 +68,9 @@ class AudioPlayerService : Service() {
 
                     val uri: Uri = track.getPlaybackUri()
                     val mediaSource =
-                        ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+                        ProgressiveMediaSource.Factory(dataSourceFactory)
+                            .setTag(track.id)
+                            .createMediaSource(uri)
 
                     concatenatingMediaSource.addMediaSource(mediaSource)
                 }
@@ -133,7 +144,7 @@ class AudioPlayerService : Service() {
         return START_STICKY
     }
 
-    fun invalidateSession(){
+    fun invalidateSession() {
         //This is to update the lock screen metadata when actual bitmap is fetched from the worker thread
         mediaSessionConnector.invalidateMediaSessionQueue()
         mediaSessionConnector.invalidateMediaSessionMetadata()
@@ -144,12 +155,13 @@ class AudioPlayerService : Service() {
 
         val context: Context = this
 
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, DefaultTrackSelector())
-
+        val trackSelector = DefaultTrackSelector()
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
         dataSourceFactory = DefaultDataSourceFactory(
             context,
             Util.getUserAgent(context, getString(R.string.app_name))
         )
+        simpleExoPlayer.addAnalyticsListener(EventLogger(DefaultTrackSelector()))
     }
 
     override fun onDestroy() {
