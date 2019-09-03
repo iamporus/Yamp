@@ -47,6 +47,35 @@ class AudioPlayerService : Service() {
         }
     }
 
+    override fun onCreate() {
+        super.onCreate()
+
+        val context: Context = this
+
+        val trackSelector = DefaultTrackSelector()
+        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
+        dataSourceFactory = DefaultDataSourceFactory(
+            context,
+            Util.getUserAgent(context, getString(R.string.app_name))
+        )
+        simpleExoPlayer.addAnalyticsListener(EventLogger(DefaultTrackSelector()))
+
+        mediaSession = MediaSessionCompat(context, TAG)
+        mediaSession.isActive = false
+
+        mediaSessionConnector = MediaSessionConnector(mediaSession)
+
+        playerNotificationManager =
+            PlayerNotificationManager.createWithNotificationChannel(
+                context,
+                PLAYBACK_CHANNEL_ID,
+                R.string.app_name,
+                R.string.app_name,
+                1,
+                null
+            )
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         Log.d(TAG, "Received ${intent?.action}")
@@ -81,87 +110,81 @@ class AudioPlayerService : Service() {
 
                 val context: Context = this
 
-                playerNotificationManager =
-                    PlayerNotificationManager.createWithNotificationChannel(context,
-                        PLAYBACK_CHANNEL_ID,
-                        R.string.app_name,
-                        R.string.app_name,
-                        1,
-                        MediaDescriptionAdapter(context, tracksList),
-                        object : PlayerNotificationManager.NotificationListener {
-                            override fun onNotificationPosted(
-                                notificationId: Int,
-                                notification: Notification?,
-                                ongoing: Boolean
-                            ) {
-                                startForeground(notificationId, notification)
-                            }
+                setupPlayerNotification(context, tracksList)
 
-                            override fun onNotificationCancelled(
-                                notificationId: Int,
-                                dismissedByUser: Boolean
-                            ) {
-                                stopSelf()
-                            }
-                        })
-
-                playerNotificationManager.setPlayer(simpleExoPlayer)
-
-                mediaSession = MediaSessionCompat(context, TAG)
-                mediaSession.isActive = true
-                playerNotificationManager.setMediaSessionToken(mediaSession.sessionToken)
-
-                mediaSessionConnector = MediaSessionConnector(mediaSession)
-                mediaSessionConnector.setQueueNavigator(object :
-                    TimelineQueueNavigator(mediaSession) {
-                    override fun getMediaDescription(
-                        player: Player?,
-                        windowIndex: Int
-                    ): MediaDescriptionCompat {
-
-                        if (player != null && tracksList[player.currentWindowIndex].albumArtBitmap == null) {
-
-                            //fetch actual metadata on background thread
-                            return getMediaDescriptionForLockScreen(
-                                context,
-                                tracksList[player.currentWindowIndex]
-                            ) { invalidateSession() }
-                        }
-
-                        //return default empty metadata to lock screen
-                        return MediaSessionConnector.DefaultMediaMetadataProvider(
-                            mediaSession.controller,
-                            TAG
-                        )
-                            .getMetadata(player).description
-                    }
-
-                })
-
-                mediaSessionConnector.setPlayer(simpleExoPlayer)
+                setupMediaSessionConnector(context, tracksList)
             }
         }
         return START_STICKY
+    }
+
+    private fun setupMediaSessionConnector(context: Context, tracksList: List<Track>) {
+
+        mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
+
+            override fun getMediaDescription(
+                player: Player?, windowIndex: Int
+            ): MediaDescriptionCompat {
+
+                if (player != null && tracksList[player.currentWindowIndex].albumArtBitmap == null) {
+
+                    //fetch actual metadata on background thread
+                    return getMediaDescriptionForLockScreen(
+                        context,
+                        tracksList[player.currentWindowIndex]
+                    ) { invalidateSession() }
+                }
+
+                //return default empty metadata to lock screen
+                return MediaSessionConnector.DefaultMediaMetadataProvider(
+                    mediaSession.controller,
+                    TAG
+                )
+                    .getMetadata(player).description
+            }
+
+        })
+
+        mediaSessionConnector.setPlayer(simpleExoPlayer)
+    }
+
+    private fun setupPlayerNotification(context: Context, tracksList: List<Track>) {
+
+        playerNotificationManager =
+            PlayerNotificationManager.createWithNotificationChannel(
+                context,
+                PLAYBACK_CHANNEL_ID,
+                R.string.app_name,
+                R.string.app_name,
+                1,
+                MediaDescriptionAdapter(context, tracksList),
+
+                object : PlayerNotificationManager.NotificationListener {
+                    override fun onNotificationPosted(
+                        notificationId: Int,
+                        notification: Notification?,
+                        ongoing: Boolean
+                    ) {
+                        startForeground(notificationId, notification)
+                    }
+
+                    override fun onNotificationCancelled(
+                        notificationId: Int, dismissedByUser: Boolean
+                    ) {
+                        stopSelf()
+                    }
+                })
+
+        playerNotificationManager.setPlayer(simpleExoPlayer)
+
+        mediaSession.isActive = true
+        playerNotificationManager.setMediaSessionToken(mediaSession.sessionToken)
     }
 
     fun invalidateSession() {
         //This is to update the lock screen metadata when actual bitmap is fetched from the worker thread
         mediaSessionConnector.invalidateMediaSessionQueue()
         mediaSessionConnector.invalidateMediaSessionMetadata()
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        val context: Context = this
-
-        val trackSelector = DefaultTrackSelector()
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
-        dataSourceFactory = DefaultDataSourceFactory(
-            context,
-            Util.getUserAgent(context, getString(R.string.app_name))
-        )
-        simpleExoPlayer.addAnalyticsListener(EventLogger(DefaultTrackSelector()))
     }
 
     override fun onDestroy() {

@@ -56,6 +56,12 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
                 audioPlayer.addListener(this@MainActivity)
 
+                if (audioPlayer.currentTag != null)
+                    trackList.getTrackById(audioPlayer.currentTag as Long)?.let {
+                        updatePlaybackMetadata(
+                            it
+                        )
+                    }
             }
         }
 
@@ -183,5 +189,11 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         titleTextView.text = track.title
 
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unbindService(connection)
     }
 }
