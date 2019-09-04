@@ -11,6 +11,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
@@ -30,6 +32,9 @@ import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 class MainActivity : AppCompatActivity(), IMainActivityView,
     TracksRecyclerAdapter.OnItemClickListener, Player.EventListener {
 
+    private val STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
+
+    private var bAlreadyAskedForStoragePermission: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var trackList: MutableList<Track>
@@ -96,11 +101,17 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         setSupportActionBar(toolbar)
 
+        if (savedInstanceState != null) {
+            bAlreadyAskedForStoragePermission =
+                savedInstanceState.getBoolean(STORAGE_PERMISSION_ALREADY_ASKED, false)
+        }
+
         nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
-        tracksListPresenter = TracksListPresenter()
-        adapter = TracksRecyclerAdapter(tracksListPresenter, this)
 
+        tracksListPresenter = TracksListPresenter()
+
+        adapter = TracksRecyclerAdapter(tracksListPresenter, this)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
 
@@ -108,7 +119,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         presenter = MainActivityPresenter(this, trackRepository)
 
-        presenter.requestPermissionsWithRationale(
+        requestPermissionsWithRationale(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             READ_EXTERNAL_STORAGE_REQ_CODE
         )
@@ -130,6 +141,39 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         }
     }
 
+    private fun requestPermissionsWithRationale(permission: String, requestCode: Int) {
+
+        if (bAlreadyAskedForStoragePermission) {
+            return
+        }
+
+        Log.d(TAG, "Requesting permission for accessing storage.")
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext, permission
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            bAlreadyAskedForStoragePermission = true
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                showPermissionRationale(permission)
+            } else {
+                requestPermission(permission, requestCode)
+            }
+        } else {
+            //permission is granted
+            bAlreadyAskedForStoragePermission = true
+            presenter.displayAllTracks()
+        }
+    }
+
+    private fun requestPermission(permission: String, requestCode: Int) {
+
+        ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+    }
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -137,6 +181,9 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     ) {
         when (requestCode) {
             READ_EXTERNAL_STORAGE_REQ_CODE -> {
+
+                bAlreadyAskedForStoragePermission = false
+
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenter.onPermissionGranted()
                 } else {
@@ -152,9 +199,14 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             R.string.permissions_rationale, Snackbar.LENGTH_INDEFINITE
         )
             .setAction(R.string.okay) {
-                presenter.requestPermission(permission, READ_EXTERNAL_STORAGE_REQ_CODE)
+                requestPermission(permission, READ_EXTERNAL_STORAGE_REQ_CODE)
             }
             .show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putBoolean(STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onItemClick(tracksList: MutableList<Track>, selectedTrackPosition: Int) {

@@ -33,38 +33,6 @@ class MainActivityPresenter(
         }
     }
 
-    fun requestPermissionsWithRationale(permission: String, requestCode: Int) {
-
-        if (ContextCompat.checkSelfPermission(
-                mainActivityView.getViewActivity().applicationContext,
-                permission
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    mainActivityView.getViewActivity(),
-                    permission
-                )
-            ) {
-                mainActivityView.showPermissionRationale(permission)
-            } else {
-                requestPermission(permission, requestCode)
-            }
-        } else {
-            //permission is granted
-            displayAllTracks()
-        }
-    }
-
-    fun requestPermission(permission: String, requestCode: Int) {
-        ActivityCompat.requestPermissions(
-            mainActivityView.getViewActivity(),
-            arrayOf(permission),
-            requestCode
-        )
-    }
-
     fun onPermissionGranted() {
         displayAllTracks()
     }

@@ -10,7 +10,7 @@ class TrackRepository(private val context: Context) : ITrackRepository {
 
 
     override fun getAllTracks(): MutableList<Track> {
-
+        Log.d("TrackRepository", "Fetching tracks from SD Card")
         val trackList: MutableList<Track> = mutableListOf()
 
         val cursor: Cursor? = getQuery(context)
@@ -28,9 +28,6 @@ class TrackRepository(private val context: Context) : ITrackRepository {
 
                 do {
                     trackList.add(Track(cursor))
-//                    trackList.add(Track(cursor))
-//                    trackList.add(Track(cursor))
-//                    trackList.add(Track(cursor))
 
                 } while (cursor.moveToNext())
 
