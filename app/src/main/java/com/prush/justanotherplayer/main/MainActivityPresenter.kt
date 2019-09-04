@@ -1,36 +1,46 @@
 package com.prush.justanotherplayer.main
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.services.TRACKS_LIST
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 class MainActivityPresenter(
     private val mainActivityView: IMainActivityView,
     private val trackRepository: ITrackRepository
-) {
+) : CoroutineScope {
     private val TAG = javaClass.name
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
     fun displayAllTracks() {
 
-        try {
-            val trackList = trackRepository.getAllTracks()
-            if (trackList.isEmpty())
-                mainActivityView.displayEmptyLibrary()
-            else
-                mainActivityView.displayLibraryTracks(trackList)
-        } catch (e: RuntimeException) {
-            e.printStackTrace()
-            Log.d(TAG, "Exception: ${e.message}")
-            mainActivityView.displayError()
+        launch {
+            try {
+
+                val trackList = trackRepository.getAllTracks()
+                withContext(Dispatchers.Main) {
+                    if (trackList.isEmpty())
+                        mainActivityView.displayEmptyLibrary()
+                    else
+                        mainActivityView.displayLibraryTracks(trackList)
+                }
+
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                Log.d(TAG, "Exception: ${e.message}")
+                mainActivityView.displayError()
+            }
+
         }
+
     }
 
     fun onPermissionGranted() {
@@ -50,5 +60,9 @@ class MainActivityPresenter(
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
         intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
         Util.startForegroundService(mainActivityView.getViewActivity(), intent)
+    }
+
+    fun onCleanup() {
+        job.cancel()
     }
 }

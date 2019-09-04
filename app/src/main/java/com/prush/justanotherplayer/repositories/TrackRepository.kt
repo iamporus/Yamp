@@ -9,8 +9,9 @@ import com.prush.justanotherplayer.model.getQuery
 class TrackRepository(private val context: Context) : ITrackRepository {
 
 
-    override fun getAllTracks(): MutableList<Track> {
+    override suspend fun getAllTracks(): MutableList<Track> {
         Log.d("TrackRepository", "Fetching tracks from SD Card")
+
         val trackList: MutableList<Track> = mutableListOf()
 
         val cursor: Cursor? = getQuery(context)

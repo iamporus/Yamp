@@ -119,10 +119,13 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         presenter = MainActivityPresenter(this, trackRepository)
 
-        requestPermissionsWithRationale(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            READ_EXTERNAL_STORAGE_REQ_CODE
-        )
+        if (!bAlreadyAskedForStoragePermission) {
+
+            requestPermissionsWithRationale(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                READ_EXTERNAL_STORAGE_REQ_CODE
+            )
+        }
 
         bindService(
             Intent(this, AudioPlayerService::class.java),
@@ -143,10 +146,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
     private fun requestPermissionsWithRationale(permission: String, requestCode: Int) {
 
-        if (bAlreadyAskedForStoragePermission) {
-            return
-        }
-
         Log.d(TAG, "Requesting permission for accessing storage.")
 
         if (ContextCompat.checkSelfPermission(
@@ -163,7 +162,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             }
         } else {
             //permission is granted
-            bAlreadyAskedForStoragePermission = true
             presenter.displayAllTracks()
         }
     }
@@ -247,5 +245,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     override fun onDestroy() {
         super.onDestroy()
         unbindService(connection)
+        presenter.onCleanup()
     }
 }
