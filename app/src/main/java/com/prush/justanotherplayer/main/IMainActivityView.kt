@@ -15,5 +15,5 @@ interface IMainActivityView {
 
     fun showPermissionRationale(permission: String)
 
-    fun updatePlaybackMetadata(track: Track)
+    fun showNowPlayingTrackMetadata(track: Track)
 }

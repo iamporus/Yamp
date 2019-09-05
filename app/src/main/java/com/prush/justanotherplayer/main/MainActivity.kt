@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
-private const val STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
+private const val KEY_STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
 private val TAG = MainActivity::class.java.name
 private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         if (savedInstanceState != null) {
             bAlreadyAskedForStoragePermission =
-                savedInstanceState.getBoolean(STORAGE_PERMISSION_ALREADY_ASKED, false)
+                savedInstanceState.getBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, false)
         }
 
         nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 audioPlayer.addListener(this@MainActivity)
 
                 if (audioPlayer.currentTag != null)
-                    presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
+                    presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
             }
         }
 
@@ -143,12 +143,12 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     }
 
     override fun onItemClick(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
-        presenter.onTrackSelected(tracksList, selectedTrackPosition)
+        presenter.startTrackPlayback(tracksList, selectedTrackPosition)
     }
 
-    override fun updatePlaybackMetadata(track: Track) {
+    override fun showNowPlayingTrackMetadata(track: Track) {
 
-        Log.d(TAG, "updatePlaybackMetadata with ${track.title}")
+        Log.d(TAG, "showNowPlayingTrackMetadata with ${track.title}")
         if (track.albumArtBitmap != null) {
             shortAlbumArtImageView.setImageBitmap(track.albumArtBitmap)
             albumArtImageView.setImageBitmap(track.albumArtBitmap)
@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             PlaybackState.STATE_PAUSED -> {
 
                 if (audioPlayer.currentTag != null)
-                    presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
+                    presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
 
             }
             else -> {
@@ -189,7 +189,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     }
 
     override fun onPermissionGranted(permission: String) {
-        presenter.displayAllTracks()
+        presenter.loadLibraryTracks()
     }
 
     override fun onRequestPermissionsResult(
@@ -203,9 +203,9 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 bAlreadyAskedForStoragePermission = false
 
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.onPermissionGranted()
+                    presenter.loadLibraryTracks()
                 } else {
-                    presenter.onPermissionDenied(permissions[0])
+                    showPermissionRationale(permissions[0])
                 }
             }
         }
@@ -223,7 +223,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean(STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
+        outState?.putBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
         super.onSaveInstanceState(outState)
     }
 

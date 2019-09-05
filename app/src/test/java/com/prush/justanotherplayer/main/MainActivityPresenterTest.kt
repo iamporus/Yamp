@@ -43,7 +43,7 @@ class MainActivityPresenterTest {
             mainActivityView,
             trackRepository
         )
-        mainActivityPresenter.displayAllTracks()
+        mainActivityPresenter.loadLibraryTracks()
 
         verify(mainActivityView).displayLibraryTracks(manyTracks)
     }
@@ -59,7 +59,7 @@ class MainActivityPresenterTest {
             mainActivityView,
             trackRepository
         )
-        mainActivityPresenter.displayAllTracks()
+        mainActivityPresenter.loadLibraryTracks()
 
         verify(mainActivityView).displayEmptyLibrary()
     }
@@ -75,7 +75,7 @@ class MainActivityPresenterTest {
             mainActivityView,
             trackRepository
         )
-        mainActivityPresenter.displayAllTracks()
+        mainActivityPresenter.loadLibraryTracks()
 
         verify(mainActivityView).displayError()
     }

@@ -20,7 +20,7 @@ class MainActivityPresenter(
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
-    fun displayAllTracks() {
+    fun loadLibraryTracks() {
 
         launch {
             try {
@@ -43,15 +43,7 @@ class MainActivityPresenter(
 
     }
 
-    fun onPermissionGranted() {
-        displayAllTracks()
-    }
-
-    fun onPermissionDenied(permission: String) {
-        mainActivityView.showPermissionRationale(permission)
-    }
-
-    fun onTrackSelected(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
+    fun startTrackPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
 
         Log.d(TAG, "Track selected for playback $tracksList")
 
@@ -66,15 +58,17 @@ class MainActivityPresenter(
         job.cancel()
     }
 
-    fun onTrackPlaybackStarted(trackId: Long) {
+    fun fetchTrackMetadata(trackId: Long) {
 
-        Log.d(TAG, "onTrackPlaybackStarted $trackId")
+        Log.d(TAG, "fetchTrackMetadata $trackId")
 
         launch {
             val track = trackRepository.getTrackById(trackId)
             withContext(Dispatchers.Main) {
-                mainActivityView.updatePlaybackMetadata(track)
+                mainActivityView.showNowPlayingTrackMetadata(track)
             }
         }
     }
+
+
 }
