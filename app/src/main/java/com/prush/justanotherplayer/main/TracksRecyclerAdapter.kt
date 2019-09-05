@@ -38,7 +38,9 @@ class TracksRecyclerAdapter(
 
         private var titleTextView: TextView = itemView.findViewById(R.id.bottomTitleTextView)
         private var subtitleTextView: TextView = itemView.findViewById(R.id.bottomSubtitleTextView)
-        private var albumArtImageView: ImageView = itemView.findViewById(R.id.bottomAlbumArtImageView)
+        private var albumArtImageView: ImageView =
+            itemView.findViewById(R.id.bottomAlbumArtImageView)
+        private var nowPlayingImageView: ImageView = itemView.findViewById(R.id.nowPlayingImageView)
 
         override fun setTrackTitle(title: String) {
             titleTextView.text = title
@@ -50,6 +52,10 @@ class TracksRecyclerAdapter(
 
         override fun setTrackAlbumArt(resource: Bitmap) {
             albumArtImageView.setImageBitmap(resource)
+        }
+
+        override fun markTrackAsPlaying(isNowPlaying: Boolean) {
+            nowPlayingImageView.visibility = if (isNowPlaying) View.VISIBLE else View.GONE
         }
 
     }

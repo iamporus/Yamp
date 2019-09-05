@@ -2,6 +2,7 @@ package com.prush.justanotherplayer.main
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -23,6 +24,7 @@ class TracksListPresenter {
         val track = tracksList[position]
         holder.setTrackTitle(track.title)
         holder.setTrackAlbum(track.artistName + " - " + track.albumName)
+        holder.markTrackAsPlaying(track.isCurrentlyPlaying)
 
         Glide.with(holder.itemView)
             .asBitmap()
@@ -43,7 +45,43 @@ class TracksListPresenter {
         }
     }
 
-    fun setTrackList(tracksList: MutableList<Track>) {
-        this.tracksList = tracksList
+    fun setTrackList(tracksList: MutableList<Track>, adapter: TracksRecyclerAdapter) {
+
+        if (this.tracksList.isNotEmpty()) {
+
+            val trackDiffCallback = TrackDiffCallback(this.tracksList, tracksList)
+            val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
+
+            this.tracksList = tracksList
+            diffResult.dispatchUpdatesTo(adapter)
+        } else {
+
+            this.tracksList.addAll(tracksList)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    inner class TrackDiffCallback(
+        private val oldTracksList: MutableList<Track>,
+        private val newTracksList: MutableList<Track>
+    ) : DiffUtil.Callback() {
+
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldTracksList[oldItemPosition].id == newTracksList[newItemPosition].id
+        }
+
+        override fun getOldListSize(): Int {
+            return oldTracksList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newTracksList.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldTracksList[oldItemPosition] == newTracksList[newItemPosition]
+        }
+
     }
 }

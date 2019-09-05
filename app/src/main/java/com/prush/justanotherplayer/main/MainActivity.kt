@@ -128,8 +128,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     override fun displayLibraryTracks(trackList: MutableList<Track>) {
 
         Log.d(TAG, "Loaded some tracks")
-        tracksListPresenter.setTrackList(trackList)
-        recyclerView.adapter?.notifyDataSetChanged()
+        tracksListPresenter.setTrackList(trackList, adapter)
     }
 
 
@@ -166,6 +165,8 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         // pop up bottom sheet
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        presenter.setNowPlayingTrack(track.id)
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -182,6 +183,12 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
+    }
+
+    // gets called when current track playback completes and playback of next track starts
+    override fun onPositionDiscontinuity(reason: Int) {
+        if (audioPlayer.currentTag != null)
+            presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
     }
 
     override fun onShowPermissionRationale(permission: String) {
@@ -223,7 +230,10 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
+        outState?.putBoolean(
+            KEY_STORAGE_PERMISSION_ALREADY_ASKED,
+            bAlreadyAskedForStoragePermission
+        )
         super.onSaveInstanceState(outState)
     }
 

@@ -82,6 +82,7 @@ open class Track() : Serializable {
     var albumName: String = ""
     var defaultAlbumArtRes: Int = 0
     var albumArtBitmap: Bitmap? = null
+    var isCurrentlyPlaying: Boolean = false
 
     fun getPlaybackUri(): Uri {
 

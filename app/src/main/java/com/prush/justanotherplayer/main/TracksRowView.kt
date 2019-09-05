@@ -9,4 +9,6 @@ interface TracksRowView {
     fun setTrackAlbum(album: String)
 
     fun setTrackAlbumArt(resource: Bitmap)
+
+    fun markTrackAsPlaying(isNowPlaying: Boolean)
 }

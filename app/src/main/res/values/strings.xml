@@ -6,4 +6,5 @@
     <string name="album_art">Album Art</string>
     <string name="play_action">Play Action</string>
     <string name="pause_action">Pause Action</string>
+    <string name="now_playing_indicator">Now Playing Indicator</string>
 </resources>

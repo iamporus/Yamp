@@ -11,11 +11,13 @@ import com.prush.justanotherplayer.services.TRACKS_LIST
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
+private val TAG = MainActivityPresenter::class.java.name
+
 class MainActivityPresenter(
     private val mainActivityView: IMainActivityView,
     private val trackRepository: ITrackRepository
 ) : CoroutineScope {
-    private val TAG = javaClass.name
+
 
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
@@ -62,13 +64,48 @@ class MainActivityPresenter(
 
         Log.d(TAG, "fetchTrackMetadata $trackId")
 
+        // fetch metadata of currently playing track
         launch {
-            val track = trackRepository.getTrackById(trackId)
-            withContext(Dispatchers.Main) {
-                mainActivityView.showNowPlayingTrackMetadata(track)
+            try {
+                val track = trackRepository.getTrackById(trackId)
+                withContext(Dispatchers.Main) {
+                    mainActivityView.showNowPlayingTrackMetadata(track)
+                }
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                Log.d(TAG, "Exception: ${e.message}")
+                mainActivityView.displayError()
             }
         }
     }
 
+    fun setNowPlayingTrack(trackId: Long) {
 
+        Log.d(TAG, "setNowPlayingTrack $trackId")
+
+        launch {
+            try {
+                val trackList = trackRepository.getAllTracks()
+                withContext(Dispatchers.Main) {
+                    if (trackList.isNotEmpty()) {
+                        val index = trackList.indexOfFirst { it.id == trackId }
+                        if (index != -1) {
+                            val track = trackList[index]
+
+                            track.isCurrentlyPlaying = true
+
+                            trackList[index] = track
+                            mainActivityView.displayLibraryTracks(trackList)
+                        }
+                    }
+                }
+
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                Log.d(TAG, "Exception: ${e.message}")
+                mainActivityView.displayError()
+            }
+
+        }
+    }
 }
