@@ -221,6 +221,10 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         }
 
         titleTextView.text = track.title
+
+        // pop up bottom sheet
+        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -228,7 +232,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         when (playbackState) {
             PlaybackState.STATE_PLAYING,
             PlaybackState.STATE_PAUSED -> {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+
                 if (audioPlayer.currentTag != null)
                     presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
 
