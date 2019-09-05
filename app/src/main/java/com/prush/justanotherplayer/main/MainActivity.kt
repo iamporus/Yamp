@@ -12,8 +12,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
@@ -24,12 +22,14 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.TrackRepository
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.PermissionCallbacks
+import com.prush.justanotherplayer.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 class MainActivity : AppCompatActivity(), IMainActivityView,
-    TracksRecyclerAdapter.OnItemClickListener, Player.EventListener {
+    TracksRecyclerAdapter.OnItemClickListener, Player.EventListener, PermissionCallbacks {
 
     private val STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
 
@@ -39,10 +39,15 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     private lateinit var presenter: MainActivityPresenter
     private lateinit var tracksListPresenter: TracksListPresenter
     private lateinit var adapter: TracksRecyclerAdapter
+    private lateinit var permissionUtils: PermissionUtils
 
     companion object {
         private val TAG = MainActivity::class.java.name
         private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
+    }
+
+    override fun getViewActivity(): AppCompatActivity {
+        return this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,11 +75,15 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         presenter = MainActivityPresenter(this, trackRepository)
 
+        permissionUtils = PermissionUtils()
+
         if (!bAlreadyAskedForStoragePermission) {
 
-            requestPermissionsWithRationale(
+            bAlreadyAskedForStoragePermission = permissionUtils.requestPermissionsWithRationale(
+                this,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                READ_EXTERNAL_STORAGE_REQ_CODE
+                READ_EXTERNAL_STORAGE_REQ_CODE,
+                this
             )
         }
 
@@ -125,9 +134,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         recyclerView.adapter?.notifyDataSetChanged()
     }
 
-    override fun getViewActivity(): AppCompatActivity {
-        return this
-    }
 
     private fun toggleSheetBehavior() {
 
@@ -136,69 +142,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         } else {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
-    }
-
-    private fun requestPermissionsWithRationale(permission: String, requestCode: Int) {
-
-        Log.d(TAG, "Requesting permission for accessing storage.")
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext, permission
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            bAlreadyAskedForStoragePermission = true
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                showPermissionRationale(permission)
-            } else {
-                requestPermission(permission, requestCode)
-            }
-        } else {
-            //permission is granted
-            presenter.displayAllTracks()
-        }
-    }
-
-    private fun requestPermission(permission: String, requestCode: Int) {
-
-        ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
-    }
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            READ_EXTERNAL_STORAGE_REQ_CODE -> {
-
-                bAlreadyAskedForStoragePermission = false
-
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.onPermissionGranted()
-                } else {
-                    presenter.onPermissionDenied(permissions[0])
-                }
-            }
-        }
-    }
-
-    override fun showPermissionRationale(permission: String) {
-        Snackbar.make(
-            rootLayout,
-            R.string.permissions_rationale, Snackbar.LENGTH_INDEFINITE
-        )
-            .setAction(R.string.okay) {
-                requestPermission(permission, READ_EXTERNAL_STORAGE_REQ_CODE)
-            }
-            .show()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean(STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
-        super.onSaveInstanceState(outState)
     }
 
     override fun onItemClick(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
@@ -241,6 +184,49 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
+    }
+
+    override fun onShowPermissionRationale(permission: String) {
+        showPermissionRationale(permission)
+    }
+
+    override fun onPermissionGranted(permission: String) {
+        presenter.displayAllTracks()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            READ_EXTERNAL_STORAGE_REQ_CODE -> {
+
+                bAlreadyAskedForStoragePermission = false
+
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    presenter.onPermissionGranted()
+                } else {
+                    presenter.onPermissionDenied(permissions[0])
+                }
+            }
+        }
+    }
+
+    override fun showPermissionRationale(permission: String) {
+        Snackbar.make(
+            rootLayout,
+            R.string.permissions_rationale, Snackbar.LENGTH_INDEFINITE
+        )
+            .setAction(R.string.okay) {
+                permissionUtils.requestPermission(this, permission, READ_EXTERNAL_STORAGE_REQ_CODE)
+            }
+            .show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        outState?.putBoolean(STORAGE_PERMISSION_ALREADY_ASKED, bAlreadyAskedForStoragePermission)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
