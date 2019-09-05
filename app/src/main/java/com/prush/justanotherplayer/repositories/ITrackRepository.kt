@@ -5,4 +5,6 @@ import com.prush.justanotherplayer.model.Track
 interface ITrackRepository {
 
     suspend fun getAllTracks(): MutableList<Track>
+
+    suspend fun getTrackById(trackId: Long): Track
 }

@@ -14,8 +14,12 @@ import java.io.Serializable
 //static fields
 private val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-private const val selection =
+private const val all_tracks_selection =
     MediaStore.Audio.Media.IS_MUSIC + "=1 OR " + MediaStore.Audio.Media.IS_PODCAST + "=1"
+
+private const val track_with_id_selection =
+    "(" + all_tracks_selection + ") AND " + MediaStore.Audio.Media._ID + "=?"
+
 
 private val projection = arrayOf(
     MediaStore.Audio.Media._ID,
@@ -33,34 +37,33 @@ private val projection = arrayOf(
 )
 
 //static method
-fun getQuery(context: Context): Cursor? {
+fun getAllTracksQuery(context: Context): Cursor? {
 
     return context.contentResolver.query(
         uri,
         projection,
-        selection,
+        all_tracks_selection,
         null,
         MediaStore.Audio.Media.TRACK
     )
 }
 
-fun MutableList<Track>.getTrackById(id:Long):Track?{
-    return find { track -> track.id == id }
+fun getTrackByIdQuery(context: Context, id: Long): Cursor? {
+
+    return context.contentResolver.query(
+        uri,
+        projection,
+        track_with_id_selection,
+        arrayOf(id.toString()),
+        null
+    )
 }
 
-open class Track(cursor: Cursor) : Serializable {
+open class Track() : Serializable {
 
-    var id: Long = 0
-    var artistId: Long = 0
-    var albumId: Long = 0
-    var duration: Long = 0
-    var title: String
-    var artistName: String
-    var albumName: String
-    var defaultAlbumArtRes: Int = R.drawable.playback_track_icon
-    var albumArtBitmap: Bitmap? = null
+    constructor(cursor: Cursor) : this() {
 
-    init {
+        defaultAlbumArtRes = R.drawable.playback_track_icon
         id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
         title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
         artistId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID))
@@ -69,6 +72,16 @@ open class Track(cursor: Cursor) : Serializable {
         albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
         duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
     }
+
+    var id: Long = 0
+    var artistId: Long = 0
+    var albumId: Long = 0
+    var duration: Long = 0
+    var title: String = ""
+    var artistName: String = ""
+    var albumName: String = ""
+    var defaultAlbumArtRes: Int = 0
+    var albumArtBitmap: Bitmap? = null
 
     fun getPlaybackUri(): Uri {
 

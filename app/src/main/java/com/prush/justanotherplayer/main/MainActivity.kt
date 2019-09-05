@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.model.getTrackById
 import com.prush.justanotherplayer.repositories.TrackRepository
 import com.prush.justanotherplayer.services.AudioPlayerService
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     private var bAlreadyAskedForStoragePermission: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
-    private lateinit var trackList: MutableList<Track>
     private lateinit var presenter: MainActivityPresenter
     private lateinit var tracksListPresenter: TracksListPresenter
     private lateinit var adapter: TracksRecyclerAdapter
@@ -45,54 +43,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     companion object {
         private val TAG = MainActivity::class.java.name
         private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
-    }
-
-    private val connection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            if (service is AudioPlayerService.AudioServiceBinder) {
-                audioPlayer = service.getPlayerInstance()
-
-                playerControlView.player = audioPlayer
-                shortPlayerControlView.player = audioPlayer
-
-                audioPlayer.addListener(this@MainActivity)
-
-                if (audioPlayer.currentTag != null)
-                    trackList.getTrackById(audioPlayer.currentTag as Long)?.let {
-                        updatePlaybackMetadata(
-                            it
-                        )
-                    }
-            }
-        }
-
-    }
-
-    override fun displayError() {
-        Log.d(TAG, "Oops. Something wrong with the sdcard.")
-        Snackbar.make(rootLayout, R.string.error_sdcard, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun displayEmptyLibrary() {
-
-        Log.d(TAG, "Oops. You don't have any tracks.")
-        //TODO: display empty view
-    }
-
-    override fun displayLibraryTracks(trackList: MutableList<Track>) {
-
-        Log.d(TAG, "Loaded some tracks")
-        this.trackList = trackList
-        tracksListPresenter.setTrackList(trackList)
-        recyclerView.adapter?.notifyDataSetChanged()
-    }
-
-    override fun getViewActivity(): AppCompatActivity {
-        return this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,7 +82,50 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             connection,
             Context.BIND_AUTO_CREATE
         )
+    }
 
+    private val connection = object : ServiceConnection {
+        override fun onServiceDisconnected(name: ComponentName?) {
+            Log.d(TAG, "onServiceDisconnected")
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            Log.d(TAG, "onServiceConnected")
+            if (service is AudioPlayerService.AudioServiceBinder) {
+                audioPlayer = service.getPlayerInstance()
+
+                playerControlView.player = audioPlayer
+                shortPlayerControlView.player = audioPlayer
+
+                audioPlayer.addListener(this@MainActivity)
+
+                if (audioPlayer.currentTag != null)
+                    presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
+            }
+        }
+
+    }
+
+    override fun displayError() {
+        Log.d(TAG, "Oops. Something wrong with the sdcard.")
+        Snackbar.make(rootLayout, R.string.error_sdcard, Snackbar.LENGTH_SHORT).show()
+    }
+
+    override fun displayEmptyLibrary() {
+
+        Log.d(TAG, "Oops. You don't have any tracks.")
+        //TODO: display empty view
+    }
+
+    override fun displayLibraryTracks(trackList: MutableList<Track>) {
+
+        Log.d(TAG, "Loaded some tracks")
+        tracksListPresenter.setTrackList(trackList)
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    override fun getViewActivity(): AppCompatActivity {
+        return this
     }
 
     private fun toggleSheetBehavior() {
@@ -214,17 +207,18 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     override fun onPositionDiscontinuity(reason: Int) {
         Log.d(TAG, "onPositionDiscontinuity: $reason and ${audioPlayer.currentTag}")
         if (audioPlayer.currentTag != null)
-            trackList.getTrackById(audioPlayer.currentTag as Long)?.let { updatePlaybackMetadata(it) }
+            presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
     }
 
     override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
         Log.d(TAG, "onTimelineChanged: $reason and ${audioPlayer.currentTag}")
         if (audioPlayer.currentTag != null)
-            trackList.getTrackById(audioPlayer.currentTag as Long)?.let { updatePlaybackMetadata(it) }
+            presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
     }
 
-    private fun updatePlaybackMetadata(track: Track) {
+    override fun updatePlaybackMetadata(track: Track) {
 
+        Log.d(TAG, "updatePlaybackMetadata with ${track.title}")
         if (track.albumArtBitmap != null) {
             shortAlbumArtImageView.setImageBitmap(track.albumArtBitmap)
             albumArtImageView.setImageBitmap(track.albumArtBitmap)
@@ -238,7 +232,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         }
 
         titleTextView.text = track.title
-
     }
 
 

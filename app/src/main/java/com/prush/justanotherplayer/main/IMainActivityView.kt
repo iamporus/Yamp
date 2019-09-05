@@ -14,4 +14,6 @@ interface IMainActivityView {
     fun getViewActivity(): AppCompatActivity
 
     fun showPermissionRationale(permission: String)
+
+    fun updatePlaybackMetadata(track: Track)
 }

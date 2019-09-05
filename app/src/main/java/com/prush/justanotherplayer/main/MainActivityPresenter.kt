@@ -65,4 +65,16 @@ class MainActivityPresenter(
     fun onCleanup() {
         job.cancel()
     }
+
+    fun onTrackPlaybackStarted(trackId: Long) {
+
+        Log.d(TAG, "onTrackPlaybackStarted $trackId")
+
+        launch {
+            val track = trackRepository.getTrackById(trackId)
+            withContext(Dispatchers.Main) {
+                mainActivityView.updatePlaybackMetadata(track)
+            }
+        }
+    }
 }
