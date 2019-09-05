@@ -7,19 +7,19 @@
         android:padding="4dp">
 
     <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/albumArtImageView"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintBottom_toBottomOf="@+id/subtitleTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/titleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -34,11 +34,11 @@
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/subtitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -53,6 +53,6 @@
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@+id/textView1" />
+            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,12 +33,12 @@ class TracksRecyclerAdapter(
         tracksListPresenter.onBindTrackRowViewAtPosition(holder, position, itemClickListener)
     }
 
+    inner class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        TracksRowView {
 
-    class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TracksRowView {
-
-        private var titleTextView: TextView = itemView.findViewById(R.id.textView1)
-        private var subtitleTextView: TextView = itemView.findViewById(R.id.textView2)
-        private var imageView: ImageView = itemView.findViewById(R.id.imageView)
+        private var titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
+        private var subtitleTextView: TextView = itemView.findViewById(R.id.subtitleTextView)
+        private var albumArtImageView: ImageView = itemView.findViewById(R.id.albumArtImageView)
 
         override fun setTrackTitle(title: String) {
             titleTextView.text = title
@@ -49,7 +49,7 @@ class TracksRecyclerAdapter(
         }
 
         override fun setTrackAlbumArt(resource: Bitmap) {
-            imageView.setImageBitmap(resource)
+            albumArtImageView.setImageBitmap(resource)
         }
 
     }
