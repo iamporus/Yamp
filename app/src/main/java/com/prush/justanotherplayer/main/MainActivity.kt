@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.media.session.PlaybackState
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.Timeline
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
         nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         tracksListPresenter = TracksListPresenter()
 
@@ -204,18 +205,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         presenter.onTrackSelected(tracksList, selectedTrackPosition)
     }
 
-    override fun onPositionDiscontinuity(reason: Int) {
-        Log.d(TAG, "onPositionDiscontinuity: $reason and ${audioPlayer.currentTag}")
-        if (audioPlayer.currentTag != null)
-            presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
-    }
-
-    override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
-        Log.d(TAG, "onTimelineChanged: $reason and ${audioPlayer.currentTag}")
-        if (audioPlayer.currentTag != null)
-            presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
-    }
-
     override fun updatePlaybackMetadata(track: Track) {
 
         Log.d(TAG, "updatePlaybackMetadata with ${track.title}")
@@ -234,6 +223,21 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         titleTextView.text = track.title
     }
 
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        Log.d(TAG, "onPlayerStateChanged with $playbackState")
+        when (playbackState) {
+            PlaybackState.STATE_PLAYING,
+            PlaybackState.STATE_PAUSED -> {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                if (audioPlayer.currentTag != null)
+                    presenter.onTrackPlaybackStarted(audioPlayer.currentTag as Long)
+
+            }
+            else -> {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()

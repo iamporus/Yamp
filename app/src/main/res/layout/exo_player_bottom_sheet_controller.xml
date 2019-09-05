@@ -9,22 +9,21 @@
             android:layout_height="48dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:layout_margin="4dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/playback_track_icon" />
+            android:layout_margin="4dp"
+            android:contentDescription="@string/album_art" />
 
     <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_margin="4dp"
             android:layout_toStartOf="@id/shortPlaybackControls"
             android:layout_toLeftOf="@id/shortPlaybackControls"
             android:layout_toEndOf="@id/shortAlbumArtImageView"
             android:layout_toRightOf="@id/shortAlbumArtImageView"
-            android:text="Drag me up, Baby!"
             android:textColor="?android:textColorPrimary"
-            android:layout_centerVertical="true"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -41,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:contentDescription="@string/play_action"
                 android:padding="20dp" />
 
         <ImageButton
@@ -49,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:contentDescription="@string/pause_action"
                 android:padding="20dp" />
 
     </FrameLayout>

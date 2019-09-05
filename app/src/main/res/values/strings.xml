@@ -3,4 +3,7 @@
     <string name="permissions_rationale">This permission is required to access the media on your phone.</string>
     <string name="okay">Okay</string>
     <string name="error_sdcard">Oops. Something went wrong while fetching tracks from SD Card.</string>
+    <string name="album_art">Album Art</string>
+    <string name="play_action">Play Action</string>
+    <string name="pause_action">Pause Action</string>
 </resources>
