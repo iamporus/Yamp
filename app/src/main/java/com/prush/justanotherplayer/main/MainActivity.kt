@@ -28,10 +28,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
+private const val STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
+private val TAG = MainActivity::class.java.name
+private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
+
 class MainActivity : AppCompatActivity(), IMainActivityView,
     TracksRecyclerAdapter.OnItemClickListener, Player.EventListener, PermissionCallbacks {
-
-    private val STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
 
     private var bAlreadyAskedForStoragePermission: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -41,10 +43,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     private lateinit var adapter: TracksRecyclerAdapter
     private lateinit var permissionUtils: PermissionUtils
 
-    companion object {
-        private val TAG = MainActivity::class.java.name
-        private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
-    }
 
     override fun getViewActivity(): AppCompatActivity {
         return this
