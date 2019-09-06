@@ -23,8 +23,14 @@ class MainActivityPresenter(
 
     fun loadLibraryTracks() {
 
+        mainActivityView.showProgress()
+
         launch {
             try {
+
+                // Even though its ContentLoadingProgressBar,
+                // it does not display when only handful of items are to be fetched
+                delay(700)
 
                 val trackList = trackRepository.getAllTracks(mainActivityView.getContext())
                 withContext(Dispatchers.Main) {
@@ -32,11 +38,15 @@ class MainActivityPresenter(
                         mainActivityView.displayEmptyLibrary()
                     else
                         mainActivityView.displayLibraryTracks(trackList)
+
+                    mainActivityView.hideProgress()
                 }
 
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
+
+                mainActivityView.hideProgress()
                 mainActivityView.displayError()
             }
 

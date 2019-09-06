@@ -18,5 +18,9 @@ interface IMainActivityView {
 
     fun showNowPlayingTrackMetadata(track: Track)
 
+    fun showProgress()
+
+    fun hideProgress()
+
     fun getContext(): Context
 }

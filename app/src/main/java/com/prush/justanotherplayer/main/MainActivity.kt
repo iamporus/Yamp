@@ -91,8 +91,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
 
     private fun setBottomSheet() {
 
-        shortPlayerControlView.setOnClickListener { toggleSheetBehavior() }
-        albumArtImageView.setOnClickListener { toggleSheetBehavior() }
+        nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
 
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -167,6 +166,13 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         tracksListPresenter.setTrackList(trackList, adapter)
     }
 
+    override fun showProgress(){
+        progressBar.show()
+    }
+
+    override fun hideProgress(){
+        progressBar.hide()
+    }
 
     private fun toggleSheetBehavior() {
 
