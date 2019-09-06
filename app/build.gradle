@@ -63,6 +63,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
 
+    //leak canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"
+
     //espresso
     androidTestImplementation "androidx.test:runner:$rootProject.testRunnerVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
