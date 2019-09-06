@@ -87,6 +87,10 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 this
             )
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         bindService(
             Intent(this, AudioPlayerService::class.java),
@@ -240,9 +244,18 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         super.onSaveInstanceState(outState)
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        playerControlView.player = null
+        shortPlayerControlView.player = null
+
+        audioPlayer.removeListener(this)
+        unbindService(connection)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(connection)
         presenter.onCleanup()
     }
 }
