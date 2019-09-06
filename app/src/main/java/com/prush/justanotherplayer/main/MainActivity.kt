@@ -13,7 +13,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -23,6 +22,8 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
+import com.prush.justanotherplayer.trackslibrary.TracksPresenter
 import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,16 +34,15 @@ private const val KEY_STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlrea
 private val TAG = MainActivity::class.java.name
 private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 
-class MainActivity : AppCompatActivity(), IMainActivityView,
-    TracksRecyclerAdapter.OnItemClickListener, Player.EventListener, PermissionCallbacks {
+class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListener,
+    PermissionCallbacks {
 
+    private lateinit var tracksPresenter: TracksPresenter
     private var bAlreadyAskedForStoragePermission: Boolean = false
     private var boundToService: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var presenter: MainActivityPresenter
-    private lateinit var tracksListPresenter: TracksListPresenter
-    private lateinit var adapter: TracksRecyclerAdapter
     private lateinit var permissionUtils: PermissionUtils
 
 
@@ -65,16 +65,27 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 savedInstanceState.getBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, false)
         }
 
+        val tracksLibraryFragment = supportFragmentManager.findFragmentById(R.id.container)
+                as TracksLibraryFragment? ?: TracksLibraryFragment.newInstance()
+
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.container, tracksLibraryFragment)
+            commit()
+        }
+
+        presenter = MainActivityPresenter(
+            this,
+            Injection.provideTrackRepository()
+        )
+
+        tracksPresenter = TracksPresenter(
+            Injection.provideTrackRepository(),
+            tracksLibraryFragment,
+            this
+        )
+
         setBottomSheet()
 
-        tracksListPresenter = TracksListPresenter()
-
-        adapter = TracksRecyclerAdapter(tracksListPresenter, this)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = adapter
-
-        presenter =
-            MainActivityPresenter(this, Injection.provideTrackRepository())
 
         permissionUtils = PermissionUtils()
 
@@ -154,23 +165,11 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         Snackbar.make(rootLayout, R.string.error_sdcard, Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun displayEmptyLibrary() {
-
-        Log.d(TAG, "Oops. You don't have any tracks.")
-        //TODO: display empty view
-    }
-
-    override fun displayLibraryTracks(trackList: MutableList<Track>) {
-
-        Log.d(TAG, "Loaded some tracks")
-        tracksListPresenter.setTrackList(trackList, adapter)
-    }
-
-    override fun showProgress(){
+    override fun showProgress() {
         progressBar.show()
     }
 
-    override fun hideProgress(){
+    override fun hideProgress() {
         progressBar.hide()
     }
 
@@ -181,10 +180,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         } else {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
-    }
-
-    override fun onItemClick(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
-        presenter.startTrackPlayback(tracksList, selectedTrackPosition)
     }
 
     override fun showNowPlayingTrackMetadata(track: Track) {
@@ -214,7 +209,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
             albumArtImageView.alpha = 0f
         }
 
-        presenter.setNowPlayingTrack(track.id)
+        tracksPresenter.setNowPlayingTrack(track.id)
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -244,7 +239,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     }
 
     override fun onPermissionGranted(permission: String) {
-        presenter.loadLibraryTracks()
+        tracksPresenter.loadLibraryTracks()
     }
 
     override fun onRequestPermissionsResult(
@@ -258,7 +253,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 bAlreadyAskedForStoragePermission = false
 
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.loadLibraryTracks()
+                    tracksPresenter.loadLibraryTracks()
                 } else {
                     showPermissionRationale(permissions[0])
                 }

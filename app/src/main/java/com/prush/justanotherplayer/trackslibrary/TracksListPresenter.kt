@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.main
+package com.prush.justanotherplayer.trackslibrary
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
