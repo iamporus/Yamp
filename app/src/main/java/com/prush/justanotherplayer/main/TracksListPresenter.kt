@@ -80,7 +80,7 @@ class TracksListPresenter {
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldTracksList[oldItemPosition] == newTracksList[newItemPosition]
+            return oldTracksList[oldItemPosition].isCurrentlyPlaying == newTracksList[newItemPosition].isCurrentlyPlaying
         }
 
     }
