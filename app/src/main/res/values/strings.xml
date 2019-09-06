@@ -7,4 +7,5 @@
     <string name="play_action">Play Action</string>
     <string name="pause_action">Pause Action</string>
     <string name="now_playing_indicator">Now Playing Indicator</string>
+    <string name="now_playing_track_subtitle">%1$s - %2$s</string>
 </resources>

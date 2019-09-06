@@ -10,6 +10,7 @@ import android.media.session.PlaybackState
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
     TracksRecyclerAdapter.OnItemClickListener, Player.EventListener, PermissionCallbacks {
 
     private var bAlreadyAskedForStoragePermission: Boolean = false
+    private var boundToService: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var presenter: MainActivityPresenter
@@ -63,9 +65,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 savedInstanceState.getBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, false)
         }
 
-        nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
-        bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        setBottomSheet()
 
         tracksListPresenter = TracksListPresenter()
 
@@ -89,10 +89,39 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         }
     }
 
+    private fun setBottomSheet() {
+
+        shortPlayerControlView.setOnClickListener { toggleSheetBehavior() }
+        albumArtImageView.setOnClickListener { toggleSheetBehavior() }
+
+        bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, state: Int) {
+                when (state) {
+                    BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
+                        albumArtImageView.alpha = 0f
+                    }
+                    else -> {
+                        //do nothing
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                shortPlayerControlView.alpha = (1 - slideOffset)
+                albumArtImageView.alpha = slideOffset
+            }
+
+        })
+    }
+
     override fun onStart() {
         super.onStart()
 
-        bindService(
+        boundToService = bindService(
             Intent(this, AudioPlayerService::class.java),
             connection,
             Context.BIND_AUTO_CREATE
@@ -164,14 +193,20 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
                 .into(shortAlbumArtImageView)
             Glide.with(this)
                 .load(track.getAlbumArtUri(this))
+                .placeholder(R.drawable.playback_track_icon)
                 .into(albumArtImageView)
         }
 
         titleTextView.text = track.title
+        nowPlayingTitleTextView.text = track.title
+        nowPlayingSubtitleTextView.text =
+            getString(R.string.now_playing_track_subtitle, track.albumName, track.artistName)
 
         // pop up bottom sheet
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
+        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            albumArtImageView.alpha = 0f
+        }
 
         presenter.setNowPlayingTrack(track.id)
     }
@@ -250,8 +285,11 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         playerControlView.player = null
         shortPlayerControlView.player = null
 
-        audioPlayer.removeListener(this)
-        unbindService(connection)
+        if (boundToService) {
+
+            audioPlayer.removeListener(this)
+            unbindService(connection)
+        }
     }
 
     override fun onDestroy() {
