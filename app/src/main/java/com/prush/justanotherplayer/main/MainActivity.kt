@@ -19,8 +19,8 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.repositories.TrackRepository
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         return this
     }
 
+    override fun getContext(): Context {
+        return applicationContext
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -69,9 +73,8 @@ class MainActivity : AppCompatActivity(), IMainActivityView,
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
 
-        val trackRepository = TrackRepository(applicationContext)
-
-        presenter = MainActivityPresenter(this, trackRepository)
+        presenter =
+            MainActivityPresenter(this, Injection.provideTrackRepository())
 
         permissionUtils = PermissionUtils()
 

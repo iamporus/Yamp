@@ -7,9 +7,9 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.getAllTracksQuery
 import com.prush.justanotherplayer.model.getTrackByIdQuery
 
-class TrackRepository(private val context: Context) : ITrackRepository {
+class TrackRepository : ITrackRepository {
 
-    override suspend fun getTrackById(trackId: Long): Track {
+    override suspend fun getTrackById(context: Context, trackId: Long): Track {
         Log.d("TrackRepository", "Fetching track by id $trackId")
 
         val cursor: Cursor? = getTrackByIdQuery(context, trackId)
@@ -32,7 +32,7 @@ class TrackRepository(private val context: Context) : ITrackRepository {
         }
     }
 
-    override suspend fun getAllTracks(): MutableList<Track> {
+    override suspend fun getAllTracks(context: Context): MutableList<Track> {
         Log.d("TrackRepository", "Fetching tracks from SD Card")
 
         val trackList: MutableList<Track> = mutableListOf()
@@ -60,5 +60,17 @@ class TrackRepository(private val context: Context) : ITrackRepository {
         }
 
         return trackList
+    }
+
+    companion object {
+
+        private var INSTANCE: TrackRepository? = null
+
+        @JvmStatic
+        fun getInstance(): TrackRepository {
+            return INSTANCE ?: TrackRepository().apply {
+                INSTANCE = this
+            }
+        }
     }
 }

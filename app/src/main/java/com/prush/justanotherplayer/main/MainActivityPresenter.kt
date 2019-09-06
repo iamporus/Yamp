@@ -18,7 +18,6 @@ class MainActivityPresenter(
     private val trackRepository: ITrackRepository
 ) : CoroutineScope {
 
-
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
@@ -27,7 +26,7 @@ class MainActivityPresenter(
         launch {
             try {
 
-                val trackList = trackRepository.getAllTracks()
+                val trackList = trackRepository.getAllTracks(mainActivityView.getContext())
                 withContext(Dispatchers.Main) {
                     if (trackList.isEmpty())
                         mainActivityView.displayEmptyLibrary()
@@ -56,10 +55,6 @@ class MainActivityPresenter(
         Util.startForegroundService(mainActivityView.getViewActivity(), intent)
     }
 
-    fun onCleanup() {
-        job.cancel()
-    }
-
     fun fetchTrackMetadata(trackId: Long) {
 
         Log.d(TAG, "fetchTrackMetadata $trackId")
@@ -67,7 +62,7 @@ class MainActivityPresenter(
         // fetch metadata of currently playing track
         launch {
             try {
-                val track = trackRepository.getTrackById(trackId)
+                val track = trackRepository.getTrackById(mainActivityView.getContext(), trackId)
                 withContext(Dispatchers.Main) {
                     mainActivityView.showNowPlayingTrackMetadata(track)
                 }
@@ -85,7 +80,8 @@ class MainActivityPresenter(
 
         launch {
             try {
-                val trackList = trackRepository.getAllTracks()
+                val trackList = trackRepository.getAllTracks(mainActivityView.getContext())
+
                 withContext(Dispatchers.Main) {
                     if (trackList.isNotEmpty()) {
                         val index = trackList.indexOfFirst { it.id == trackId }
@@ -107,5 +103,9 @@ class MainActivityPresenter(
             }
 
         }
+    }
+
+    fun onCleanup() {
+        job.cancel()
     }
 }

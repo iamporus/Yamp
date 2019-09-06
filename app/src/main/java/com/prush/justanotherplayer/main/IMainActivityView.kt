@@ -1,5 +1,6 @@
 package com.prush.justanotherplayer.main
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.model.Track
 
@@ -16,4 +17,6 @@ interface IMainActivityView {
     fun showPermissionRationale(permission: String)
 
     fun showNowPlayingTrackMetadata(track: Track)
+
+    fun getContext(): Context
 }
