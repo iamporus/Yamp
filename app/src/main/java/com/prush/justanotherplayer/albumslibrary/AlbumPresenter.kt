@@ -14,10 +14,6 @@ class AlbumPresenter(
     private val view: AlbumsContract.View
 ) : AlbumsContract.Presenter, CoroutineScope {
 
-    init {
-        view.albumsPresenter = this
-    }
-
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
@@ -27,8 +23,6 @@ class AlbumPresenter(
         launch {
 
             try {
-                delay(700)
-
                 val albumsList = albumRepository.getAllAlbums(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
 

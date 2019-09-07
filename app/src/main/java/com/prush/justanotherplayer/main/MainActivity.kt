@@ -20,7 +20,6 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
 import com.prush.justanotherplayer.utils.PermissionUtils
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
@@ -50,13 +49,7 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
 
         setSupportActionBar(toolbar)
 
-        val tracksLibraryFragment = supportFragmentManager.findFragmentById(R.id.container)
-                as TracksLibraryFragment? ?: TracksLibraryFragment.newInstance()
-
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.container, tracksLibraryFragment)
-            commit()
-        }
+        setupViewPager()
 
         presenter = MainActivityPresenter(
             this,
@@ -64,6 +57,14 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
         )
 
         setBottomSheet()
+    }
+
+    private fun setupViewPager() {
+
+        val pagerAdapter = PagerAdapter(supportFragmentManager)
+        viewPager.adapter = pagerAdapter
+
+        tabLayout.setupWithViewPager(viewPager)
     }
 
     private fun setBottomSheet() {

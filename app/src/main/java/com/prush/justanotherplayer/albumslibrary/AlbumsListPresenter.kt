@@ -33,7 +33,6 @@ class AlbumsListPresenter : ListPresenter<Album> {
 
         val album = itemsList[position]
         rowView.setTrackTitle(album.albumName)
-        rowView.setTrackAlbum(album.artistName)
         rowView.setOnClickListener(position, listener)
 
         Glide.with(context)

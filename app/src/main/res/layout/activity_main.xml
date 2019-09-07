@@ -21,12 +21,19 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-            android:id="@+id/container"
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="?attr/actionBarSize"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+    </androidx.viewpager.widget.ViewPager>
 
     <include
             layout="@layout/now_playing_bottom_sheet" />

@@ -8,18 +8,18 @@
         android:padding="8dp">
 
     <ImageView
-            android:id="@+id/bottomAlbumArtImageView"
+            android:id="@+id/rowArtImageView"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_margin="8dp"
             android:contentDescription="@string/album_art"
-            app:layout_constraintBottom_toBottomOf="@+id/bottomSubtitleTextView"
+            app:layout_constraintBottom_toBottomOf="@+id/rowSubtitleTextView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-            android:id="@+id/bottomTitleTextView"
+            android:id="@+id/rowTitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -34,11 +34,11 @@
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/nowPlayingImageView"
-            app:layout_constraintStart_toEndOf="@+id/bottomAlbumArtImageView"
+            app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-            android:id="@+id/bottomSubtitleTextView"
+            android:id="@+id/rowSubtitleTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -53,8 +53,8 @@
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/nowPlayingImageView"
-            app:layout_constraintStart_toEndOf="@+id/bottomAlbumArtImageView"
-            app:layout_constraintTop_toBottomOf="@+id/bottomTitleTextView" />
+            app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
+            app:layout_constraintTop_toBottomOf="@+id/rowTitleTextView" />
 
     <ImageView
             android:id="@+id/nowPlayingImageView"

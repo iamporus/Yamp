@@ -42,30 +42,28 @@ class RecyclerAdapter<T>(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         TracksRowView {
 
-        private var rowLayout: ConstraintLayout = itemView.findViewById(R.id.rowLayout)
-        private var titleTextView: TextView = itemView.findViewById(R.id.bottomTitleTextView)
-        private var subtitleTextView: TextView = itemView.findViewById(R.id.bottomSubtitleTextView)
-        private var albumArtImageView: ImageView =
-            itemView.findViewById(R.id.bottomAlbumArtImageView)
-        private var nowPlayingImageView: ImageView = itemView.findViewById(R.id.nowPlayingImageView)
-
         override fun setTrackTitle(title: String) {
+            val titleTextView: TextView = itemView.findViewById(R.id.rowTitleTextView)
             titleTextView.text = title
         }
 
         override fun setTrackAlbum(album: String) {
+            val subtitleTextView: TextView = itemView.findViewById(R.id.rowSubtitleTextView)
             subtitleTextView.text = album
         }
 
         override fun setTrackAlbumArt(resource: Bitmap) {
+            val albumArtImageView: ImageView = itemView.findViewById(R.id.rowArtImageView)
             albumArtImageView.setImageBitmap(resource)
         }
 
         override fun markTrackAsPlaying(isNowPlaying: Boolean) {
+            val nowPlayingImageView: ImageView = itemView.findViewById(R.id.nowPlayingImageView)
             nowPlayingImageView.visibility = if (isNowPlaying) View.VISIBLE else View.GONE
         }
 
         override fun setOnClickListener(position: Int, listener: OnItemClickListener) {
+            val rowLayout: ConstraintLayout = itemView.findViewById(R.id.rowLayout)
             rowLayout.setOnClickListener {
                 listener.onItemClick(position)
             }

@@ -30,10 +30,6 @@ class TracksPresenter(
         launch {
             try {
 
-                // Even though its ContentLoadingProgressBar,
-                // it does not display when only handful of items are to be fetched
-                delay(700)
-
                 val trackList = trackRepository.getAllTracks(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
                     if (trackList.isEmpty())

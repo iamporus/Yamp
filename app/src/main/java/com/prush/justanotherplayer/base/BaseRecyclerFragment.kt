@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
@@ -25,8 +26,12 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         super.onViewCreated(view, savedInstanceState)
 
         baseRecyclerView.apply {
-            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            layoutManager = getBaseLayoutManager()
         }
+    }
+
+    open fun getBaseLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     }
 
     override fun showProgress() {

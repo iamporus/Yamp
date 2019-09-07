@@ -10,8 +10,6 @@ interface AlbumsContract {
 
     interface View : BaseView{
 
-        var albumsPresenter: Presenter
-
         fun displayAllAlbums(albumsList: MutableList<Album>)
 
         fun displayEmptyLibrary()
