@@ -86,4 +86,13 @@ open class Track() : Serializable {
 
         return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
     }
+
+    fun getAlbum(): Album {
+        return Album.Builder
+            .albumId(albumId)
+            .albumName(albumName)
+            .artistId(artistId)
+            .artistName(artistName)
+            .build()
+    }
 }

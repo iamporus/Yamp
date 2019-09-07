@@ -1,5 +1,7 @@
 package com.prush.justanotherplayer.di
 
+import com.prush.justanotherplayer.repositories.AlbumRepository
+import com.prush.justanotherplayer.repositories.IAlbumRepository
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import com.prush.justanotherplayer.repositories.TrackRepository
 
@@ -11,5 +13,9 @@ object Injection {
 
     fun provideTrackRepository(): ITrackRepository {
         return TrackRepository.getInstance()
+    }
+
+    fun provideAlbumRepository(): IAlbumRepository {
+        return AlbumRepository.getInstance(provideTrackRepository())
     }
 }
