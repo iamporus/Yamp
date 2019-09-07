@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 private val TAG = MainActivity::class.java.name
 
-class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListener {
+class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListener {
 
     private lateinit var tracksPresenter: TracksPresenter
     private var boundToService: Boolean = false
@@ -62,8 +62,7 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
 
         tracksPresenter = TracksPresenter(
             Injection.provideTrackRepository(),
-            tracksLibraryFragment,
-            this
+            tracksLibraryFragment
         )
 
         presenter = MainActivityPresenter(
@@ -137,14 +136,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
     override fun displayError() {
         Log.d(TAG, "Oops. Something wrong with the sdcard.")
         Snackbar.make(rootLayout, R.string.error_sdcard, Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun showProgress() {
-        progressBar.show()
-    }
-
-    override fun hideProgress() {
-        progressBar.hide()
     }
 
     private fun toggleSheetBehavior() {

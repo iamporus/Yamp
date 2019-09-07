@@ -2,11 +2,12 @@ package com.prush.justanotherplayer.trackslibrary
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
+import com.prush.justanotherplayer.base.BaseView
 import com.prush.justanotherplayer.model.Track
 
 interface TracksContract {
 
-    interface View {
+    interface View : BaseView{
 
         var tracksPresenter: Presenter
 

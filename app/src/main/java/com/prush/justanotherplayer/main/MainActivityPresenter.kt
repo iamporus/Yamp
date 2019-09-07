@@ -8,34 +8,34 @@ import kotlin.coroutines.CoroutineContext
 private val TAG = MainActivityPresenter::class.java.name
 
 class MainActivityPresenter(
-    private val mainActivityView: IMainActivityView,
+    private val view: MainContract.View,
     private val trackRepository: ITrackRepository
-) : CoroutineScope {
+) : MainContract.Presenter, CoroutineScope {
 
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
 
-    fun fetchTrackMetadata(trackId: Long) {
+    override fun fetchTrackMetadata(trackId: Long) {
 
         Log.d(TAG, "fetchTrackMetadata $trackId")
 
         // fetch metadata of currently playing track
         launch {
             try {
-                val track = trackRepository.getTrackById(mainActivityView.getContext(), trackId)
+                val track = trackRepository.getTrackById(view.getContext(), trackId)
                 withContext(Dispatchers.Main) {
-                    mainActivityView.showNowPlayingTrackMetadata(track)
+                    view.showNowPlayingTrackMetadata(track)
                 }
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
-                mainActivityView.displayError()
+                view.displayError()
             }
         }
     }
 
-    fun onCleanup() {
+    override fun onCleanup() {
         job.cancel()
     }
 }

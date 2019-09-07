@@ -1,7 +1,6 @@
 package com.prush.justanotherplayer.albumslibrary
 
 import android.util.Log
-import com.prush.justanotherplayer.main.IMainActivityView
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.IAlbumRepository
 import kotlinx.coroutines.*
@@ -12,12 +11,11 @@ private val TAG = AlbumPresenter::class.java.name
 
 class AlbumPresenter(
     private val albumRepository: IAlbumRepository,
-    private val albumsView: AlbumsContract.View,
-    private val mainActivityView: IMainActivityView
+    private val view: AlbumsContract.View
 ) : AlbumsContract.Presenter, CoroutineScope {
 
     init {
-        albumsView.albumsPresenter = this
+        view.albumsPresenter = this
     }
 
     private val job = Job()
@@ -25,28 +23,30 @@ class AlbumPresenter(
 
     override fun loadLibraryAlbums() {
 
-        mainActivityView.showProgress()
+        view.showProgress()
         launch {
 
             try {
                 delay(700)
 
-                val albumsList = albumRepository.getAllAlbums(albumsView.getApplicationContext())
+                val albumsList = albumRepository.getAllAlbums(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
 
                     if (albumsList.isEmpty()) {
-                        albumsView.displayEmptyLibrary()
+                        view.displayEmptyLibrary()
                     } else {
-                        albumsView.displayAllAlbums(albumsList)
+                        view.displayAllAlbums(albumsList)
                     }
-                    mainActivityView.hideProgress()
+                    view.hideProgress()
                 }
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
 
-                mainActivityView.hideProgress()
-                mainActivityView.displayError()
+                withContext(Dispatchers.Main){
+                    view.hideProgress()
+                    view.displayError()
+                }
             }
 
         }

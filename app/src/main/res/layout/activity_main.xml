@@ -31,12 +31,4 @@
     <include
             layout="@layout/now_playing_bottom_sheet" />
 
-    <androidx.core.widget.ContentLoadingProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

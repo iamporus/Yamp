@@ -3,7 +3,6 @@ package com.prush.justanotherplayer.trackslibrary
 import android.content.Intent
 import android.util.Log
 import com.google.android.exoplayer2.util.Util
-import com.prush.justanotherplayer.main.IMainActivityView
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import com.prush.justanotherplayer.services.AudioPlayerService
@@ -16,8 +15,7 @@ private val TAG = TracksPresenter::class.java.name
 
 class TracksPresenter(
     private val trackRepository: ITrackRepository,
-    private val view: TracksContract.View,
-    private val mainActivityView: IMainActivityView
+    private val view: TracksContract.View
 ) : TracksContract.Presenter, CoroutineScope {
 
     init {
@@ -31,7 +29,7 @@ class TracksPresenter(
 
     override fun loadLibraryTracks() {
 
-        mainActivityView.showProgress()
+        view.showProgress()
 
         launch {
             try {
@@ -49,15 +47,17 @@ class TracksPresenter(
                         this@TracksPresenter.tracksList = trackList
                     }
 
-                    mainActivityView.hideProgress()
+                    view.hideProgress()
                 }
 
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
 
-                mainActivityView.hideProgress()
-                mainActivityView.displayError()
+                withContext(Dispatchers.Main){
+                    view.hideProgress()
+                    view.displayError()
+                }
             }
 
         }
@@ -99,7 +99,7 @@ class TracksPresenter(
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
-                mainActivityView.displayError()
+                view.displayError()
             }
 
         }
