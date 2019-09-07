@@ -9,6 +9,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.util.Log
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.utils.getAlbumArtUri
 
 
 fun getMediaDescriptionForLockScreen(
@@ -27,7 +28,7 @@ fun getMediaDescriptionForLockScreen(
 
     try {
         val pfd = context.contentResolver
-            .openFileDescriptor(track.getAlbumArtUri(context), "r")
+            .openFileDescriptor(getAlbumArtUri(context, track.albumId), "r")
 
         if (pfd != null) {
             val fd = pfd.fileDescriptor

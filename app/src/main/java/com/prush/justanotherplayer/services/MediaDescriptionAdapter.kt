@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.main.MainActivity
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.utils.getAlbumArtUri
 
 class MediaDescriptionAdapter(private val context: Context, private val tracksList: List<Track>) :
     PlayerNotificationManager.MediaDescriptionAdapter {
@@ -58,7 +59,7 @@ class MediaDescriptionAdapter(private val context: Context, private val tracksLi
             Glide.with(context)
                 .asBitmap()
                 .load(
-                    tracksList[player.currentWindowIndex].getAlbumArtUri(context)
+                    getAlbumArtUri(context, tracksList[player.currentWindowIndex].albumId)
                 )
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {

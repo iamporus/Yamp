@@ -23,7 +23,7 @@ interface TracksContract {
 
         fun loadLibraryTracks()
 
-        fun startTrackPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int)
+        fun startTrackPlayback(selectedTrackPosition: Int)
 
         fun setNowPlayingTrack(trackId: Long)
 

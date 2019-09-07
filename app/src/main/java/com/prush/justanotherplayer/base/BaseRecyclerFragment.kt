@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.main
+package com.prush.justanotherplayer.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -7,10 +7,12 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.getAllTracksQuery
 import com.prush.justanotherplayer.model.getTrackByIdQuery
 
+private const val TAG = "TrackRepository"
+
 class TrackRepository : ITrackRepository {
 
     override suspend fun getTrackById(context: Context, trackId: Long): Track {
-        Log.d("TrackRepository", "Fetching track by id $trackId")
+        Log.d(TAG, "Fetching track by id $trackId")
 
         val cursor: Cursor? = getTrackByIdQuery(context, trackId)
         when {
@@ -18,7 +20,7 @@ class TrackRepository : ITrackRepository {
                 throw RuntimeException("Problem with Media Content Provider")
             }
             !cursor.moveToNext() -> {
-                Log.d("TrackRepository", "No track with id $trackId found on SD Card")
+                Log.d(TAG, "No track with id $trackId found on SD Card")
                 cursor.close()
                 return Track()
             }
@@ -33,7 +35,7 @@ class TrackRepository : ITrackRepository {
     }
 
     override suspend fun getAllTracks(context: Context): MutableList<Track> {
-        Log.d("TrackRepository", "Fetching tracks from SD Card")
+        Log.d(TAG, "Fetching tracks from SD Card")
 
         val trackList: MutableList<Track> = mutableListOf()
 
@@ -44,7 +46,7 @@ class TrackRepository : ITrackRepository {
                 throw RuntimeException("Problem with Media Content Provider")
             }
             !cursor.moveToNext() -> {
-                Log.d("TrackRepository", "No tracks on SD Card")
+                Log.d(TAG, "No tracks on SD Card")
                 cursor.close()
                 return trackList
             }

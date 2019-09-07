@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.trackslibrary
+package com.prush.justanotherplayer.base
 
 import android.graphics.Bitmap
 import android.view.LayoutInflater
@@ -6,36 +6,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.trackslibrary.TracksRowView
 
-class TracksRecyclerAdapter(
-    private val tracksListPresenter: TracksListPresenter,
+class RecyclerAdapter<T>(
+    private val listPresenter: ListPresenter<T>,
     private val itemClickListener: OnItemClickListener
 ) :
-    RecyclerView.Adapter<TracksRecyclerAdapter.TracksViewHolder>() {
+    RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
-        return TracksViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.track_list_item_row,
+                listPresenter.rowLayoutId,
                 parent, false
             )
         )
     }
 
     override fun getItemCount(): Int {
-        return tracksListPresenter.getTrackListCount()
+        return listPresenter.getItemsCount()
     }
 
-    override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
-        tracksListPresenter.onBindTrackRowViewAtPosition(holder, position, itemClickListener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        listPresenter.onBindTrackRowViewAtPosition(
+            holder.itemView.context,
+            holder,
+            position,
+            itemClickListener
+        )
     }
 
-    class TracksViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         TracksRowView {
 
+        private var rowLayout: ConstraintLayout = itemView.findViewById(R.id.rowLayout)
         private var titleTextView: TextView = itemView.findViewById(R.id.bottomTitleTextView)
         private var subtitleTextView: TextView = itemView.findViewById(R.id.bottomSubtitleTextView)
         private var albumArtImageView: ImageView =
@@ -58,11 +65,15 @@ class TracksRecyclerAdapter(
             nowPlayingImageView.visibility = if (isNowPlaying) View.VISIBLE else View.GONE
         }
 
+        override fun setOnClickListener(position: Int, listener: OnItemClickListener) {
+            rowLayout.setOnClickListener {
+                listener.onItemClick(position)
+            }
+        }
     }
 
     interface OnItemClickListener {
         fun onItemClick(
-            tracksList: MutableList<Track>,
             selectedTrackPosition: Int
         )
     }

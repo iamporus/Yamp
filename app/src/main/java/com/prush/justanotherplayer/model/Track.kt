@@ -7,8 +7,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import com.prush.justanotherplayer.R
-import java.io.File
-import java.io.FileNotFoundException
 import java.io.Serializable
 
 //static fields
@@ -87,40 +85,5 @@ open class Track() : Serializable {
     fun getPlaybackUri(): Uri {
 
         return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-    }
-
-    fun getAlbumArtUri(context: Context): Uri {
-
-        val contentUri =
-            ContentUris.withAppendedId(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, albumId)
-
-        val cursor = context.contentResolver
-            .query(
-                contentUri,
-                arrayOf(MediaStore.Audio.Albums.ALBUM_ART),
-                null,
-                null,
-                null
-            )
-
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    val file =
-                        File(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)))
-                    if (file.exists()) {
-                        try {
-                            return Uri.fromFile(file)
-                        } catch (ignored: FileNotFoundException) {
-                        }
-                    }
-                }
-            } catch (ignored: NullPointerException) {
-            } finally {
-                cursor.close()
-            }
-        }
-
-        return Uri.EMPTY
     }
 }

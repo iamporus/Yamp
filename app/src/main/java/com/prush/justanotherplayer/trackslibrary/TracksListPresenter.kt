@@ -1,62 +1,70 @@
 package com.prush.justanotherplayer.trackslibrary
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.base.ListPresenter
+import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.utils.getAlbumArtUri
 
-class TracksListPresenter {
+class TracksListPresenter : ListPresenter<Track> {
 
-    private var tracksList: MutableList<Track> = mutableListOf()
+    override var rowLayoutId: Int = R.layout.track_list_item_row
 
-    fun getTrackListCount(): Int {
-        return tracksList.size
+    override var itemsList: MutableList<Track> = mutableListOf()
+
+    override fun getItemsCount(): Int {
+        return itemsList.size
     }
 
-    fun onBindTrackRowViewAtPosition(
-        holder: TracksRecyclerAdapter.TracksViewHolder,
+    override fun onBindTrackRowViewAtPosition(
+        context: Context,
+        rowView: TracksRowView,
         position: Int,
-        listener: TracksRecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemClickListener
     ) {
-        val track = tracksList[position]
-        holder.setTrackTitle(track.title)
-        holder.setTrackAlbum(track.artistName + " - " + track.albumName)
-        holder.markTrackAsPlaying(track.isCurrentlyPlaying)
+        val track = itemsList[position]
+        rowView.setTrackTitle(track.title)
+        rowView.setTrackAlbum(track.artistName + " - " + track.albumName)
+        rowView.markTrackAsPlaying(track.isCurrentlyPlaying)
+        rowView.setOnClickListener(position, listener)
 
-        Glide.with(holder.itemView)
+        Glide.with(context)
             .asBitmap()
-            .load(track.getAlbumArtUri(holder.itemView.context))
+            .load(getAlbumArtUri(context, track.albumId))
             .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {
 
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    holder.setTrackAlbumArt(resource)
+                    rowView.setTrackAlbumArt(resource)
                 }
 
             })
 
-        holder.itemView.setOnClickListener {
-            listener.onItemClick(tracksList, position)
-        }
     }
 
-    fun setTrackList(tracksList: MutableList<Track>, adapter: TracksRecyclerAdapter) {
+    override fun setItemsList(
+        itemsList: MutableList<Track>,
+        adapter: RecyclerAdapter<Track>
+    ) {
+        if (this.itemsList.isNotEmpty()) {
 
-        if (this.tracksList.isNotEmpty()) {
-
-            val trackDiffCallback = TrackDiffCallback(this.tracksList, tracksList)
+            val trackDiffCallback = TrackDiffCallback(this.itemsList, itemsList)
             val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
 
-            this.tracksList = tracksList
+            this.itemsList = itemsList
             diffResult.dispatchUpdatesTo(adapter)
         } else {
 
-            this.tracksList.addAll(tracksList)
+            this.itemsList.addAll(itemsList)
             adapter.notifyDataSetChanged()
         }
     }

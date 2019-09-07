@@ -27,6 +27,8 @@ class TracksPresenter(
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
+    private var tracksList = mutableListOf<Track>()
+
     override fun loadLibraryTracks() {
 
         mainActivityView.showProgress()
@@ -42,8 +44,10 @@ class TracksPresenter(
                 withContext(Dispatchers.Main) {
                     if (trackList.isEmpty())
                         view.displayEmptyLibrary()
-                    else
+                    else {
                         view.displayLibraryTracks(trackList)
+                        this@TracksPresenter.tracksList = trackList
+                    }
 
                     mainActivityView.hideProgress()
                 }
@@ -60,7 +64,7 @@ class TracksPresenter(
 
     }
 
-    override fun startTrackPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
+    override fun startTrackPlayback(selectedTrackPosition: Int) {
 
         Log.d(TAG, "Track selected for playback $tracksList")
 
@@ -103,5 +107,6 @@ class TracksPresenter(
 
     override fun onCleanup() {
         job.cancel()
+        tracksList.clear()
     }
 }

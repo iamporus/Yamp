@@ -26,6 +26,7 @@ import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
 import com.prush.justanotherplayer.trackslibrary.TracksPresenter
 import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
+import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
@@ -190,10 +191,10 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
             albumArtImageView.setImageBitmap(track.albumArtBitmap)
         } else {
             Glide.with(this)
-                .load(track.getAlbumArtUri(this))
+                .load(getAlbumArtUri(this, track.albumId))
                 .into(shortAlbumArtImageView)
             Glide.with(this)
-                .load(track.getAlbumArtUri(this))
+                .load(getAlbumArtUri(this, track.albumId))
                 .placeholder(R.drawable.playback_track_icon)
                 .into(albumArtImageView)
         }
