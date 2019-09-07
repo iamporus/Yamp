@@ -18,10 +18,6 @@ class TracksPresenter(
     private val view: TracksContract.View
 ) : TracksContract.Presenter, CoroutineScope {
 
-    init {
-        view.tracksPresenter = this
-    }
-
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
@@ -54,7 +50,7 @@ class TracksPresenter(
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
 
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     view.hideProgress()
                     view.displayError()
                 }

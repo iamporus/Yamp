@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
+import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.main.MainActivity
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.PermissionCallbacks
@@ -23,7 +24,7 @@ const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View, PermissionCallbacks,
     RecyclerAdapter.OnItemClickListener {
 
-    override lateinit var tracksPresenter: TracksContract.Presenter
+    private lateinit var tracksPresenter: TracksContract.Presenter
     private lateinit var listPresenter: ListPresenter<Track>
     private lateinit var permissionUtils: PermissionUtils
     private var bAlreadyAskedForStoragePermission: Boolean = false
@@ -44,7 +45,10 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View, Permi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //TODO: Inject these guys
+        tracksPresenter = TracksPresenter(Injection.provideTrackRepository(), this)
         listPresenter = TracksListPresenter()
+
         adapter = RecyclerAdapter(listPresenter, this)
         baseRecyclerView.adapter = adapter
     }

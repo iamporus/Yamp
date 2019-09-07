@@ -21,7 +21,6 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
-import com.prush.justanotherplayer.trackslibrary.TracksPresenter
 import com.prush.justanotherplayer.utils.PermissionUtils
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +31,6 @@ private val TAG = MainActivity::class.java.name
 
 class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListener {
 
-    private lateinit var tracksPresenter: TracksPresenter
     private var boundToService: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
@@ -59,11 +57,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
             replace(R.id.container, tracksLibraryFragment)
             commit()
         }
-
-        tracksPresenter = TracksPresenter(
-            Injection.provideTrackRepository(),
-            tracksLibraryFragment
-        )
 
         presenter = MainActivityPresenter(
             this,
@@ -174,7 +167,8 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
             albumArtImageView.alpha = 0f
         }
 
-        tracksPresenter.setNowPlayingTrack(track.id)
+        //TODO: figure out how to propagate this to tracksPresenter
+//        tracksPresenter.setNowPlayingTrack(track.id)
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

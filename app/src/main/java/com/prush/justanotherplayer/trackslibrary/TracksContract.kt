@@ -9,8 +9,6 @@ interface TracksContract {
 
     interface View : BaseView{
 
-        var tracksPresenter: Presenter
-
         fun displayLibraryTracks(trackList: MutableList<Track>)
 
         fun displayEmptyLibrary()
