@@ -1,11 +1,9 @@
 package com.prush.justanotherplayer.main
 
-import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.os.IBinder
@@ -24,28 +22,21 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
 import com.prush.justanotherplayer.trackslibrary.TracksPresenter
-import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
-private const val KEY_STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
 private val TAG = MainActivity::class.java.name
-private const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 
-class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListener,
-    PermissionCallbacks {
+class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListener {
 
     private lateinit var tracksPresenter: TracksPresenter
-    private var bAlreadyAskedForStoragePermission: Boolean = false
     private var boundToService: Boolean = false
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var presenter: MainActivityPresenter
-    private lateinit var permissionUtils: PermissionUtils
-
 
     override fun getViewActivity(): AppCompatActivity {
         return this
@@ -61,11 +52,6 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
 
         setSupportActionBar(toolbar)
 
-        if (savedInstanceState != null) {
-            bAlreadyAskedForStoragePermission =
-                savedInstanceState.getBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, false)
-        }
-
         val tracksLibraryFragment = supportFragmentManager.findFragmentById(R.id.container)
                 as TracksLibraryFragment? ?: TracksLibraryFragment.newInstance()
 
@@ -74,31 +60,18 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
             commit()
         }
 
-        presenter = MainActivityPresenter(
-            this,
-            Injection.provideTrackRepository()
-        )
-
         tracksPresenter = TracksPresenter(
             Injection.provideTrackRepository(),
             tracksLibraryFragment,
             this
         )
 
+        presenter = MainActivityPresenter(
+            this,
+            Injection.provideTrackRepository()
+        )
+
         setBottomSheet()
-
-
-        permissionUtils = PermissionUtils()
-
-        if (!bAlreadyAskedForStoragePermission) {
-
-            bAlreadyAskedForStoragePermission = permissionUtils.requestPermissionsWithRationale(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                READ_EXTERNAL_STORAGE_REQ_CODE,
-                this
-            )
-        }
     }
 
     private fun setBottomSheet() {
@@ -235,50 +208,15 @@ class MainActivity : AppCompatActivity(), IMainActivityView, Player.EventListene
             presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
     }
 
-    override fun onShowPermissionRationale(permission: String) {
-        showPermissionRationale(permission)
-    }
-
-    override fun onPermissionGranted(permission: String) {
-        tracksPresenter.loadLibraryTracks()
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            READ_EXTERNAL_STORAGE_REQ_CODE -> {
-
-                bAlreadyAskedForStoragePermission = false
-
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    tracksPresenter.loadLibraryTracks()
-                } else {
-                    showPermissionRationale(permissions[0])
-                }
-            }
-        }
-    }
-
-    override fun showPermissionRationale(permission: String) {
+    override fun showPermissionRationale(permission: String, requestCode: Int) {
         Snackbar.make(
             rootLayout,
             R.string.permissions_rationale, Snackbar.LENGTH_INDEFINITE
         )
             .setAction(R.string.okay) {
-                permissionUtils.requestPermission(this, permission, READ_EXTERNAL_STORAGE_REQ_CODE)
+                PermissionUtils().requestPermission(this, permission, requestCode)
             }
             .show()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean(
-            KEY_STORAGE_PERMISSION_ALREADY_ASKED,
-            bAlreadyAskedForStoragePermission
-        )
-        super.onSaveInstanceState(outState)
     }
 
     override fun onStop() {

@@ -10,9 +10,9 @@ interface IMainActivityView {
 
     fun getViewActivity(): AppCompatActivity
 
-    fun showPermissionRationale(permission: String)
-
     fun showNowPlayingTrackMetadata(track: Track)
+
+    fun showPermissionRationale(permission: String, requestCode: Int)
 
     fun showProgress()
 
