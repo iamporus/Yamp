@@ -1,25 +1,18 @@
 package com.prush.justanotherplayer.ui.main
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.media.session.PlaybackState
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.base.BaseNowPlayingFooterActivity
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.utils.PermissionUtils
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,11 +21,8 @@ import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 private val TAG = MainActivity::class.java.name
 
-class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListener {
+class MainActivity : BaseNowPlayingFooterActivity(), MainContract.View, Player.EventListener {
 
-    private var boundToService: Boolean = false
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var presenter: MainActivityPresenter
 
     override fun getViewActivity(): AppCompatActivity {
@@ -43,11 +33,12 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
         return applicationContext
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_main
+    }
 
-        setSupportActionBar(toolbar)
+    override fun onViewCreated(savedInstanceState: Bundle?) {
+        super.onViewCreated(savedInstanceState)
 
         setupViewPager()
 
@@ -55,8 +46,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
             this,
             Injection.provideTrackRepository()
         )
-
-        setBottomSheet()
     }
 
     private fun setupViewPager() {
@@ -68,78 +57,15 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
         tabLayout.setupWithViewPager(viewPager)
     }
 
-    private fun setBottomSheet() {
+    override fun onConnectedToService() {
 
-        nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
-
-        bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-        bottomSheetBehavior.setBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, state: Int) {
-                when (state) {
-                    BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
-                        albumArtImageView.alpha = 0f
-                    }
-                    else -> {
-                        //do nothing
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                shortPlayerControlView.alpha = (1 - slideOffset)
-                albumArtImageView.alpha = slideOffset
-            }
-
-        })
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        boundToService = bindService(
-            Intent(this, AudioPlayerService::class.java),
-            connection,
-            Context.BIND_AUTO_CREATE
-        )
-    }
-
-    private val connection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(TAG, "onServiceDisconnected")
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            Log.d(TAG, "onServiceConnected")
-            if (service is AudioPlayerService.AudioServiceBinder) {
-                audioPlayer = service.getPlayerInstance()
-
-                playerControlView.player = audioPlayer
-                shortPlayerControlView.player = audioPlayer
-
-                audioPlayer.addListener(this@MainActivity)
-
-                if (audioPlayer.currentTag != null)
-                    presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
-            }
-        }
-
+        if (audioPlayer.currentTag != null)
+            presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
     }
 
     override fun displayError() {
         Log.d(TAG, "Oops. Something wrong with the sdcard.")
         Snackbar.make(rootLayout, R.string.error_sdcard, Snackbar.LENGTH_SHORT).show()
-    }
-
-    private fun toggleSheetBehavior() {
-
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        } else {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
     }
 
     override fun showNowPlayingTrackMetadata(track: Track) {
@@ -211,19 +137,6 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
             toggleSheetBehavior()
         } else {
             super.onBackPressed()
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        playerControlView.player = null
-        shortPlayerControlView.player = null
-
-        if (boundToService) {
-
-            audioPlayer.removeListener(this)
-            unbindService(connection)
         }
     }
 
