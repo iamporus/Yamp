@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
@@ -71,6 +72,15 @@ abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.
     open fun getLayoutResourceId(): Int {
         return R.layout.base_now_playing_footer_layout
     }
+
+    override fun getViewActivity(): AppCompatActivity {
+        return this
+    }
+
+    override fun getContext(): Context {
+        return applicationContext
+    }
+
 
     override fun onStart() {
         super.onStart()
@@ -136,6 +146,7 @@ abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.
         })
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     protected fun toggleSheetBehavior() {
 
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
@@ -197,6 +208,10 @@ abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.
     override fun onPositionDiscontinuity(reason: Int) {
         if (audioPlayer.currentTag != null)
             presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+    }
+
+    override fun displayError(error: String) {
+        Snackbar.make(rootLayout, error, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onBackPressed() {

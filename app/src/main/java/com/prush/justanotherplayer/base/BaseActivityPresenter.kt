@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.base
 
 import android.util.Log
+import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -30,7 +31,7 @@ class BaseActivityPresenter(
             } catch (e: RuntimeException) {
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
-                view.displayError()
+                view.displayError(view.getContext().getString(R.string.error_sdcard))
             }
         }
     }

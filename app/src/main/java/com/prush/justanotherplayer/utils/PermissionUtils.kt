@@ -6,9 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.prush.justanotherplayer.ui.trackslibrary.READ_EXTERNAL_STORAGE_REQ_CODE
+import com.prush.justanotherplayer.ui.main.READ_EXTERNAL_STORAGE_REQ_CODE
 
-private val TAG = "PermissionUtils"
+private const val TAG = "PermissionUtils"
 
 interface PermissionCallbacks {
 
@@ -60,6 +60,7 @@ class PermissionUtils {
         ActivityCompat.requestPermissions(activity, arrayOf(permission), requestCode)
     }
 
+    @Suppress("MemberVisibilityCanBePrivate", "unused")
     fun requestPermissionsWithRationale(
         fragment: Fragment,
         permission: String,
@@ -100,6 +101,7 @@ class PermissionUtils {
         }
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun requestPermission(fragment: Fragment, permission: String, requestCode: Int) {
 
         fragment.requestPermissions(arrayOf(permission), requestCode)

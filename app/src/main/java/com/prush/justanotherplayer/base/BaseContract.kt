@@ -8,13 +8,11 @@ interface BaseContract {
 
     interface View {
 
-        fun displayError()
+        fun displayError(error: String)
 
         fun getViewActivity(): AppCompatActivity
 
         fun showNowPlayingTrackMetadata(track: Track)
-
-        fun showPermissionRationale(permission: String, requestCode: Int)
 
         fun getContext(): Context
     }
