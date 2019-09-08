@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.albumslibrary
+package com.prush.justanotherplayer.artistslibrary
 
 import android.content.Context
 import android.os.Bundle
@@ -10,17 +10,17 @@ import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
-import com.prush.justanotherplayer.model.Album
+import com.prush.justanotherplayer.model.Artist
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
-class AlbumsLibraryFragment : BaseRecyclerFragment(), AlbumsContract.View,
+class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
     RecyclerAdapter.OnItemClickListener {
 
-    private lateinit var albumsPresenter: AlbumsContract.Presenter
+    private lateinit var artistPresenter: ArtistsContract.Presenter
 
-    private lateinit var listPresenter: ListPresenter<Album>
+    private lateinit var listPresenter: ListPresenter<Artist>
 
-    private lateinit var adapter: RecyclerAdapter<Album>
+    private lateinit var adapter: RecyclerAdapter<Artist>
 
     override fun getBaseLayoutManager(): RecyclerView.LayoutManager {
         return GridLayoutManager(activity, 2)
@@ -29,19 +29,19 @@ class AlbumsLibraryFragment : BaseRecyclerFragment(), AlbumsContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listPresenter = AlbumsListPresenter()
-        albumsPresenter = AlbumPresenter(Injection.provideAlbumRepository(), this)
+        listPresenter = ArtistsListPresenter()
+        artistPresenter = ArtistPresenter(Injection.provideArtistRepository(), this)
         adapter = RecyclerAdapter(listPresenter, this)
         baseRecyclerView.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
-        albumsPresenter.loadLibraryAlbums()
+        artistPresenter.loadLibraryArtists()
     }
 
-    override fun displayAllAlbums(albumsList: MutableList<Album>) {
-        listPresenter.setItemsList(albumsList, adapter)
+    override fun displayAllArtists(artistList: MutableList<Artist>) {
+        listPresenter.setItemsList(artistList, adapter)
     }
 
     override fun displayEmptyLibrary() {
@@ -62,10 +62,10 @@ class AlbumsLibraryFragment : BaseRecyclerFragment(), AlbumsContract.View,
 
     override fun onDestroy() {
         super.onDestroy()
-        albumsPresenter.onCleanup()
+        artistPresenter.onCleanup()
     }
 
     companion object {
-        fun newInstance() = AlbumsLibraryFragment()
+        fun newInstance() = ArtistsLibraryFragment()
     }
 }

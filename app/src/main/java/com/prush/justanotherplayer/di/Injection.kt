@@ -1,9 +1,6 @@
 package com.prush.justanotherplayer.di
 
-import com.prush.justanotherplayer.repositories.AlbumRepository
-import com.prush.justanotherplayer.repositories.IAlbumRepository
-import com.prush.justanotherplayer.repositories.ITrackRepository
-import com.prush.justanotherplayer.repositories.TrackRepository
+import com.prush.justanotherplayer.repositories.*
 
 /**
  * Enables Inversion of Control by depending on abstraction rather than concrete implementation.
@@ -17,5 +14,9 @@ object Injection {
 
     fun provideAlbumRepository(): IAlbumRepository {
         return AlbumRepository.getInstance(provideTrackRepository())
+    }
+
+    fun provideArtistRepository(): IArtistRepository {
+        return ArtistRepository.getInstance(provideAlbumRepository())
     }
 }

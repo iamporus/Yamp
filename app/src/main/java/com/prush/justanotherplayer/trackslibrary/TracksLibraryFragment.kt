@@ -109,6 +109,11 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View, Permi
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        tracksPresenter.onCleanup()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(
             KEY_STORAGE_PERMISSION_ALREADY_ASKED,

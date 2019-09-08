@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
 
         val pagerAdapter = PagerAdapter(supportFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.offscreenPageLimit = 2
 
         tabLayout.setupWithViewPager(viewPager)
     }

@@ -13,6 +13,7 @@ data class Album(
     var defaultAlbumArtRes: Int = R.drawable.playback_track_icon
 
     var tracksList: MutableList<Track> = mutableListOf()
+    var artistsList: MutableList<Artist> = mutableListOf()
 
     object Builder {
 
@@ -42,8 +43,16 @@ data class Album(
         }
 
         fun build(): Album {
-            return Album(albumId, albumName, artistId, artistName)
+            val album = Album(albumId, albumName, artistId, artistName)
+            album.artistsList.add(Artist(artistId, artistName))
+            return album
         }
+    }
+
+    fun getArtist(): Artist {
+        val artist = Artist(artistId, artistName)
+        artist.albumsList.add(this)
+        return artist
     }
 
     override fun equals(other: Any?): Boolean {
@@ -53,4 +62,5 @@ data class Album(
     override fun hashCode(): Int {
         return albumId.hashCode()
     }
+
 }
