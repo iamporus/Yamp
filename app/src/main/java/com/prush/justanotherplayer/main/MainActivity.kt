@@ -206,6 +206,14 @@ class MainActivity : AppCompatActivity(), MainContract.View, Player.EventListene
             .show()
     }
 
+    override fun onBackPressed() {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            toggleSheetBehavior()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onStop() {
         super.onStop()
 
