@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.prush.justanotherplayer.albumslibrary.AlbumsLibraryFragment
 import com.prush.justanotherplayer.artistslibrary.ArtistsLibraryFragment
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
+import com.prush.justanotherplayer.genreslibrary.GenresLibraryFragment
 import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
 
 class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
@@ -22,12 +23,15 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
             2 -> {
                 return ArtistsLibraryFragment.newInstance()
             }
+            3 -> {
+                return GenresLibraryFragment.newInstance()
+            }
         }
         return BaseRecyclerFragment()
     }
 
     override fun getCount(): Int {
-        return 3
+        return 4
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -40,6 +44,9 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
             }
             2 -> {
                 return "ARTISTS"
+            }
+            3 -> {
+                return "GENRES"
             }
         }
         return super.getPageTitle(position)

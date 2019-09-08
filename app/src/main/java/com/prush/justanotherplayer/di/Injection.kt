@@ -19,4 +19,8 @@ object Injection {
     fun provideArtistRepository(): IArtistRepository {
         return ArtistRepository.getInstance(provideAlbumRepository())
     }
+
+    fun provideGenreRepository(): IGenreRepository {
+        return GenreRepository.getInstance()
+    }
 }
