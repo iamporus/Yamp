@@ -1,16 +1,16 @@
-package com.prush.justanotherplayer.ui.main
+package com.prush.justanotherplayer.base
 
 import android.util.Log
 import com.prush.justanotherplayer.repositories.ITrackRepository
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-private val TAG = MainActivityPresenter::class.java.name
+private val TAG = BaseActivityPresenter::class.java.name
 
-class MainActivityPresenter(
-    private val view: MainContract.View,
+class BaseActivityPresenter(
+    private val view: BaseContract.View,
     private val trackRepository: ITrackRepository
-) : MainContract.Presenter, CoroutineScope {
+) : BaseContract.Presenter, CoroutineScope {
 
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)

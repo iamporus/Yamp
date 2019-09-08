@@ -1,10 +1,10 @@
-package com.prush.justanotherplayer.ui.main
+package com.prush.justanotherplayer.base
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.model.Track
 
-interface MainContract {
+interface BaseContract {
 
     interface View {
 
