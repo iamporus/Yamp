@@ -1,13 +1,9 @@
 package com.prush.justanotherplayer.base
 
 import android.annotation.SuppressLint
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.media.session.PlaybackState
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,21 +17,19 @@ import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
-private val TAG = BaseNowPlayingFooterActivity::class.java.name
+private val TAG = BaseNowPlayingActivity::class.java.name
 
 @SuppressLint("Registered")
-abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.View,
+abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContract.View,
     Player.EventListener {
 
+    private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var presenter: BaseActivityPresenter
-    protected lateinit var audioPlayer: SimpleExoPlayer
-    private var boundToService: Boolean = false
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -81,41 +75,16 @@ abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.
         return applicationContext
     }
 
+    override fun onConnectedToService(audioPlayerInstance: SimpleExoPlayer) {
 
-    override fun onStart() {
-        super.onStart()
+        audioPlayer = audioPlayerInstance
+        playerControlView.player = audioPlayer
+        shortPlayerControlView.player = audioPlayer
 
-        boundToService = bindService(
-            Intent(this, AudioPlayerService::class.java),
-            serviceConnection,
-            Context.BIND_AUTO_CREATE
-        )
-    }
+        audioPlayer.addListener(this@BaseNowPlayingActivity)
 
-    private val serviceConnection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(TAG, "onServiceDisconnected")
-        }
-
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            Log.d(TAG, "onServiceConnected")
-            if (service is AudioPlayerService.AudioServiceBinder) {
-                audioPlayer = service.getPlayerInstance()
-
-                playerControlView.player = audioPlayer
-                shortPlayerControlView.player = audioPlayer
-
-                audioPlayer.addListener(this@BaseNowPlayingFooterActivity)
-
-                onConnectedToService()
-            }
-        }
-    }
-
-    open fun onConnectedToService() {
-        // client can override to take any action on service bind
         if (audioPlayer.currentTag != null)
-            presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+            presenter.fetchTrackMetadata(audioPlayerInstance.currentTag as Long)
     }
 
     private fun setBottomSheet() {
@@ -225,13 +194,14 @@ abstract class BaseNowPlayingFooterActivity : AppCompatActivity(), BaseContract.
     override fun onStop() {
         super.onStop()
 
-        playerControlView.player = null
-        shortPlayerControlView.player = null
-
         if (boundToService) {
+
+            playerControlView.player = null
+            shortPlayerControlView.player = null
+
             audioPlayer.removeListener(this)
-            unbindService(serviceConnection)
         }
+
     }
 
     override fun onDestroy() {

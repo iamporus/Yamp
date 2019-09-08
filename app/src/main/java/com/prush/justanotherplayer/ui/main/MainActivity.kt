@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.BaseNowPlayingFooterActivity
+import com.prush.justanotherplayer.base.BaseNowPlayingActivity
 import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 private const val KEY_STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
 const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 
-class MainActivity : BaseNowPlayingFooterActivity(), PermissionCallbacks {
+class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
 
     private lateinit var permissionUtils: PermissionUtils
     private var bAlreadyAskedForStoragePermission: Boolean = false
