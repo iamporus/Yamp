@@ -1,12 +1,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#CC000000">
+        android:background="#111111">
+
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+            android:id="@id/exo_progress"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            app:buffered_color="#222222"
+            app:played_color="@color/colorAccent"
+            app:scrubber_drawable="@android:color/transparent"
+            app:unplayed_color="#222222" />
 
     <ImageView
             android:id="@+id/shortAlbumArtImageView"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_below="@+id/exo_progress"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
@@ -19,12 +30,12 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_margin="4dp"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:layout_toStartOf="@id/shortPlaybackControls"
             android:layout_toLeftOf="@id/shortPlaybackControls"
             android:layout_toEndOf="@id/shortAlbumArtImageView"
             android:layout_toRightOf="@id/shortAlbumArtImageView"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
             android:textStyle="bold" />
