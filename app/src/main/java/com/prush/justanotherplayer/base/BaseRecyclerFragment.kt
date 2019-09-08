@@ -42,6 +42,11 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         progressBar.hide()
     }
 
+    override fun showEmptyLibrary() {
+        emptyLayout.visibility = View.VISIBLE
+        baseRecyclerView.visibility = View.INVISIBLE
+    }
+
     override fun displayError() {
         if (activity != null)
             Snackbar.make(

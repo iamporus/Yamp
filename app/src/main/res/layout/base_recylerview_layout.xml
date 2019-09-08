@@ -8,7 +8,7 @@
             android:id="@+id/baseRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#222222"
+            android:background="#000000"
             tools:listitem="@layout/track_list_item_row" />
 
     <androidx.core.widget.ContentLoadingProgressBar
@@ -18,5 +18,19 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="visible" />
+
+
+    <TextView
+            android:id="@+id/emptyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:drawableTop="@drawable/ic_empty_library"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:text="@string/empty_library_info"
+            android:textSize="18sp" />
+
 </FrameLayout>
 

@@ -45,7 +45,7 @@ class GenresLibraryFragment : BaseRecyclerFragment(), GenresContract.View,
     }
 
     override fun displayEmptyLibrary() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showEmptyLibrary()
     }
 
     override fun getViewActivity(): AppCompatActivity {
