@@ -28,7 +28,12 @@ class AlbumRepository(private val trackRepository: ITrackRepository) : IAlbumRep
     }
 
     override suspend fun getAlbumById(context: Context, albumId: Long): Album {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val albums = getAllAlbums(context)
+
+        val emptyAlbum = Album()
+
+        return albums.find { album -> album.albumId == albumId } ?: return emptyAlbum
     }
 
     companion object {

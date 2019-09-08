@@ -17,13 +17,15 @@ interface AlbumsContract {
         fun getViewActivity(): AppCompatActivity
 
         fun getApplicationContext(): Context
+
+        fun showAlbumDetails(album: Album)
     }
 
     interface Presenter {
 
         fun loadLibraryAlbums()
 
-        fun loadAlbumDetails(albumId: Long)
+        fun loadAlbumDetails(position: Int)
 
         fun startAlbumPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int)
 

@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.albumslibrary
 
 import android.util.Log
+import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.IAlbumRepository
 import kotlinx.coroutines.*
@@ -17,13 +18,14 @@ class AlbumPresenter(
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
+    private var albumsList = mutableListOf<Album>()
     override fun loadLibraryAlbums() {
 
         view.showProgress()
         launch {
 
             try {
-                val albumsList = albumRepository.getAllAlbums(view.getApplicationContext())
+                albumsList = albumRepository.getAllAlbums(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
 
                     if (albumsList.isEmpty()) {
@@ -37,7 +39,7 @@ class AlbumPresenter(
                 e.printStackTrace()
                 Log.d(TAG, "Exception: ${e.message}")
 
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     view.hideProgress()
                     view.displayError()
                 }
@@ -47,8 +49,8 @@ class AlbumPresenter(
 
     }
 
-    override fun loadAlbumDetails(albumId: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadAlbumDetails(position: Int) {
+        view.showAlbumDetails(albumsList[position])
     }
 
     override fun startAlbumPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
@@ -57,5 +59,6 @@ class AlbumPresenter(
 
     override fun onCleanup() {
         job.cancel()
+        albumsList.clear()
     }
 }

@@ -11,6 +11,8 @@ interface TracksRowView {
 
     fun setTrackAlbumArt(resource: Bitmap)
 
+    fun setTrackDuration(duration: Long)
+
     fun markTrackAsPlaying(isNowPlaying: Boolean)
 
     fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener)

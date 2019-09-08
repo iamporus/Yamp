@@ -13,7 +13,7 @@ import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 
-class TracksListPresenter : ListPresenter<Track> {
+open class TracksListPresenter : ListPresenter<Track> {
 
     override var rowLayoutId: Int = R.layout.track_list_item_row
 

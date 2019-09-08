@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Opus</string>
     <string name="permissions_rationale">This permission is required to access the media on your phone.</string>
     <string name="okay">Okay</string>

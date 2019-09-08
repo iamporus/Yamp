@@ -15,11 +15,9 @@ import kotlinx.android.synthetic.main.base_recylerview_layout.*
 open class BaseRecyclerFragment : Fragment(), BaseView {
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, state: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.base_recylerview_layout, container, false)
+        return inflater.inflate(getLayoutResource(), container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,6 +26,10 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         baseRecyclerView.apply {
             layoutManager = getBaseLayoutManager()
         }
+    }
+
+    open fun getLayoutResource(): Int {
+        return R.layout.base_recylerview_layout
     }
 
     open fun getBaseLayoutManager(): RecyclerView.LayoutManager {

@@ -3,12 +3,19 @@ package com.prush.justanotherplayer.model
 import com.prush.justanotherplayer.R
 import java.io.Serializable
 
-data class Album(
-    val albumId: Long,
-    var albumName: String,
-    var artistId: Long,
-    var artistName: String
-) : Serializable {
+open class Album() : Serializable {
+
+    constructor(albumId: Long, albumName: String, artistId: Long, artistName: String) : this() {
+        this.albumId = albumId
+        this.albumName = albumName
+        this.artistId = artistId
+        this.artistName = artistName
+    }
+
+    var albumId: Long = 0
+    var albumName: String = ""
+    var artistId: Long = 0
+    var artistName: String = ""
 
     var defaultAlbumArtRes: Int = R.drawable.playback_track_icon
 

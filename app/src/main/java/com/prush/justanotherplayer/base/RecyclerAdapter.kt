@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.ui.trackslibrary.TracksRowView
+import com.prush.justanotherplayer.utils.getTimeStringFromSeconds
 
 class RecyclerAdapter<T>(
     private val listPresenter: ListPresenter<T>,
@@ -41,6 +42,11 @@ class RecyclerAdapter<T>(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         TracksRowView {
+
+        override fun setTrackDuration(duration: Long) {
+            val durationTextView: TextView = itemView.findViewById(R.id.durationTextView)
+            durationTextView.text = getTimeStringFromSeconds(duration / 1000)
+        }
 
         override fun setTrackTitle(title: String) {
             val titleTextView: TextView = itemView.findViewById(R.id.rowTitleTextView)
