@@ -1,7 +1,7 @@
 package com.prush.justanotherplayer.base
 
 import android.content.Context
-import com.prush.justanotherplayer.trackslibrary.TracksRowView
+import com.prush.justanotherplayer.ui.trackslibrary.TracksRowView
 
 interface ListPresenter<T> {
 

@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.prush.justanotherplayer.trackslibrary.READ_EXTERNAL_STORAGE_REQ_CODE
+import com.prush.justanotherplayer.ui.trackslibrary.READ_EXTERNAL_STORAGE_REQ_CODE
 
 private val TAG = "PermissionUtils"
 

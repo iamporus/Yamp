@@ -2,8 +2,8 @@ package com.prush.justanotherplayer
 
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.prush.justanotherplayer.splash.SplashActivityPresenter
-import com.prush.justanotherplayer.splash.SplashActivityView
+import com.prush.justanotherplayer.ui.splash.SplashActivityPresenter
+import com.prush.justanotherplayer.ui.splash.SplashActivityView
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.junit.MockitoJUnit

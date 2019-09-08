@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.trackslibrary.TracksRowView
+import com.prush.justanotherplayer.ui.trackslibrary.TracksRowView
 
 class RecyclerAdapter<T>(
     private val listPresenter: ListPresenter<T>,

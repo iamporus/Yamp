@@ -12,14 +12,14 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".splash.SplashActivity">
+        <activity android:name="com.prush.justanotherplayer.ui.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".main.MainActivity" />
+        <activity android:name="com.prush.justanotherplayer.ui.main.MainActivity" />
 
         <service android:name=".services.AudioPlayerService" />
     </application>
