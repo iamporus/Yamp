@@ -3,7 +3,7 @@ package com.prush.justanotherplayer.main
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.prush.justanotherplayer.albumslibrary.AlbumsFragment
+import com.prush.justanotherplayer.albumslibrary.AlbumsLibraryFragment
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.trackslibrary.TracksLibraryFragment
 
@@ -16,7 +16,7 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
                 return TracksLibraryFragment.newInstance()
             }
             1 -> {
-                return AlbumsFragment.newInstance()
+                return AlbumsLibraryFragment.newInstance()
             }
         }
         return BaseRecyclerFragment()

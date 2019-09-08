@@ -13,7 +13,7 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Album
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
-class AlbumsFragment : BaseRecyclerFragment(), AlbumsContract.View,
+class AlbumsLibraryFragment : BaseRecyclerFragment(), AlbumsContract.View,
     RecyclerAdapter.OnItemClickListener {
 
     private lateinit var albumsPresenter: AlbumsContract.Presenter
@@ -61,6 +61,6 @@ class AlbumsFragment : BaseRecyclerFragment(), AlbumsContract.View,
     }
 
     companion object {
-        fun newInstance() = AlbumsFragment()
+        fun newInstance() = AlbumsLibraryFragment()
     }
 }
