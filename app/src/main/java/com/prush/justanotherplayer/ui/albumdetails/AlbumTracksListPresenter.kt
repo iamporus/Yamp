@@ -4,6 +4,7 @@ import android.content.Context
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.ItemRowView
 import com.prush.justanotherplayer.base.RecyclerAdapter
+import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 
 class AlbumTracksListPresenter : TracksListPresenter() {
@@ -18,7 +19,7 @@ class AlbumTracksListPresenter : TracksListPresenter() {
     ) {
         val track = itemsList[position]
 
-        rowView.apply {
+        (rowView as TrackViewHolder).apply {
 
             setTitle(track.title)
             setSubtitle(track.albumName)
