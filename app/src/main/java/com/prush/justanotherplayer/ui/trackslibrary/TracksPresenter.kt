@@ -56,15 +56,11 @@ class TracksPresenter(
 
     }
 
-    override fun startTrackPlayback(selectedTrackPosition: Int) {
+    override fun prepareTrackPlayback(selectedTrackPosition: Int) {
 
-        Log.d(TAG, "Track selected for playback $tracksList")
+        Log.d(TAG, "Track selected for playback $selectedTrackPosition")
+        view.startTrackPlayback(selectedTrackPosition, tracksList)
 
-        val intent = Intent(view.getViewActivity(), AudioPlayerService::class.java)
-        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
-        intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
-        Util.startForegroundService(view.getViewActivity(), intent)
     }
 
     override fun setNowPlayingTrack(trackId: Long) {

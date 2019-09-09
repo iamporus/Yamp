@@ -1,15 +1,20 @@
 package com.prush.justanotherplayer.ui.trackslibrary
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.services.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = TracksLibraryFragment::class.java.name
@@ -39,12 +44,21 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
-        tracksPresenter.startTrackPlayback(selectedTrackPosition)
+        tracksPresenter.prepareTrackPlayback(selectedTrackPosition)
     }
 
     override fun displayLibraryTracks(trackList: MutableList<Track>) {
         Log.d(TAG, "Loaded some tracks")
         listPresenter.setItemsList(trackList, adapter)
+    }
+
+    override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
+
+        val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
+        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
+        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        Util.startForegroundService(getViewActivity(), intent)
     }
 
     override fun displayEmptyLibrary() {

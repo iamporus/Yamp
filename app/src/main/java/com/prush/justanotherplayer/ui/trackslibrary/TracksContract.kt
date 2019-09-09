@@ -13,6 +13,8 @@ interface TracksContract {
 
         fun displayEmptyLibrary()
 
+        fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
+
         fun getViewActivity(): AppCompatActivity
 
         fun getApplicationContext(): Context
@@ -22,7 +24,7 @@ interface TracksContract {
 
         fun loadLibraryTracks()
 
-        fun startTrackPlayback(selectedTrackPosition: Int)
+        fun prepareTrackPlayback(selectedTrackPosition: Int)
 
         fun setNowPlayingTrack(trackId: Long)
 

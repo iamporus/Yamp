@@ -13,13 +13,13 @@ class AlbumDetailsPresenter(
     private val view: AlbumDetailsContract.View
 ) : AlbumDetailsContract.Presenter, CoroutineScope {
 
+    private var album: Album = Album()
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
     override fun fetchAlbumDetails(albumId: Long): Album {
 
         Log.d(TAG, "fetching details for album $albumId")
-        var album = Album()
 
         view.showProgress()
 
@@ -44,6 +44,10 @@ class AlbumDetailsPresenter(
             }
         }
         return album
+    }
+
+    override fun prepareTrackPlayback(selectedTrackPosition: Int) {
+        view.startTrackPlayback(selectedTrackPosition, album.tracksList)
     }
 
     override fun onCleanup() {
