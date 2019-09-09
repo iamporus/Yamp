@@ -3,6 +3,7 @@ package com.prush.justanotherplayer.ui.main
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseNowPlayingActivity
@@ -11,6 +12,7 @@ import com.prush.justanotherplayer.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 private const val KEY_STORAGE_PERMISSION_ALREADY_ASKED = "storagePermissionAlreadyAsked"
+private val TAG = MainActivity::class.java.name
 const val READ_EXTERNAL_STORAGE_REQ_CODE: Int = 101
 
 class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
@@ -25,16 +27,13 @@ class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
     override fun onViewCreated(savedInstanceState: Bundle?) {
         super.onViewCreated(savedInstanceState)
 
+        Log.d(TAG, "onViewCreated")
         permissionUtils = PermissionUtils()
 
         if (savedInstanceState != null) {
             bAlreadyAskedForStoragePermission =
                 savedInstanceState.getBoolean(KEY_STORAGE_PERMISSION_ALREADY_ASKED, false)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
 
         if (!bAlreadyAskedForStoragePermission) {
 
