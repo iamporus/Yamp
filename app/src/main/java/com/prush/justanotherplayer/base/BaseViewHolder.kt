@@ -2,9 +2,9 @@ package com.prush.justanotherplayer.base
 
 import android.graphics.Bitmap
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
 
@@ -27,7 +27,7 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     }
 
     override fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener) {
-        val rowLayout: ConstraintLayout = itemView.findViewById(R.id.rowLayout)
+        val rowLayout: ViewGroup = itemView.findViewById(R.id.rowLayout)
         rowLayout.setOnClickListener {
             listener.onItemClick(position)
         }

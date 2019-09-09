@@ -3,12 +3,20 @@ package com.prush.justanotherplayer.model
 import com.prush.justanotherplayer.R
 import java.io.Serializable
 
-data class Artist(
-    var artistId: Long,
-    var artistName: String
-) : Serializable {
+open class Artist() : Serializable {
+
+    constructor(artistId: Long, artistName: String) : this() {
+
+        this.artistId = artistId
+        this.artistName = artistName
+    }
+
+    var artistId: Long = 0
+    var artistName: String = ""
 
     var albumsList: MutableList<Album> = mutableListOf()
+    var tracksList: MutableList<Track> = mutableListOf()
+
     val defaultAlbumArtRes: Int = R.drawable.playback_track_icon
 
     override fun equals(other: Any?): Boolean {

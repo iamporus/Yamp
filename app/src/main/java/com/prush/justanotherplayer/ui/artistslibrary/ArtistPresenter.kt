@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.artistslibrary
 
 import android.util.Log
+import com.prush.justanotherplayer.model.Artist
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.IArtistRepository
 import kotlinx.coroutines.*
@@ -13,6 +14,8 @@ class ArtistPresenter(
     private val view: ArtistsContract.View
 ) : ArtistsContract.Presenter, CoroutineScope {
 
+    private var artistsList: MutableList<Artist> = mutableListOf()
+
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
@@ -22,7 +25,7 @@ class ArtistPresenter(
         launch {
 
             try {
-                val artistsList = artistRepository.getAllArtists(view.getApplicationContext())
+                artistsList = artistRepository.getAllArtists(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
 
                     if (artistsList.isEmpty()) {
@@ -46,8 +49,8 @@ class ArtistPresenter(
 
     }
 
-    override fun loadArtistDetails(artistId: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadArtistDetails(selectedTrackPosition: Int) {
+        view.showArtistDetails(artistsList[selectedTrackPosition])
     }
 
     override fun startArtistPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {

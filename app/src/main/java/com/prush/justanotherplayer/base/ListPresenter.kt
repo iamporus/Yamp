@@ -14,9 +14,20 @@ interface ListPresenter<T> {
     fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int): BaseViewHolder
 
     fun onBindTrackRowViewAtPosition(
-        context: Context, rowView: ItemRowView, position: Int,
+        context: Context,
+        rowView: ItemRowView,
+        itemViewType: Int,
+        position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     )
 
     fun setItemsList(itemsList: MutableList<T>, adapter: RecyclerAdapter<T>)
+
+    fun getChildRowLayout() = -1
+
+    fun getChildRowLayoutPosition() = -1
+
+    fun getChildItemsCount() = -1
+
+    fun getItemViewType(position: Int) = -1
 }

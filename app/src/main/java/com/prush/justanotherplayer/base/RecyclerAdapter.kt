@@ -17,11 +17,16 @@ class RecyclerAdapter<T>(
         return listPresenter.getItemsCount()
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return listPresenter.getItemViewType(position)
+    }
+
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
 
         listPresenter.onBindTrackRowViewAtPosition(
             holder.itemView.context,
             holder,
+            holder.itemViewType,
             position,
             itemClickListener
         )

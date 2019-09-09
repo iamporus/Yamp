@@ -14,6 +14,7 @@ class AlbumTracksListPresenter : TracksListPresenter() {
     override fun onBindTrackRowViewAtPosition(
         context: Context,
         rowView: ItemRowView,
+        itemViewType: Int,
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {

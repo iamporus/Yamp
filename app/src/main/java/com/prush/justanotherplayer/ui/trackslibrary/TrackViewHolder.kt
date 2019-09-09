@@ -7,7 +7,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
 import com.prush.justanotherplayer.utils.getTimeStringFromSeconds
 
-class TrackViewHolder(itemView: View) : BaseViewHolder(itemView), TrackItemRow {
+open class TrackViewHolder(itemView: View) : BaseViewHolder(itemView), TrackItemRow {
 
     override fun setDuration(duration: Long) {
         val durationTextView: TextView = itemView.findViewById(R.id.durationTextView)

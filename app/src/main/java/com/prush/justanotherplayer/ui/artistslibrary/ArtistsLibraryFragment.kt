@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.artistslibrary
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,8 @@ import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Artist
+import com.prush.justanotherplayer.ui.artistdetails.ArtistDetailsActivity
+import com.prush.justanotherplayer.ui.artistdetails.ArtistDetailsFragment
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
@@ -48,6 +51,13 @@ class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
         showEmptyLibrary()
     }
 
+    override fun showArtistDetails(artist: Artist) {
+        val intent = Intent(activity, ArtistDetailsActivity::class.java).apply {
+            putExtra(ArtistDetailsFragment.ARTIST_ID, artist.artistId)
+        }
+        startActivity(intent)
+    }
+
     override fun getViewActivity(): AppCompatActivity {
         return activity as AppCompatActivity
     }
@@ -57,7 +67,7 @@ class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        artistPresenter.loadArtistDetails(selectedTrackPosition)
     }
 
     override fun onDestroy() {

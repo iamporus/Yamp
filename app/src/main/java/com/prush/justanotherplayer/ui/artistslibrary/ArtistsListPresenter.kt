@@ -10,10 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.base.BaseViewHolder
 import com.prush.justanotherplayer.base.ItemRowView
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
-import com.prush.justanotherplayer.base.BaseViewHolder
 import com.prush.justanotherplayer.model.Artist
 
 class ArtistsListPresenter : ListPresenter<Artist> {
@@ -35,6 +35,7 @@ class ArtistsListPresenter : ListPresenter<Artist> {
     override fun onBindTrackRowViewAtPosition(
         context: Context,
         rowView: ItemRowView,
+        itemViewType: Int,
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {

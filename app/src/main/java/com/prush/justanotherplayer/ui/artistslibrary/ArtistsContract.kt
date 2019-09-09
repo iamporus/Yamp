@@ -14,6 +14,8 @@ interface ArtistsContract {
 
         fun displayEmptyLibrary()
 
+        fun showArtistDetails(artist: Artist)
+
         fun getViewActivity(): AppCompatActivity
 
         fun getApplicationContext(): Context
@@ -23,7 +25,7 @@ interface ArtistsContract {
 
         fun loadLibraryArtists()
 
-        fun loadArtistDetails(artistId: Long)
+        fun loadArtistDetails(selectedTrackPosition: Int)
 
         fun startArtistPlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int)
 

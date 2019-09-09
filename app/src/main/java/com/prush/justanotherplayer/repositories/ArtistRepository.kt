@@ -20,14 +20,22 @@ class ArtistRepository(private val albumRepository: IAlbumRepository) : IArtistR
 
         for (artist in artists) {
             artist.albumsList =
-                (albums.filter { album -> album.artistId == album.artistId}).toMutableList()
+                (albums.filter { album -> album.artistId == artist.artistId }).toMutableList()
+
+            for (album in artist.albumsList) {
+                artist.tracksList.addAll(album.tracksList)
+            }
         }
 
         return artists.toMutableList()
     }
 
     override suspend fun getArtistById(context: Context, artistId: Long): Artist {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        val artists = getAllArtists(context)
+        val emptyArtist = Artist()
+
+        return artists.find { artist -> artist.artistId == artistId } ?: emptyArtist
     }
 
     companion object {

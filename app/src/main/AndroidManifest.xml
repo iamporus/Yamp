@@ -23,6 +23,7 @@
         <activity android:name=".ui.main.MainActivity" />
 
         <activity android:name=".ui.albumdetails.AlbumDetailsActivity" />
+        <activity android:name=".ui.artistdetails.ArtistDetailsActivity" />
 
         <service android:name=".services.AudioPlayerService" />
 

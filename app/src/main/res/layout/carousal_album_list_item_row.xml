@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rowLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/custom_ripple"
+        android:padding="2dp">
+
+    <ImageView
+            android:id="@+id/rowArtImageView"
+            android:layout_width="124dp"
+            android:layout_height="154dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/album_art"
+            tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+            android:id="@+id/rowTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rowArtImageView"
+            android:layout_alignStart="@+id/rowArtImageView"
+            android:layout_alignLeft="@+id/rowArtImageView"
+            android:layout_alignEnd="@+id/rowArtImageView"
+            android:layout_alignRight="@+id/rowArtImageView"
+            android:layout_marginTop="4dp"
+            android:clipToPadding="false"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:padding="4dp"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rowArtImageView" />
+
+</RelativeLayout>
