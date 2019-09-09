@@ -67,6 +67,11 @@ class RecyclerAdapter<T>(
             nowPlayingImageView.visibility = if (isNowPlaying) View.VISIBLE else View.GONE
         }
 
+        override fun setTrackNumber(trackNumber: Int) {
+            val trackNumberTextView: TextView = itemView.findViewById(R.id.trackNumberTextView)
+            trackNumberTextView.text = trackNumber.toString()
+        }
+
         override fun setOnClickListener(position: Int, listener: OnItemClickListener) {
             val rowLayout: ConstraintLayout = itemView.findViewById(R.id.rowLayout)
             rowLayout.setOnClickListener {

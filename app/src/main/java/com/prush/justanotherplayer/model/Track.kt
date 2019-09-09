@@ -69,6 +69,12 @@ open class Track() : Serializable {
         albumId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
         albumName = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM))
         duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+        trackNumber = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TRACK))
+
+        if (trackNumber >= 1000) {
+            trackNumber %= 1000
+        }
+
     }
 
     var id: Long = 0
@@ -78,6 +84,7 @@ open class Track() : Serializable {
     var title: String = ""
     var artistName: String = ""
     var albumName: String = ""
+    var trackNumber: Int = 0
     var defaultAlbumArtRes: Int = 0
     var albumArtBitmap: Bitmap? = null
     var isCurrentlyPlaying: Boolean = false

@@ -13,6 +13,8 @@ interface ItemRowView {
 
     fun setDuration(duration: Long)
 
+    fun setTrackNumber(trackNumber: Int)
+
     fun markAsNowPlaying(isNowPlaying: Boolean)
 
     fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener)
