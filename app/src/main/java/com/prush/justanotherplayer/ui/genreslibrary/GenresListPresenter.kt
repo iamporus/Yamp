@@ -10,7 +10,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Genre
-import com.prush.justanotherplayer.ui.trackslibrary.TracksRowView
+import com.prush.justanotherplayer.base.ItemRowView
 
 class GenresListPresenter : ListPresenter<Genre> {
 
@@ -24,13 +24,13 @@ class GenresListPresenter : ListPresenter<Genre> {
 
     override fun onBindTrackRowViewAtPosition(
         context: Context,
-        rowView: TracksRowView,
+        rowView: ItemRowView,
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
 
         val genre = itemsList[position]
-        rowView.setTrackTitle(genre.name)
+        rowView.setTitle(genre.name)
         rowView.setOnClickListener(position, listener)
 
         Glide.with(context)
@@ -43,7 +43,7 @@ class GenresListPresenter : ListPresenter<Genre> {
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    rowView.setTrackAlbumArt(resource)
+                    rowView.setAlbumArt(resource)
                 }
 
             })

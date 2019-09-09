@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.base.ItemRowView
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
@@ -25,14 +26,14 @@ open class TracksListPresenter : ListPresenter<Track> {
 
     override fun onBindTrackRowViewAtPosition(
         context: Context,
-        rowView: TracksRowView,
+        rowView: ItemRowView,
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
         val track = itemsList[position]
-        rowView.setTrackTitle(track.title)
-        rowView.setTrackAlbum(track.artistName + " - " + track.albumName)
-        rowView.markTrackAsPlaying(track.isCurrentlyPlaying)
+        rowView.setTitle(track.title)
+        rowView.setSubtitle(track.artistName + " - " + track.albumName)
+        rowView.markAsNowPlaying(track.isCurrentlyPlaying)
         rowView.setOnClickListener(position, listener)
 
         Glide.with(context)
@@ -44,7 +45,7 @@ open class TracksListPresenter : ListPresenter<Track> {
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    rowView.setTrackAlbumArt(resource)
+                    rowView.setAlbumArt(resource)
                 }
 
             })

@@ -1,7 +1,6 @@
 package com.prush.justanotherplayer.base
 
 import android.content.Context
-import com.prush.justanotherplayer.ui.trackslibrary.TracksRowView
 
 interface ListPresenter<T> {
 
@@ -13,7 +12,7 @@ interface ListPresenter<T> {
 
     fun onBindTrackRowViewAtPosition(
         context: Context,
-        rowView: TracksRowView,
+        rowView: ItemRowView,
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     )
