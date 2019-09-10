@@ -2,20 +2,28 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/rootLayout"
-        android:background="#000000"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#000000">
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="8dp">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/nav_menu"
-                app:title="@string/app_name">
+                android:layout_height="?attr/actionBarSize">
+
+            <TextView
+                    android:id="@+id/toolbarTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:textAppearance="?attr/textAppearanceHeadline4" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -31,11 +39,13 @@
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:paddingBottom="24dp"
+                app:tabIndicatorColor="@color/colorAccent" />
 
     </androidx.viewpager.widget.ViewPager>
 
-    <include
-            layout="@layout/now_playing_bottom_sheet" />
+    <include layout="@layout/now_playing_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

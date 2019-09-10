@@ -17,7 +17,7 @@ open class Artist() : Serializable {
     var albumsList: MutableList<Album> = mutableListOf()
     var tracksList: MutableList<Track> = mutableListOf()
 
-    val defaultAlbumArtRes: Int = R.drawable.playback_track_icon
+    val defaultAlbumArtRes: Int = R.drawable.ic_artist
 
     override fun equals(other: Any?): Boolean {
         return artistId == (other as Artist).artistId

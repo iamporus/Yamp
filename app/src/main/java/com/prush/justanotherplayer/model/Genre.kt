@@ -42,7 +42,7 @@ open class Genre() : Serializable {
 
     constructor(cursor: Cursor) : this() {
 
-        defaultAlbumArtRes = R.drawable.playback_track_icon
+        defaultAlbumArtRes = R.drawable.ic_empty_library
         id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Genres._ID))
         name = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Genres.NAME))
 

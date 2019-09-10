@@ -28,6 +28,10 @@ class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
         super.onViewCreated(savedInstanceState)
 
         Log.d(TAG, "onViewCreated")
+
+        toolbarTitleTextView.text = getString(R.string.app_name)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         permissionUtils = PermissionUtils()
 
         if (savedInstanceState != null) {

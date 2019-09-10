@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.header_recylerview_layout.*
 abstract class HeaderRecyclerFragment : BaseRecyclerFragment(), BaseView {
 
     override fun getLayoutResource(): Int {
-        return R.layout.header_recylerview_layout
+        return R.layout.header_title_recylerview_layout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
