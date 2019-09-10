@@ -1,16 +1,19 @@
 package com.prush.justanotherplayer.ui.genreslibrary
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Genre
+import com.prush.justanotherplayer.ui.genredetails.GenreDetailsActivity
+import com.prush.justanotherplayer.ui.genredetails.GenreDetailsFragment
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 class GenresLibraryFragment : BaseRecyclerFragment(), GenresContract.View,
@@ -23,7 +26,7 @@ class GenresLibraryFragment : BaseRecyclerFragment(), GenresContract.View,
     private lateinit var adapter: RecyclerAdapter<Genre>
 
     override fun getBaseLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(activity, 2)
+        return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +60,14 @@ class GenresLibraryFragment : BaseRecyclerFragment(), GenresContract.View,
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        genresPresenter.loadGenreDetails(selectedTrackPosition)
+    }
+
+    override fun displayGenreDetails(genre: Genre) {
+        val intent = Intent(activity, GenreDetailsActivity::class.java).apply {
+            putExtra(GenreDetailsFragment.GENRE_ID, genre.id)
+        }
+        startActivity(intent)
     }
 
     override fun onDestroy() {

@@ -11,7 +11,7 @@ import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 
-class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItemClickListener) :
+open class ArtistDetailsListPresenter(var onCarousalItemClickListener: RecyclerAdapter.OnCarousalItemClickListener) :
     ListPresenter<Track>, RecyclerAdapter.OnItemClickListener {
 
     override var itemsList: MutableList<Track> = mutableListOf()
@@ -125,11 +125,6 @@ class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItem
 
     override fun onItemClick(selectedTrackPosition: Int) {
         onCarousalItemClickListener.onCarousalItemClick(selectedTrackPosition)
-    }
-
-    interface OnCarousalItemClickListener {
-
-        fun onCarousalItemClick(selectedItemPosition: Int)
     }
 
 }

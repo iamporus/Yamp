@@ -7,5 +7,5 @@ interface IGenreRepository {
 
     suspend fun getAllGenres(context: Context): MutableList<Genre>
 
-    suspend fun getGenreById(context: Context, trackId: Long): Genre
+    suspend fun getGenreById(context: Context, genreId: Long): Genre
 }

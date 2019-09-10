@@ -16,6 +16,8 @@ interface GenresContract {
 
         fun getViewActivity(): AppCompatActivity
 
+        fun displayGenreDetails(genre: Genre)
+
         fun getApplicationContext(): Context
     }
 
@@ -23,7 +25,7 @@ interface GenresContract {
 
         fun loadLibraryGenres()
 
-        fun loadGenreDetails(genreId: Long)
+        fun loadGenreDetails(selectedTrackPosition: Int)
 
         fun startGenrePlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int)
 

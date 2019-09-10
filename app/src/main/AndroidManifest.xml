@@ -24,6 +24,7 @@
 
         <activity android:name=".ui.albumdetails.AlbumDetailsActivity" />
         <activity android:name=".ui.artistdetails.ArtistDetailsActivity" />
+        <activity android:name=".ui.genredetails.GenreDetailsActivity" />
 
         <service android:name=".services.AudioPlayerService" />
 

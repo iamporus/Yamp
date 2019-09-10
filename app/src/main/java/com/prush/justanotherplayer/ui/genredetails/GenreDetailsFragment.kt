@@ -1,51 +1,46 @@
-package com.prush.justanotherplayer.ui.artistdetails
+package com.prush.justanotherplayer.ui.genredetails
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.base.HeaderRecyclerFragment
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Album
-import com.prush.justanotherplayer.model.Artist
+import com.prush.justanotherplayer.model.Genre
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.services.TRACKS_LIST
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsActivity
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsFragment
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
-class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.View,
+class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View,
     RecyclerAdapter.OnItemClickListener, RecyclerAdapter.OnCarousalItemClickListener {
 
     private lateinit var adapter: RecyclerAdapter<Track>
-    private lateinit var listPresenter: ArtistDetailsListPresenter
-    private lateinit var artistDetailsPresenter: ArtistDetailsPresenter
-    private var artistId: Long = 0
+    private lateinit var listPresenter: GenreDetailsListPresenter
+    private lateinit var genreDetailsPresenter: GenreDetailsPresenter
+    private var genreId: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            artistId = arguments!!.getLong(ARTIST_ID)
+            genreId = arguments!!.getLong(GENRE_ID)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        artistDetailsPresenter = ArtistDetailsPresenter(Injection.provideArtistRepository(), this)
-        listPresenter = ArtistDetailsListPresenter(this)
+        genreDetailsPresenter = GenreDetailsPresenter(Injection.provideGenreRepository(), this)
+        listPresenter = GenreDetailsListPresenter(this)
 
         adapter = RecyclerAdapter(listPresenter, this)
         baseRecyclerView.adapter = adapter
@@ -53,43 +48,25 @@ class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.Vi
 
     override fun onStart() {
         super.onStart()
-        artistDetailsPresenter.fetchArtistDetails(artistId)
+        genreDetailsPresenter.fetchGenreDetails(genreId)
     }
 
-    override fun displayArtistDetails(artist: Artist) {
+    override fun displayGenreDetails(genre: Genre) {
 
-        if (artist.artistName.isNotEmpty() && context != null) {
+        if (genre.name.isNotEmpty() && context != null) {
 
-            Glide.with(getViewActivity())
-                .asBitmap()
-                .error(artist.defaultAlbumArtRes)
-                .load(getAlbumArtUri(getViewActivity(), artist.artistId))
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
-
-                    override fun onResourceReady(
-                        resource: Bitmap, transition: Transition<in Bitmap>?
-                    ) {
-                        headerAlbumArtImageView.setImageBitmap(resource)
-                    }
-
-                })
-
-            collapsingToolbarLayout.title = artist.artistName
-            listPresenter.setItemsList(artist.tracksList, adapter)
-            listPresenter.childItemsList = artist.albumsList
-
+            collapsingToolbarLayout.title = genre.name
+            listPresenter.setItemsList(genre.tracksList, adapter)
+            listPresenter.childItemsList = genre.albumsList
         }
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
-        artistDetailsPresenter.prepareTrackPlayback(selectedTrackPosition)
+        genreDetailsPresenter.prepareTrackPlayback(selectedTrackPosition)
     }
 
     override fun onCarousalItemClick(selectedItemPosition: Int) {
-        artistDetailsPresenter.loadAlbumDetails(listPresenter.childItemsList[selectedItemPosition])
+        genreDetailsPresenter.loadAlbumDetails(listPresenter.childItemsList[selectedItemPosition])
     }
 
     override fun displayAlbumDetails(album: Album) {
@@ -121,13 +98,13 @@ class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.Vi
     }
 
     companion object {
-        const val ARTIST_ID = "ArtistId"
+        const val GENRE_ID = "GenreId"
 
-        fun newInstance(artistId: Long): ArtistDetailsFragment {
+        fun newInstance(genreId: Long): GenreDetailsFragment {
 
-            return ArtistDetailsFragment().apply {
+            return GenreDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(ARTIST_ID, artistId)
+                    putLong(GENRE_ID, genreId)
                 }
             }
         }

@@ -46,6 +46,17 @@ fun getAllTracksQuery(context: Context): Cursor? {
     )
 }
 
+fun getAllTracksQuery(context: Context, uri: Uri): Cursor? {
+
+    return context.contentResolver.query(
+        uri,
+        projection,
+        all_tracks_selection,
+        null,
+        MediaStore.Audio.Media.TRACK
+    )
+}
+
 fun getTrackByIdQuery(context: Context, id: Long): Cursor? {
 
     return context.contentResolver.query(

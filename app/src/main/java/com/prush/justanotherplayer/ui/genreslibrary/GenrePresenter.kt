@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.genreslibrary
 
 import android.util.Log
+import com.prush.justanotherplayer.model.Genre
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.IGenreRepository
 import kotlinx.coroutines.*
@@ -13,6 +14,7 @@ class GenrePresenter(
     private val view: GenresContract.View
 ) : GenresContract.Presenter, CoroutineScope {
 
+    private var genresList: MutableList<Genre> = mutableListOf()
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
@@ -22,7 +24,7 @@ class GenrePresenter(
         launch {
 
             try {
-                val genresList = genreRepository.getAllGenres(view.getApplicationContext())
+                genresList = genreRepository.getAllGenres(view.getApplicationContext())
                 withContext(Dispatchers.Main) {
 
                     if (genresList.isEmpty()) {
@@ -46,8 +48,8 @@ class GenrePresenter(
 
     }
 
-    override fun loadGenreDetails(genreId: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadGenreDetails(selectedTrackPosition: Int) {
+        view.displayGenreDetails(genresList[selectedTrackPosition])
     }
 
     override fun startGenrePlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {

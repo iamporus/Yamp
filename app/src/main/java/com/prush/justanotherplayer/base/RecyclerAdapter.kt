@@ -40,8 +40,12 @@ class RecyclerAdapter<T>(
     }
 
     interface OnItemClickListener {
-        fun onItemClick(
-            selectedTrackPosition: Int
-        )
+
+        fun onItemClick(selectedTrackPosition: Int)
+    }
+
+    interface OnCarousalItemClickListener {
+
+        fun onCarousalItemClick(selectedItemPosition: Int)
     }
 }
