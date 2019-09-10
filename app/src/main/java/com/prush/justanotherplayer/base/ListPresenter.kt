@@ -23,6 +23,8 @@ interface ListPresenter<T> {
 
     fun setItemsList(itemsList: MutableList<T>, adapter: RecyclerAdapter<T>)
 
+    fun getListHeaderRowLayout() = -1
+
     fun getChildRowLayout() = -1
 
     fun getChildRowLayoutPosition() = -1

@@ -2,20 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-    <TextView
-            android:id="@+id/carousalTitleTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textAppearance="?attr/textAppearanceButton" />
+        android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/carousalRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:paddingLeft="16dp"
+            android:paddingStart="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:orientation="horizontal" />
 </LinearLayout>

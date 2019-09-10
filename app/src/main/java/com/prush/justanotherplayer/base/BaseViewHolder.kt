@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
 
+class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView)
+
 open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     ItemRowView {
 

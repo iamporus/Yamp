@@ -23,7 +23,11 @@ class ArtistRepository(private val albumRepository: IAlbumRepository) : IArtistR
                 (albums.filter { album -> album.artistId == artist.artistId }).toMutableList()
 
             for (album in artist.albumsList) {
-                artist.tracksList.addAll(album.tracksList)
+                val tracks = album.tracksList
+                for (track in tracks) {
+                    if (track.artistId == artist.artistId)
+                        artist.tracksList.add(track)
+                }
             }
         }
 

@@ -1,23 +1,15 @@
 package com.prush.justanotherplayer.ui.artistdetails
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.BaseViewHolder
-import com.prush.justanotherplayer.base.ItemRowView
-import com.prush.justanotherplayer.base.ListPresenter
-import com.prush.justanotherplayer.base.RecyclerAdapter
+import com.prush.justanotherplayer.base.*
+import com.prush.justanotherplayer.base.RecyclerAdapter.ViewTypeEnum
 import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
-import com.prush.justanotherplayer.utils.getAlbumArtUri
 
 class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItemClickListener) :
     ListPresenter<Track>, RecyclerAdapter.OnItemClickListener {
@@ -26,21 +18,32 @@ class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItem
 
     var childItemsList: MutableList<Album> = mutableListOf()
 
-    override var rowLayoutId: Int = R.layout.track_list_item_row
+    override var rowLayoutId: Int = R.layout.album_tracks_list_item_row
 
     override fun getItemsCount(): Int {
-        return itemsList.size
+        return itemsList.size + 3
     }
 
     override fun getChildRowLayout(): Int {
         return R.layout.horizontal_recyclerview_list_item_row
     }
 
-    override fun getItemViewType(position: Int): Int {
-        if (position == 0)
-            return ViewTypeEnum.CAROUSAL_LIST_ITEM_VIEW.ordinal
+    override fun getListHeaderRowLayout(): Int {
+        return R.layout.header_list_item_row
+    }
 
-        return ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
+    override fun getItemViewType(position: Int): Int {
+        return when (position) {
+            getItemsCount() - 1 -> {
+                ViewTypeEnum.CAROUSAL_LIST_ITEM_VIEW.ordinal
+            }
+            0, getItemsCount() - 2 -> {
+                ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal
+            }
+            else -> {
+                ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
+            }
+        }
     }
 
     override fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int):
@@ -53,6 +56,11 @@ class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItem
             ViewTypeEnum.CAROUSAL_LIST_ITEM_VIEW.ordinal -> {
                 itemView = LayoutInflater.from(context).inflate(getChildRowLayout(), parent, false)
                 ArtistDetailsCarousalViewHolder(itemView)
+            }
+            ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal -> {
+                itemView =
+                    LayoutInflater.from(context).inflate(getListHeaderRowLayout(), parent, false)
+                HeaderViewHolder(itemView)
             }
             else -> {
                 itemView = LayoutInflater.from(context).inflate(rowLayoutId, parent, false)
@@ -68,45 +76,41 @@ class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItem
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
-        val track = itemsList[position]
 
         when (itemViewType) {
             ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal -> {
 
                 (rowView as ArtistDetailsFlatViewHolder).apply {
 
+                    val track = itemsList[position - 1]
+
                     setTitle(track.title)
                     setSubtitle(track.albumName)
+                    setTrackNumber(position)
 
-                    Glide.with(context)
-                        .asBitmap()
-                        .error(track.defaultAlbumArtRes)
-                        .load(getAlbumArtUri(context, track.albumId))
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onLoadCleared(placeholder: Drawable?) {
-
-                            }
-
-                            override fun onResourceReady(
-                                resource: Bitmap,
-                                transition: Transition<in Bitmap>?
-                            ) {
-                                rowView.setAlbumArt(resource)
-                            }
-
-                        })
-
-                    setOnClickListener(position, listener)
+                    setOnClickListener(position - 1, listener)
                 }
             }
             ViewTypeEnum.CAROUSAL_LIST_ITEM_VIEW.ordinal -> {
 
                 (rowView as ArtistDetailsCarousalViewHolder).apply {
 
-                    setupCarousalTitle(context.getString(R.string.albums))
                     setupLayoutManager()
                     setupAdapter(this@ArtistDetailsListPresenter)
                     setupData(childItemsList)
+                }
+            }
+            ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal -> {
+
+                (rowView as HeaderViewHolder).apply {
+                    when (position) {
+                        0 -> {
+                            setTitle(context.getString(R.string.tracks))
+                        }
+                        getItemsCount() - 2 -> {
+                            setTitle(context.getString(R.string.albums))
+                        }
+                    }
                 }
             }
         }
@@ -128,11 +132,6 @@ class ArtistDetailsListPresenter(var onCarousalItemClickListener: OnCarousalItem
         fun onCarousalItemClick(selectedItemPosition: Int)
     }
 
-    enum class ViewTypeEnum {
-
-        CAROUSAL_LIST_ITEM_VIEW,
-        FLAT_LIST_ITEM_VIEW
-    }
 }
 
 class ArtistDetailsFlatViewHolder(itemView: View) : TrackViewHolder(itemView)

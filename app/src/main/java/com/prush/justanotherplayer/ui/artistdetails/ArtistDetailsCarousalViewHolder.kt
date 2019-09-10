@@ -1,7 +1,6 @@
 package com.prush.justanotherplayer.ui.artistdetails
 
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.R
@@ -18,19 +17,13 @@ class ArtistDetailsCarousalViewHolder(itemView: View) : BaseViewHolder(itemView)
     private var recyclerView: RecyclerView = itemView.findViewById(R.id.carousalRecyclerView)
     lateinit var adapter: RecyclerAdapter<Album>
 
-    override fun setupCarousalTitle(title: String) {
-
-        val carousalTitleTextView: TextView = itemView.findViewById(R.id.carousalTitleTextView)
-        carousalTitleTextView.text = title
-    }
-
     override fun setupLayoutManager() {
 
         recyclerView.apply {
 
             layoutManager =
                 LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            isNestedScrollingEnabled = true
+            isNestedScrollingEnabled = false
         }
 
     }
@@ -49,8 +42,6 @@ class ArtistDetailsCarousalViewHolder(itemView: View) : BaseViewHolder(itemView)
 }
 
 interface ArtistDetailsCarousalRowView : ItemRowView {
-
-    fun setupCarousalTitle(title: String)
 
     fun setupLayoutManager()
 

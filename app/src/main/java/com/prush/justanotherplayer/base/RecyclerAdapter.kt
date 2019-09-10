@@ -32,6 +32,13 @@ class RecyclerAdapter<T>(
         )
     }
 
+    enum class ViewTypeEnum {
+
+        CAROUSAL_LIST_ITEM_VIEW,
+        FLAT_LIST_ITEM_VIEW,
+        HEADER_LIST_ITEM_VIEW
+    }
+
     interface OnItemClickListener {
         fun onItemClick(
             selectedTrackPosition: Int
