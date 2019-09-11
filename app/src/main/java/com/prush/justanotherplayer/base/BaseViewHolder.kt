@@ -6,9 +6,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.prush.justanotherplayer.R
 
-class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView)
+class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
+
+    override fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener) {
+        val button: MaterialButton = itemView.findViewById(R.id.headerActionButton)
+        button.setOnClickListener {
+            listener.onItemClick(position)
+        }
+    }
+}
 
 open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
     ItemRowView {

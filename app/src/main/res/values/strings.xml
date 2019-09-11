@@ -12,4 +12,5 @@
     <string name="now_playing_track_subtitle">%1$s - %2$s</string>
     <string name="empty_library">empty library</string>
     <string name="empty_library_info">Fill up some tracks in your phone to see them here.</string>
+    <string name="shuffle_all">Shuffle All</string>
 </resources>

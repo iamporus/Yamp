@@ -36,7 +36,8 @@ class RecyclerAdapter<T>(
 
         CAROUSAL_LIST_ITEM_VIEW,
         FLAT_LIST_ITEM_VIEW,
-        HEADER_LIST_ITEM_VIEW
+        HEADER_LIST_ITEM_VIEW,
+        HEADER_LIST_ITEM_ACTION_VIEW
     }
 
     interface OnItemClickListener {

@@ -22,8 +22,8 @@
             <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    app:layout_collapseMode="pin"
-                    android:layout_height="?attr/actionBarSize">
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin">
 
                 <TextView
                         android:id="@+id/toolbarTitleTextView"

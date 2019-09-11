@@ -14,6 +14,7 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.services.SHUFFLE_TRACKS
 import com.prush.justanotherplayer.services.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
@@ -44,7 +45,11 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
-        tracksPresenter.prepareTrackPlayback(selectedTrackPosition)
+        if (selectedTrackPosition == -1) {
+            tracksPresenter.shuffleTrackPlayback()
+        } else {
+            tracksPresenter.prepareTrackPlayback(selectedTrackPosition)
+        }
     }
 
     override fun displayLibraryTracks(trackList: MutableList<Track>) {
@@ -53,10 +58,17 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
     }
 
     override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
-
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
+        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        Util.startForegroundService(getViewActivity(), intent)
+    }
+
+    override fun startShufflePlayback(tracksList: MutableList<Track>) {
+        val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
+        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(SHUFFLE_TRACKS, true)
         intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
         Util.startForegroundService(getViewActivity(), intent)
     }

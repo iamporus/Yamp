@@ -4,16 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.BaseViewHolder
-import com.prush.justanotherplayer.base.ItemRowView
-import com.prush.justanotherplayer.base.ListPresenter
-import com.prush.justanotherplayer.base.RecyclerAdapter
+import com.prush.justanotherplayer.base.*
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 
@@ -23,14 +21,38 @@ open class TracksListPresenter : ListPresenter<Track> {
 
     override var itemsList: MutableList<Track> = mutableListOf()
 
+    override fun getListHeaderRowLayout(): Int {
+        return R.layout.header_list_item_action_row
+    }
+
     override fun getItemsCount(): Int {
-        return itemsList.size
+        return itemsList.size + 1
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (position) {
+            0 -> RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal
+            else -> RecyclerAdapter.ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
+        }
     }
 
     override fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int):
             BaseViewHolder {
-        val itemView = LayoutInflater.from(context).inflate(rowLayoutId, parent, false)
-        return TrackViewHolder(itemView)
+
+        lateinit var itemView: View
+
+        return when (viewType) {
+
+            RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
+                itemView =
+                    LayoutInflater.from(context).inflate(getListHeaderRowLayout(), parent, false)
+                HeaderViewHolder(itemView)
+            }
+            else -> {
+                itemView = LayoutInflater.from(context).inflate(rowLayoutId, parent, false)
+                TrackViewHolder(itemView)
+            }
+        }
     }
 
     override fun onBindTrackRowViewAtPosition(
@@ -40,29 +62,43 @@ open class TracksListPresenter : ListPresenter<Track> {
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
-        val track = itemsList[position]
 
-        (rowView as TrackItemRow).apply {
+        when (itemViewType) {
+            RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
+                (rowView as HeaderViewHolder).apply {
+                    setOnClickListener(-1, listener)
+                }
+            }
+            else -> {
+                val track = itemsList[position - 1]
 
-            setTitle(track.title)
-            setSubtitle(track.artistName + " - " + track.albumName)
-            markAsNowPlaying(track.isCurrentlyPlaying)
-            setOnClickListener(position, listener)
+                (rowView as TrackItemRow).apply {
+
+                    setTitle(track.title)
+                    setSubtitle(track.artistName + " - " + track.albumName)
+                    markAsNowPlaying(track.isCurrentlyPlaying)
+                    setOnClickListener(position - 1, listener)
+                }
+
+                Glide.with(context)
+                    .asBitmap()
+                    .load(getAlbumArtUri(context, track.albumId))
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {
+
+                        }
+
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            rowView.setAlbumArt(resource)
+                        }
+
+                    })
+            }
         }
 
-        Glide.with(context)
-            .asBitmap()
-            .load(getAlbumArtUri(context, track.albumId))
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
-
-                }
-
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    rowView.setAlbumArt(resource)
-                }
-
-            })
 
     }
 

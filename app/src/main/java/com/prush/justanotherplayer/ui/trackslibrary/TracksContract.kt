@@ -15,6 +15,8 @@ interface TracksContract {
 
         fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
 
+        fun startShufflePlayback(tracksList: MutableList<Track>)
+
         fun getViewActivity(): AppCompatActivity
 
         fun getApplicationContext(): Context
@@ -25,6 +27,8 @@ interface TracksContract {
         fun loadLibraryTracks()
 
         fun prepareTrackPlayback(selectedTrackPosition: Int)
+
+        fun shuffleTrackPlayback()
 
         fun setNowPlayingTrack(trackId: Long)
 

@@ -11,9 +11,18 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:titleEnabled="false">
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
+                app:layout_collapseMode="pin"
                 android:layout_height="?attr/actionBarSize">
 
             <TextView
@@ -21,12 +30,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceHeadline4"
                     android:textColor="@android:color/white"
-                    android:textAppearance="?attr/textAppearanceHeadline4" />
+                    android:textStyle="bold" />
 
         </androidx.appcompat.widget.Toolbar>
-
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager

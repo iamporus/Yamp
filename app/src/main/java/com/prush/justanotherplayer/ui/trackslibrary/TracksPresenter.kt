@@ -1,13 +1,8 @@
 package com.prush.justanotherplayer.ui.trackslibrary
 
-import android.content.Intent
 import android.util.Log
-import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.ITrackRepository
-import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.services.TRACKS_LIST
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -60,7 +55,11 @@ class TracksPresenter(
 
         Log.d(TAG, "Track selected for playback $selectedTrackPosition")
         view.startTrackPlayback(selectedTrackPosition, tracksList)
+    }
 
+    override fun shuffleTrackPlayback() {
+        Log.d(TAG, "Shuffling all Tracks")
+        view.startShufflePlayback(tracksList)
     }
 
     override fun setNowPlayingTrack(trackId: Long) {

@@ -2,6 +2,7 @@ package com.prush.justanotherplayer.ui.albumdetails
 
 import android.content.Context
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.base.HeaderViewHolder
 import com.prush.justanotherplayer.base.ItemRowView
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
@@ -18,16 +19,27 @@ class AlbumTracksListPresenter : TracksListPresenter() {
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
-        val track = itemsList[position]
 
-        (rowView as TrackViewHolder).apply {
+        when (itemViewType) {
+            RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
+                (rowView as HeaderViewHolder).apply {
+                    setOnClickListener(-1, listener)
+                }
+            }
+            else -> {
+                val track = itemsList[position - 1]
 
-            setTitle(track.title)
-            setSubtitle(track.albumName)
-            setDuration(track.duration)
-            setTrackNumber(track.trackNumber)
-            setOnClickListener(position, listener)
+                (rowView as TrackViewHolder).apply {
+
+                    setTitle(track.title)
+                    setSubtitle(track.albumName)
+                    setDuration(track.duration)
+                    setTrackNumber(track.trackNumber)
+                    setOnClickListener(position - 1, listener)
+                }
+            }
         }
+
     }
 
 }

@@ -85,11 +85,14 @@ class AudioPlayerService : Service() {
 
                 val trackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
 
+                val shuffleTracks = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
+
                 @Suppress("UNCHECKED_CAST")
                 val tracksList: List<Track> =
                     intent.getSerializableExtra(TRACKS_LIST) as List<Track>
 
-                Collections.rotate(tracksList, 0 - trackPosition)
+                if (trackPosition != -1)
+                    Collections.rotate(tracksList, 0 - trackPosition)
 
                 val concatenatingMediaSource = ConcatenatingMediaSource()
 
@@ -104,6 +107,7 @@ class AudioPlayerService : Service() {
                     concatenatingMediaSource.addMediaSource(mediaSource)
                 }
 
+                simpleExoPlayer.shuffleModeEnabled = shuffleTracks
                 simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 simpleExoPlayer.prepare(concatenatingMediaSource)
                 simpleExoPlayer.playWhenReady = true
