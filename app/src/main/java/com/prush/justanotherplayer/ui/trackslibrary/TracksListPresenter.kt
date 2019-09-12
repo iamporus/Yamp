@@ -26,15 +26,27 @@ open class TracksListPresenter : ListPresenter<Track> {
         return R.layout.header_list_item_action_row
     }
 
+    override fun isHeaderAdded(): Boolean {
+        return true
+    }
+
     override fun getItemsCount(): Int {
-        return itemsList.size + 1
+
+        return if (isHeaderAdded())
+            itemsList.size + 1
+        else
+            itemsList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            0 -> RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal
-            else -> RecyclerAdapter.ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
-        }
+        return if (isHeaderAdded())
+            when (position) {
+
+                0 -> RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal
+                else -> RecyclerAdapter.ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
+            }
+        else
+            RecyclerAdapter.ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
     }
 
     override fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int):
@@ -64,21 +76,23 @@ open class TracksListPresenter : ListPresenter<Track> {
         listener: RecyclerAdapter.OnItemClickListener
     ) {
 
+        val trackPosition = if (isHeaderAdded()) position - 1 else position
+
         when (itemViewType) {
             RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
                 (rowView as HeaderViewHolder).apply {
-                    setOnClickListener(-1, listener)
+                    setOnClickListener(trackPosition, listener)
                 }
             }
             else -> {
-                val track = itemsList[position - 1]
+                val track = itemsList[trackPosition]
 
                 (rowView as TrackItemRow).apply {
 
                     setTitle(track.title)
                     setSubtitle(track.artistName + " - " + track.albumName)
                     markAsNowPlaying(track.isCurrentlyPlaying)
-                    setOnClickListener(position - 1, listener)
+                    setOnClickListener(trackPosition, listener)
                 }
 
                 Glide.with(context)

@@ -19,15 +19,16 @@ class AlbumTracksListPresenter : TracksListPresenter() {
         position: Int,
         listener: RecyclerAdapter.OnItemClickListener
     ) {
+        val trackPosition = if (isHeaderAdded()) position - 1 else position
 
         when (itemViewType) {
             RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
                 (rowView as HeaderViewHolder).apply {
-                    setOnClickListener(-1, listener)
+                    setOnClickListener(trackPosition, listener)
                 }
             }
             else -> {
-                val track = itemsList[position - 1]
+                val track = itemsList[trackPosition]
 
                 (rowView as TrackViewHolder).apply {
 
@@ -35,7 +36,7 @@ class AlbumTracksListPresenter : TracksListPresenter() {
                     setSubtitle(track.albumName)
                     setDuration(track.duration)
                     setTrackNumber(track.trackNumber)
-                    setOnClickListener(position - 1, listener)
+                    setOnClickListener(trackPosition, listener)
                 }
             }
         }
