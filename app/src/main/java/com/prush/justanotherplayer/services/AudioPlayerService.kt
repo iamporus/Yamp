@@ -105,14 +105,14 @@ class AudioPlayerService : Service() {
 
                 val concatenatingMediaSource = ConcatenatingMediaSource()
 
-                nowPlayingQueue.nowPlayingTracks.clear()
+                nowPlayingQueue.trackList.clear()
 
                 if (shuffle) {
 
                     val shuffledTracks = tracksList.shuffled()
                     val shuffledOrder = mutableSetOf<Int>()
 
-                    nowPlayingQueue.nowPlayingTracks.addAll(shuffledTracks)
+                    nowPlayingQueue.trackList.addAll(shuffledTracks)
 
                     for (track in tracksList) {
 
@@ -136,7 +136,7 @@ class AudioPlayerService : Service() {
                     }
 
                 } else {
-                    nowPlayingQueue.nowPlayingTracks.addAll(tracksList)
+                    nowPlayingQueue.trackList.addAll(tracksList)
                 }
 
                 Log.d(TAG, "Now Playing Queue - $tracksList")

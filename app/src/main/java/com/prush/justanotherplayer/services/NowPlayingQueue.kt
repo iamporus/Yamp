@@ -4,34 +4,38 @@ import com.prush.justanotherplayer.model.Track
 
 class NowPlayingQueue : QueueManager {
 
-    var nowPlayingTracks = mutableListOf<Track>()
+    var trackList = mutableListOf<Track>()
     var currentPlayingTrackIndex: Int = 0
 
+    override suspend fun getNowPlayingTracks(): MutableList<Track> {
+        return trackList
+    }
+
     override fun addTrackToQueue(track: Track) {
-        nowPlayingTracks.add(track)
+        trackList.add(track)
     }
 
     override fun removeTrackFromQueue(track: Track) {
-        nowPlayingTracks.remove(track)
+        trackList.remove(track)
     }
 
     override fun removeTrackFromQueue(index: Int, track: Track) {
-        nowPlayingTracks.removeAt(index)
+        trackList.removeAt(index)
     }
 
     override fun addAlbumToQueue(albumTracks: MutableList<Track>) {
-        nowPlayingTracks.addAll(albumTracks)
+        trackList.addAll(albumTracks)
     }
 
     override fun playNext(track: Track) {
         if (currentPlayingTrackIndex == 0)
-            nowPlayingTracks.add(track)
+            trackList.add(track)
         else
-            nowPlayingTracks.add(currentPlayingTrackIndex + 1, track)
+            trackList.add(currentPlayingTrackIndex + 1, track)
 
     }
 
     override fun clearNowPlayingQueue() {
-        nowPlayingTracks.clear()
+        trackList.clear()
     }
 }

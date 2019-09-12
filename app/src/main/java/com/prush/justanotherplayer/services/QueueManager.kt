@@ -4,6 +4,8 @@ import com.prush.justanotherplayer.model.Track
 
 interface QueueManager {
 
+    suspend fun getNowPlayingTracks(): MutableList<Track>
+
     fun addTrackToQueue(track: Track)
 
     fun removeTrackFromQueue(track: Track)
