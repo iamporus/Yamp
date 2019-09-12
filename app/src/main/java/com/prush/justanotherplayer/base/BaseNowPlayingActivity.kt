@@ -17,6 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.NowPlayingQueue
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
@@ -29,6 +30,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
     Player.EventListener {
 
     private lateinit var audioPlayer: SimpleExoPlayer
+    private lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var presenter: BaseActivityPresenter
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -75,9 +77,14 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
         return applicationContext
     }
 
-    override fun onConnectedToService(audioPlayerInstance: SimpleExoPlayer) {
+    override fun onConnectedToService(
+        audioPlayerInstance: SimpleExoPlayer,
+        nowPlayingQueueInstance: NowPlayingQueue
+    ) {
 
         audioPlayer = audioPlayerInstance
+        nowPlayingQueue = nowPlayingQueueInstance
+
         playerControlView.player = audioPlayer
         shortPlayerControlView.player = audioPlayer
 

@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.services.NowPlayingQueue
 
 private val TAG = BaseServiceBoundedActivity::class.java.name
 
@@ -36,12 +37,15 @@ open class BaseServiceBoundedActivity : AppCompatActivity() {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             Log.d(TAG, "onServiceConnected")
             if (service is AudioPlayerService.AudioServiceBinder) {
-                onConnectedToService(service.getPlayerInstance())
+                onConnectedToService(service.getPlayerInstance(), service.getNowPlayingQueue())
             }
         }
     }
 
-    open fun onConnectedToService(audioPlayerInstance: SimpleExoPlayer) {
+    open fun onConnectedToService(
+        audioPlayerInstance: SimpleExoPlayer,
+        nowPlayingQueueInstance: NowPlayingQueue
+    ) {
         // client can override to take any action on service bind
     }
 

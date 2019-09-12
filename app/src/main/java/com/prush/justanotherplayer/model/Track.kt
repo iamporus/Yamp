@@ -113,4 +113,8 @@ open class Track() : Serializable {
             .artistName(artistName)
             .build()
     }
+
+    override fun toString(): String {
+        return title
+    }
 }

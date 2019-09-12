@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.source.ShuffleOrder
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -25,11 +26,13 @@ import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
 import java.util.*
+import kotlin.collections.ArrayList
 
 private val TAG: String = AudioPlayerService::class.java.name
 
 class AudioPlayerService : Service() {
 
+    private lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var mediaSessionConnector: MediaSessionConnector
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var playerNotificationManager: PlayerNotificationManager
@@ -44,6 +47,10 @@ class AudioPlayerService : Service() {
 
         fun getPlayerInstance(): SimpleExoPlayer {
             return simpleExoPlayer
+        }
+
+        fun getNowPlayingQueue(): NowPlayingQueue {
+            return nowPlayingQueue
         }
     }
 
@@ -74,6 +81,8 @@ class AudioPlayerService : Service() {
                 1,
                 null
             )
+
+        nowPlayingQueue = NowPlayingQueue()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -85,7 +94,7 @@ class AudioPlayerService : Service() {
 
                 val trackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
 
-                val shuffleTracks = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
+                val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
 
                 @Suppress("UNCHECKED_CAST")
                 val tracksList: List<Track> =
@@ -95,6 +104,42 @@ class AudioPlayerService : Service() {
                     Collections.rotate(tracksList, 0 - trackPosition)
 
                 val concatenatingMediaSource = ConcatenatingMediaSource()
+
+                nowPlayingQueue.nowPlayingTracks.clear()
+
+                if (shuffle) {
+
+                    val shuffledTracks = tracksList.shuffled()
+                    val shuffledOrder = mutableSetOf<Int>()
+
+                    nowPlayingQueue.nowPlayingTracks.addAll(shuffledTracks)
+
+                    for (track in tracksList) {
+
+                        shuffledTracks.forEachIndexed { index, newTrack ->
+                            if (newTrack.id == track.id) {
+                                shuffledOrder.add(index)
+                            }
+                        }
+                    }
+
+                    concatenatingMediaSource.setShuffleOrder(
+                        ShuffleOrder.DefaultShuffleOrder(
+                            shuffledOrder.toIntArray(),
+                            2
+                        )
+                    )
+
+                    (tracksList as ArrayList).apply {
+                        clear()
+                        addAll(shuffledTracks)
+                    }
+
+                } else {
+                    nowPlayingQueue.nowPlayingTracks.addAll(tracksList)
+                }
+
+                Log.d(TAG, "Now Playing Queue - $tracksList")
 
                 for (track in tracksList) {
 
@@ -107,7 +152,6 @@ class AudioPlayerService : Service() {
                     concatenatingMediaSource.addMediaSource(mediaSource)
                 }
 
-                simpleExoPlayer.shuffleModeEnabled = shuffleTracks
                 simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ALL
                 simpleExoPlayer.prepare(concatenatingMediaSource)
                 simpleExoPlayer.playWhenReady = true
