@@ -44,8 +44,9 @@
             android:id="@+id/shortPlaybackControls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true">
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toStartOf="@id/nowPlayingQueueButton"
+            android:layout_toLeftOf="@+id/nowPlayingQueueButton">
 
         <ImageButton
                 android:id="@id/exo_play"
@@ -66,4 +67,15 @@
                 android:padding="16dp" />
 
     </FrameLayout>
+
+    <ImageView
+            android:id="@+id/nowPlayingQueueButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:visibility="visible"
+            android:contentDescription="@string/play_action"
+            android:src="@drawable/ic_queue_music" />
+
 </RelativeLayout>

@@ -6,12 +6,12 @@ import com.prush.justanotherplayer.repositories.ITrackRepository
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-private val TAG = BaseActivityPresenter::class.java.name
+private val TAG = NowPlayingPresenter::class.java.name
 
-class BaseActivityPresenter(
-    private val view: BaseContract.View,
+class NowPlayingPresenter(
+    private val view: NowPlayingContract.View,
     private val trackRepository: ITrackRepository
-) : BaseContract.Presenter, CoroutineScope {
+) : NowPlayingContract.Presenter, CoroutineScope {
 
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)

@@ -2,6 +2,7 @@ package com.prush.justanotherplayer.base
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +19,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.NowPlayingQueue
+import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
@@ -26,12 +28,11 @@ import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 private val TAG = BaseNowPlayingActivity::class.java.name
 
 @SuppressLint("Registered")
-abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContract.View,
+abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlayingContract.View,
     Player.EventListener {
 
     private lateinit var audioPlayer: SimpleExoPlayer
-    private lateinit var nowPlayingQueue: NowPlayingQueue
-    private lateinit var presenter: BaseActivityPresenter
+    private lateinit var nowPlayingPresenter: NowPlayingPresenter
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -53,7 +54,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
 
         setBottomSheet()
 
-        presenter = BaseActivityPresenter(
+        nowPlayingPresenter = NowPlayingPresenter(
             this,
             Injection.provideTrackRepository()
         )
@@ -83,7 +84,6 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
     ) {
 
         audioPlayer = audioPlayerInstance
-        nowPlayingQueue = nowPlayingQueueInstance
 
         playerControlView.player = audioPlayer
         shortPlayerControlView.player = audioPlayer
@@ -91,11 +91,12 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
         audioPlayer.addListener(this@BaseNowPlayingActivity)
 
         if (audioPlayer.currentTag != null)
-            presenter.fetchTrackMetadata(audioPlayerInstance.currentTag as Long)
+            nowPlayingPresenter.fetchTrackMetadata(audioPlayerInstance.currentTag as Long)
     }
 
     private fun setBottomSheet() {
 
+        nowPlayingQueueButton.setOnClickListener { navigateToNowPlayingQueue() }
         nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
 
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
@@ -120,6 +121,12 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
             }
 
         })
+    }
+
+    private fun navigateToNowPlayingQueue() {
+
+        val intent = Intent(this, QueueActivity::class.java)
+        startActivity(intent)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -160,6 +167,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
             albumArtImageView.alpha = 0f
         }
 
+        nowPlayingQueueButton.visibility = View.VISIBLE
         //TODO: figure out how to propagate this to tracksPresenter
 //        tracksPresenter.setNowPlayingTrack(track.id)
     }
@@ -171,8 +179,11 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
             PlaybackState.STATE_PAUSED -> {
 
                 if (audioPlayer.currentTag != null)
-                    presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+                    nowPlayingPresenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
 
+            }
+            PlaybackState.STATE_NONE, PlaybackState.STATE_STOPPED -> {
+                nowPlayingQueueButton.visibility = View.GONE
             }
             else -> {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -183,7 +194,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
     // gets called when current track playback completes and playback of next track starts
     override fun onPositionDiscontinuity(reason: Int) {
         if (audioPlayer.currentTag != null)
-            presenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+            nowPlayingPresenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
     }
 
     override fun displayError(error: String) {
@@ -213,6 +224,6 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), BaseContra
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.onCleanup()
+        nowPlayingPresenter.onCleanup()
     }
 }

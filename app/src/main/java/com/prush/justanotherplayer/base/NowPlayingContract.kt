@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.model.Track
 
-interface BaseContract {
+interface NowPlayingContract {
 
     interface View {
 

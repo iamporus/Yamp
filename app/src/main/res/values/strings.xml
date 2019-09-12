@@ -13,4 +13,5 @@
     <string name="empty_library">empty library</string>
     <string name="empty_library_info">Fill up some tracks in your phone to see them here.</string>
     <string name="shuffle_all">Shuffle All</string>
+    <string name="by_artist">by %s</string>
 </resources>
