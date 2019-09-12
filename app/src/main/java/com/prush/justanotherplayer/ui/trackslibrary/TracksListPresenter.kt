@@ -2,6 +2,7 @@ package com.prush.justanotherplayer.ui.trackslibrary
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -95,7 +96,18 @@ open class TracksListPresenter : ListPresenter<Track> {
                             rowView.setAlbumArt(resource)
                         }
 
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            super.onLoadFailed(errorDrawable)
+                            rowView.setAlbumArt(
+                                BitmapFactory.decodeResource(
+                                    context.resources,
+                                    R.drawable.playback_track_icon
+                                )
+                            )
+                        }
+
                     })
+
             }
         }
 
