@@ -22,6 +22,7 @@ open class TrackViewHolder(itemView: View) : BaseViewHolder(itemView), TrackItem
         when (state) {
             Track_State.PLAYED -> {
                 container.alpha = 0.5f
+                nowPlayingImageView.visibility = View.INVISIBLE
             }
             Track_State.PLAYING, Track_State.PAUSED -> {
                 container.alpha = 1f

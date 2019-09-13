@@ -122,6 +122,7 @@ open class TracksListPresenter : ListPresenter<Track> {
     override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {
         if (this.itemsList.isNotEmpty()) {
 
+            //TODO: Fix now playing queue not updating issue
             val trackDiffCallback = TrackDiffCallback(this.itemsList, itemsList)
             val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
 
