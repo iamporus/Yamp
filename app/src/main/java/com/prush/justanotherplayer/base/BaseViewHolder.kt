@@ -17,6 +17,11 @@ class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
             listener.onItemClick(position)
         }
     }
+
+    fun setActionText(text: String) {
+        val button: MaterialButton = itemView.findViewById(R.id.headerActionButton)
+        button.text = text
+    }
 }
 
 open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),

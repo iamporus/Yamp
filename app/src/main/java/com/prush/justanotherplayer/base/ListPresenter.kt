@@ -9,7 +9,15 @@ interface ListPresenter<T> {
 
     var rowLayoutId: Int
 
-    fun getItemsCount(): Int
+    fun getItemsCount(): Int {
+
+        return if (isHeaderAdded() && isHeaderActionAdded())
+            itemsList.size + 2
+        else if (isHeaderAdded() || isHeaderActionAdded())
+            itemsList.size + 1
+        else
+            itemsList.size
+    }
 
     fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int): BaseViewHolder
 
@@ -24,6 +32,8 @@ interface ListPresenter<T> {
     fun setItemsList(itemsList: MutableList<T>, adapter: RecyclerAdapter<T>)
 
     fun isHeaderAdded(): Boolean = false
+
+    fun isHeaderActionAdded(): Boolean = false
 
     fun getListHeaderRowLayout() = -1
 

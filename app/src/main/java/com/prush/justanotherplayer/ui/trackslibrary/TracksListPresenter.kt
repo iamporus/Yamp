@@ -26,20 +26,12 @@ open class TracksListPresenter : ListPresenter<Track> {
         return R.layout.header_list_item_action_row
     }
 
-    override fun isHeaderAdded(): Boolean {
+    override fun isHeaderActionAdded(): Boolean {
         return true
     }
 
-    override fun getItemsCount(): Int {
-
-        return if (isHeaderAdded())
-            itemsList.size + 1
-        else
-            itemsList.size
-    }
-
     override fun getItemViewType(position: Int): Int {
-        return if (isHeaderAdded())
+        return if (isHeaderActionAdded())
             when (position) {
 
                 0 -> RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal
@@ -76,23 +68,22 @@ open class TracksListPresenter : ListPresenter<Track> {
         listener: RecyclerAdapter.OnItemClickListener
     ) {
 
-        val trackPosition = if (isHeaderAdded()) position - 1 else position
-
         when (itemViewType) {
             RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_ACTION_VIEW.ordinal -> {
                 (rowView as HeaderViewHolder).apply {
-                    setOnClickListener(trackPosition, listener)
+                    setActionText(context.getString(R.string.shuffle_all))
+                    setOnClickListener(position, listener)
                 }
             }
             else -> {
-                val track = itemsList[trackPosition]
+                val track = itemsList[position]
 
                 (rowView as TrackItemRow).apply {
 
                     setTitle(track.title)
                     setSubtitle(track.artistName + " - " + track.albumName)
                     markAsNowPlaying(track.isCurrentlyPlaying)
-                    setOnClickListener(trackPosition, listener)
+                    setOnClickListener(position, listener)
                 }
 
                 Glide.with(context)

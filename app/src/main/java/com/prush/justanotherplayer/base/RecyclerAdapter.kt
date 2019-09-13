@@ -23,11 +23,18 @@ class RecyclerAdapter<T>(
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
 
+        val newPosition = if (listPresenter.isHeaderAdded() && listPresenter.isHeaderActionAdded())
+            position - 2
+        else if (listPresenter.isHeaderAdded() || listPresenter.isHeaderActionAdded())
+            position - 1
+        else
+            position
+
         listPresenter.onBindTrackRowViewAtPosition(
             holder.itemView.context,
             holder,
             holder.itemViewType,
-            position,
+            newPosition,
             itemClickListener
         )
     }

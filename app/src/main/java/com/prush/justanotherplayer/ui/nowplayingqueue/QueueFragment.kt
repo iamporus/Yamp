@@ -8,18 +8,9 @@ import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.NowPlayingQueue
-import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = QueueFragment::class.java.name
-
-class QueueListPresenter : TracksListPresenter() {
-
-    override fun isHeaderAdded(): Boolean {
-        return false
-    }
-
-}
 
 class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
     RecyclerAdapter.OnItemClickListener, OnConnectedToService {

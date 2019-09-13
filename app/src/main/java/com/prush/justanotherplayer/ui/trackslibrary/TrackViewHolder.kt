@@ -21,6 +21,6 @@ open class TrackViewHolder(itemView: View) : BaseViewHolder(itemView), TrackItem
 
     override fun setTrackNumber(trackNumber: Int) {
         val trackNumberTextView: TextView = itemView.findViewById(R.id.trackNumberTextView)
-        trackNumberTextView.text = trackNumber.toString()
+        trackNumberTextView.text = if (trackNumber > 0) trackNumber.toString() else "-"
     }
 }

@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/scrim"
             android:padding="8dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -16,7 +17,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:titleEnabled="false">
         <androidx.appcompat.widget.Toolbar
@@ -49,8 +49,8 @@
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                android:paddingBottom="24dp"
+                android:background="@android:color/transparent"
+                android:paddingBottom="12dp"
                 app:tabIndicatorColor="@color/colorAccent" />
 
     </androidx.viewpager.widget.ViewPager>

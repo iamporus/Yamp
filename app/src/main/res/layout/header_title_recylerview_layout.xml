@@ -70,6 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#000000"
+                android:layout_marginTop="12dp"
                 tools:listitem="@layout/track_list_item_row" />
 
         <androidx.core.widget.ContentLoadingProgressBar
