@@ -15,6 +15,8 @@ interface QueueContract {
 
         fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
 
+        fun updateNowPlaying()
+
         fun getViewActivity(): AppCompatActivity
 
         fun getApplicationContext(): Context

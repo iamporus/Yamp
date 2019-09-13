@@ -25,13 +25,14 @@ import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.model.Track_State
 import java.util.*
-import kotlin.collections.ArrayList
 
 private val TAG: String = AudioPlayerService::class.java.name
 
 class AudioPlayerService : Service() {
 
+    private lateinit var playbackEventListener: PlaybackEventListener
     private lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var mediaSessionConnector: MediaSessionConnector
     private lateinit var mediaSession: MediaSessionCompat
@@ -83,6 +84,10 @@ class AudioPlayerService : Service() {
             )
 
         nowPlayingQueue = NowPlayingQueue()
+
+        playbackEventListener = PlaybackEventListener(simpleExoPlayer, nowPlayingQueue)
+
+        simpleExoPlayer.addListener(playbackEventListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -105,14 +110,22 @@ class AudioPlayerService : Service() {
 
                 val concatenatingMediaSource = ConcatenatingMediaSource()
 
-                nowPlayingQueue.trackList.clear()
+                nowPlayingQueue.apply {
+                    currentPlayingTrackIndex = 0
+                    trackList.clear()
+                }
+
 
                 if (shuffle) {
 
                     val shuffledTracks = tracksList.shuffled()
                     val shuffledOrder = mutableSetOf<Int>()
 
-                    nowPlayingQueue.trackList.addAll(shuffledTracks)
+
+                    nowPlayingQueue.apply {
+                        trackList.addAll(shuffledTracks)
+                        trackList[currentPlayingTrackIndex].state = Track_State.PLAYING
+                    }
 
                     for (track in tracksList) {
 
@@ -136,17 +149,20 @@ class AudioPlayerService : Service() {
                     }
 
                 } else {
-                    nowPlayingQueue.trackList.addAll(tracksList)
+                    nowPlayingQueue.apply {
+                        trackList.addAll(tracksList)
+                        trackList[currentPlayingTrackIndex].state = Track_State.PLAYING
+                    }
                 }
 
                 Log.d(TAG, "Now Playing Queue - $tracksList")
 
-                for (track in tracksList) {
+                tracksList.forEachIndexed { index, track ->
 
                     val uri: Uri = track.getPlaybackUri()
                     val mediaSource =
                         ProgressiveMediaSource.Factory(dataSourceFactory)
-                            .setTag(track.id)
+                            .setTag(NowPlayingInfo(track.id, index))
                             .createMediaSource(uri)
 
                     concatenatingMediaSource.addMediaSource(mediaSource)
@@ -165,6 +181,7 @@ class AudioPlayerService : Service() {
         }
         return START_STICKY
     }
+
 
     private fun setupMediaSessionConnector(context: Context, tracksList: List<Track>) {
 
@@ -241,6 +258,7 @@ class AudioPlayerService : Service() {
         mediaSession.release()
         mediaSessionConnector.setPlayer(null)
         playerNotificationManager.setPlayer(null)
+        simpleExoPlayer.removeListener(playbackEventListener)
         simpleExoPlayer.release()
 
     }

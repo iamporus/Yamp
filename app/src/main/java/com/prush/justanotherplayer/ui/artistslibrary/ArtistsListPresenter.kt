@@ -67,7 +67,6 @@ class ArtistsListPresenter : ListPresenter<Artist> {
             val trackDiffCallback = ArtistDiffCallback(this.itemsList, itemsList)
             val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
 
-            this.itemsList = itemsList
             diffResult.dispatchUpdatesTo(adapter)
         } else {
 

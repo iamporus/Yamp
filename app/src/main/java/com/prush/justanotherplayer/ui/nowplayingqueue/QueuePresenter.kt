@@ -27,6 +27,7 @@ class QueuePresenter(
         launch {
             try {
 
+                tracksList.clear()
                 tracksList.addAll(queueManager.getNowPlayingTracks())
 
                 withContext(Dispatchers.Main) {

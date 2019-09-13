@@ -25,13 +25,13 @@ class TracksPresenter(
         launch {
             try {
 
-                val trackList = trackRepository.getAllTracks(view.getApplicationContext())
+                tracksList.clear()
+                tracksList.addAll(trackRepository.getAllTracks(view.getApplicationContext()))
                 withContext(Dispatchers.Main) {
-                    if (trackList.isEmpty())
+                    if (tracksList.isEmpty())
                         view.displayEmptyLibrary()
                     else {
-                        view.displayLibraryTracks(trackList)
-                        this@TracksPresenter.tracksList = trackList
+                        view.displayLibraryTracks(tracksList)
                     }
 
                     view.hideProgress()
@@ -63,33 +63,7 @@ class TracksPresenter(
     }
 
     override fun setNowPlayingTrack(trackId: Long) {
-        Log.d(TAG, "setNowPlayingTrack $trackId")
-
-        launch {
-            try {
-                val trackList = trackRepository.getAllTracks(view.getApplicationContext())
-
-                withContext(Dispatchers.Main) {
-                    if (trackList.isNotEmpty()) {
-                        val index = trackList.indexOfFirst { it.id == trackId }
-                        if (index != -1) {
-                            val track = trackList[index]
-
-                            track.isCurrentlyPlaying = true
-
-                            trackList[index] = track
-                            view.displayLibraryTracks(trackList)
-                        }
-                    }
-                }
-
-            } catch (e: RuntimeException) {
-                e.printStackTrace()
-                Log.d(TAG, "Exception: ${e.message}")
-                view.displayError()
-            }
-
-        }
+        //TODO:
     }
 
     override fun onCleanup() {

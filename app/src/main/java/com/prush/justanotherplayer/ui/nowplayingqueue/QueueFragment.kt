@@ -50,6 +50,10 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
 //        Util.startForegroundService(getViewActivity(), intent)
     }
 
+    override fun updateNowPlaying() {
+        queuePresenter.loadNowPlayingTracks()
+    }
+
     override fun displayEmptyQueue() {
         Log.d(TAG, "Oops found empty")
         showEmptyLibrary()

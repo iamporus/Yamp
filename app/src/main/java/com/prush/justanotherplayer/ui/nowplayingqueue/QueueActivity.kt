@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
@@ -13,12 +14,15 @@ import com.prush.justanotherplayer.base.NowPlayingContract
 import com.prush.justanotherplayer.base.NowPlayingPresenter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.NowPlayingInfo
 import com.prush.justanotherplayer.services.NowPlayingQueue
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.base_container_layout.*
 
-class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View {
+class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Player.EventListener {
 
+    private lateinit var nowPlayingQueue: NowPlayingQueue
+    private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var queueFragment: QueueFragment
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
 
@@ -63,7 +67,15 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View {
     ) {
         super.onConnectedToService(audioPlayerInstance, nowPlayingQueueInstance)
 
-        nowPlayingPresenter.fetchTrackMetadata(audioPlayerInstance.currentTag as Long)
+        audioPlayer = audioPlayerInstance
+        nowPlayingQueue = nowPlayingQueueInstance
+
+        audioPlayer.addListener(this)
+
+        if (audioPlayerInstance.currentTag != null) {
+            val nowPlayingInfo: NowPlayingInfo = audioPlayerInstance.currentTag as NowPlayingInfo
+            nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
+        }
         queueFragment.onConnectedToService(nowPlayingQueueInstance)
     }
 
@@ -81,6 +93,15 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View {
             .error(R.drawable.playback_track_icon)
             .into(headerAlbumArtImageView)
 
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+        queueFragment.updateNowPlaying()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        audioPlayer.removeListener(this)
     }
 
     override fun getViewActivity(): AppCompatActivity {

@@ -1,17 +1,25 @@
 package com.prush.justanotherplayer.ui.nowplayingqueue
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
 import com.prush.justanotherplayer.base.HeaderViewHolder
 import com.prush.justanotherplayer.base.ItemRowView
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.ui.trackslibrary.TrackItemRow
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
+import com.prush.justanotherplayer.utils.getAlbumArtUri
 
 class QueueListPresenter : TracksListPresenter() {
 
@@ -67,8 +75,45 @@ class QueueListPresenter : TracksListPresenter() {
                     }
                 }
             }
-        } else
-            super.onBindTrackRowViewAtPosition(context, rowView, itemViewType, position, listener)
+        } else {
+
+            val track = itemsList[position]
+
+            (rowView as TrackItemRow).apply {
+
+                setTitle(track.title)
+                setSubtitle(track.artistName + " - " + track.albumName)
+                setTrackState(track.state)
+                setOnClickListener(position, listener)
+            }
+
+            Glide.with(context)
+                .asBitmap()
+                .load(getAlbumArtUri(context, track.albumId))
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {
+
+                    }
+
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        rowView.setAlbumArt(resource)
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        rowView.setAlbumArt(
+                            BitmapFactory.decodeResource(
+                                context.resources,
+                                R.drawable.playback_track_icon
+                            )
+                        )
+                    }
+
+                })
+        }
     }
 
     override fun isHeaderAdded(): Boolean {

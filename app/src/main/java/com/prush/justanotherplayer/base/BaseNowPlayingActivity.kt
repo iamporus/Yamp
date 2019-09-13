@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.NowPlayingInfo
 import com.prush.justanotherplayer.services.NowPlayingQueue
 import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
 import com.prush.justanotherplayer.utils.getAlbumArtUri
@@ -90,8 +91,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         audioPlayer.addListener(this@BaseNowPlayingActivity)
 
-        if (audioPlayer.currentTag != null)
-            nowPlayingPresenter.fetchTrackMetadata(audioPlayerInstance.currentTag as Long)
+        if (audioPlayer.currentTag != null) {
+            val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
+            nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
+        }
     }
 
     private fun setBottomSheet() {
@@ -178,8 +181,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             PlaybackState.STATE_PLAYING,
             PlaybackState.STATE_PAUSED -> {
 
-                if (audioPlayer.currentTag != null)
-                    nowPlayingPresenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+                if (audioPlayer.currentTag != null) {
+                    val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
+                    nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
+                }
 
             }
             PlaybackState.STATE_NONE, PlaybackState.STATE_STOPPED -> {
@@ -193,8 +198,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
     // gets called when current track playback completes and playback of next track starts
     override fun onPositionDiscontinuity(reason: Int) {
-        if (audioPlayer.currentTag != null)
-            nowPlayingPresenter.fetchTrackMetadata(audioPlayer.currentTag as Long)
+        if (audioPlayer.currentTag != null) {
+            val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
+            nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
+        }
     }
 
     override fun displayError(error: String) {

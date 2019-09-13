@@ -68,6 +68,14 @@ fun getTrackByIdQuery(context: Context, id: Long): Cursor? {
     )
 }
 
+enum class Track_State {
+
+    PLAYING,
+    PAUSED,
+    PLAYED,
+    IN_QUEUE
+}
+
 open class Track() : Serializable {
 
     constructor(cursor: Cursor) : this() {
@@ -98,7 +106,7 @@ open class Track() : Serializable {
     var trackNumber: Int = 0
     var defaultAlbumArtRes: Int = 0
     var albumArtBitmap: Bitmap? = null
-    var isCurrentlyPlaying: Boolean = false
+    var state: Track_State = Track_State.IN_QUEUE
 
     fun getPlaybackUri(): Uri {
 

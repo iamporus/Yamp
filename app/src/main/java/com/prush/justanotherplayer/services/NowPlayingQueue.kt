@@ -1,11 +1,29 @@
 package com.prush.justanotherplayer.services
 
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.model.Track_State
+import kotlin.properties.Delegates
+
+class NowPlayingInfo(var id: Long, var index: Int)
 
 class NowPlayingQueue : QueueManager {
 
     var trackList = mutableListOf<Track>()
-    var currentPlayingTrackIndex: Int = 0
+
+    var currentPlayingTrackIndex: Int by Delegates.observable(0) { _, oldValue, newValue ->
+        onCurrentPlayingTrackChanged?.invoke(oldValue, newValue)
+    }
+
+    var onCurrentPlayingTrackChanged: ((Int, Int) -> Unit)? = { oldIndex, newIndex ->
+        trackList.forEachIndexed { index, track ->
+            if (index == newIndex)
+                track.state = Track_State.PLAYING
+            else if (index == oldIndex)
+                track.state = Track_State.PLAYED
+        }
+    }
+
+    var currentPlayingTrackId: Long = 0
 
     override suspend fun getNowPlayingTracks(): MutableList<Track> {
         return trackList

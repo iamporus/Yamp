@@ -82,7 +82,7 @@ open class TracksListPresenter : ListPresenter<Track> {
 
                     setTitle(track.title)
                     setSubtitle(track.artistName + " - " + track.albumName)
-                    markAsNowPlaying(track.isCurrentlyPlaying)
+                    setTrackState(track.state)
                     setOnClickListener(position, listener)
                 }
 
@@ -125,7 +125,6 @@ open class TracksListPresenter : ListPresenter<Track> {
             val trackDiffCallback = TrackDiffCallback(this.itemsList, itemsList)
             val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
 
-            this.itemsList = itemsList
             diffResult.dispatchUpdatesTo(adapter)
         } else {
 
@@ -153,7 +152,7 @@ open class TracksListPresenter : ListPresenter<Track> {
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldTracksList[oldItemPosition].isCurrentlyPlaying == newTracksList[newItemPosition].isCurrentlyPlaying
+            return oldTracksList[oldItemPosition].state == newTracksList[newItemPosition].state
         }
 
     }
