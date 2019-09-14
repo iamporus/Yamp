@@ -190,12 +190,8 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         Log.d(TAG, "showNowPlayingTrackMetadata with ${track.title}")
 
         if (track.albumArtBitmap != null) {
-            shortAlbumArtImageView.setImageBitmap(track.albumArtBitmap)
             albumArtImageView.setImageBitmap(track.albumArtBitmap)
         } else {
-            Glide.with(this)
-                .load(getAlbumArtUri(this, track.albumId))
-                .into(shortAlbumArtImageView)
 
             Glide.with(this)
                 .asBitmap()
@@ -237,6 +233,8 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         }
 
         titleTextView.text = track.title
+        subtitleTextView.text = track.albumName
+
         nowPlayingTitleTextView.text = track.title
         nowPlayingSubtitleTextView.text = track.artistName
 

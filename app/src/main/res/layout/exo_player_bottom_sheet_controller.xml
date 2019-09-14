@@ -7,46 +7,54 @@
     <com.google.android.exoplayer2.ui.DefaultTimeBar
             android:id="@id/exo_progress"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="2dp"
+            android:layout_alignParentTop="true"
             app:buffered_color="#222222"
             app:played_color="@color/colorAccent"
             app:scrubber_drawable="@android:color/transparent"
             app:unplayed_color="#222222" />
 
-    <ImageView
-            android:id="@+id/shortAlbumArtImageView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_below="@+id/exo_progress"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            android:contentDescription="@string/album_art" />
-
-    <TextView
-            android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:id="@+id/shortMetadataLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            android:layout_toStartOf="@id/shortPlaybackControls"
-            android:layout_toLeftOf="@id/shortPlaybackControls"
-            android:layout_toEndOf="@id/shortAlbumArtImageView"
-            android:layout_toRightOf="@id/shortAlbumArtImageView"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_toStartOf="@id/nowPlayingQueueButton"
+            android:layout_toLeftOf="@id/nowPlayingQueueButton"
+            android:layout_toEndOf="@id/shortPlaybackControls"
+            android:layout_toRightOf="@id/shortPlaybackControls"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp" />
+
+        <TextView
+                android:id="@+id/subtitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="14sp" />
+    </LinearLayout>
+
 
     <FrameLayout
             android:id="@+id/shortPlaybackControls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignWithParentIfMissing="true"
-            android:layout_toStartOf="@id/nowPlayingQueueButton"
-            android:layout_toLeftOf="@+id/nowPlayingQueueButton">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true">
 
         <ImageButton
                 android:id="@id/exo_play"
@@ -73,9 +81,9 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="end"
-            android:visibility="visible"
             android:contentDescription="@string/play_action"
             android:padding="8dp"
-            android:src="@drawable/ic_queue_music" />
+            android:src="@drawable/ic_queue_music"
+            android:visibility="visible" />
 
 </RelativeLayout>
