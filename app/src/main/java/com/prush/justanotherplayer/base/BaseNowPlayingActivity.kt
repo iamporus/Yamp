@@ -3,14 +3,21 @@ package com.prush.justanotherplayer.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -100,7 +107,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
     private fun setBottomSheet() {
 
         nowPlayingQueueButton.setOnClickListener { navigateToNowPlayingQueue() }
-        nowPlayingBottomSheet.setOnClickListener { toggleSheetBehavior() }
+        bottomSheetToolbar.setOnClickListener { toggleSheetBehavior() }
 
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -111,6 +118,17 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
                 when (state) {
                     BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
                         albumArtImageView.alpha = 0f
+                        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                        setSupportActionBar(bottomSheetToolbar)
+                        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                        bottomSheetToolbar.title = ""
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED ->{
+                        shortPlayerControlView.alpha = 0f
+                        albumArtImageView.alpha = 1f
+                        bottomSheetToolbar.alpha = 1f
                     }
                     else -> {
                         //do nothing
@@ -121,6 +139,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 shortPlayerControlView.alpha = (1 - slideOffset)
                 albumArtImageView.alpha = slideOffset
+                bottomSheetToolbar.alpha = slideOffset
             }
 
         })
@@ -137,8 +156,11 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
 
@@ -153,16 +175,43 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             Glide.with(this)
                 .load(getAlbumArtUri(this, track.albumId))
                 .into(shortAlbumArtImageView)
+
             Glide.with(this)
+                .asBitmap()
                 .load(getAlbumArtUri(this, track.albumId))
                 .placeholder(R.drawable.playback_track_icon)
-                .into(albumArtImageView)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {
+
+                    }
+
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        albumArtImageView.setImageBitmap(resource)
+                        Palette.from(resource).generate { palette ->
+                            val textSwatch = palette?.darkMutedSwatch
+                            if (textSwatch == null)
+                                Log.d(TAG, "Swatch is null.")
+                            else {
+
+                                val gradientDrawable = GradientDrawable(
+                                    GradientDrawable.Orientation.TOP_BOTTOM,
+                                    intArrayOf(textSwatch.rgb, R.color.colorPrimary)
+                                )
+
+                                gradientView.background = gradientDrawable
+                            }
+                        }
+                    }
+
+                })
         }
 
         titleTextView.text = track.title
         nowPlayingTitleTextView.text = track.title
-        nowPlayingSubtitleTextView.text =
-            getString(R.string.now_playing_track_subtitle, track.albumName, track.artistName)
+        nowPlayingSubtitleTextView.text = track.artistName
 
         // pop up bottom sheet
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
@@ -171,8 +220,8 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         }
 
         nowPlayingQueueButton.visibility = View.VISIBLE
-        //TODO: figure out how to propagate this to tracksPresenter
-//        tracksPresenter.setNowPlayingTrack(track.id)
+
+
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -215,6 +264,17 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             super.onBackPressed()
         }
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 
     override fun onStop() {
         super.onStop()

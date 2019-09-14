@@ -12,6 +12,20 @@
         app:behavior_peekHeight="?attr/actionBarSize"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
+    <View
+            android:id="@+id/gradientView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    <androidx.appcompat.widget.Toolbar
+            android:id="@+id/bottomSheetToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.exoplayer2.ui.PlayerControlView
             android:id="@+id/shortPlayerControlView"
             android:layout_width="0dp"
@@ -28,23 +42,22 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:contentDescription="@string/album_art"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/playback_track_icon"
-            app:layout_constraintBottom_toTopOf="@+id/playerControlView"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            />
 
     <LinearLayout
             android:id="@+id/metadataLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="#000000"
             android:orientation="vertical"
             android:padding="40dp"
             app:layout_constraintBottom_toTopOf="@+id/playerControlView"
-            app:layout_constraintEnd_toStartOf="@+id/albumArtImageView"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shortPlayerControlView">
 
         <TextView
@@ -52,24 +65,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:textSize="20sp" />
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
         <TextView
                 android:id="@+id/nowPlayingSubtitleTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:textSize="16sp" />
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="1"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="14sp" />
     </LinearLayout>
 
     <com.google.android.exoplayer2.ui.PlayerControlView
             android:id="@+id/playerControlView"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_below="@id/albumArtImageView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:controller_layout_id="@layout/exo_player_bottom_sheet_controller_large"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
             app:repeat_toggle_modes="all|one|none"
             app:show_timeout="0" />
 
