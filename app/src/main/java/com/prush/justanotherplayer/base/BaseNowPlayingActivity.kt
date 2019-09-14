@@ -3,6 +3,7 @@ package com.prush.justanotherplayer.base
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -65,7 +66,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         if (savedInstanceState != null) {
             bottomSheetState =
-                savedInstanceState.getInt(KEY_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+                savedInstanceState.getInt(
+                    KEY_BOTTOM_SHEET_STATE,
+                    BottomSheetBehavior.STATE_COLLAPSED
+                )
         }
 
         setBottomSheet(bottomSheetState)
@@ -213,8 +217,14 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
                                 Log.d(TAG, "Swatch is null.")
                             else {
 
+                                val orientation =
+                                    if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+                                        GradientDrawable.Orientation.TOP_BOTTOM
+                                    else
+                                        GradientDrawable.Orientation.LEFT_RIGHT
+
                                 val gradientDrawable = GradientDrawable(
-                                    GradientDrawable.Orientation.TOP_BOTTOM,
+                                    orientation,
                                     intArrayOf(textSwatch.rgb, R.color.colorPrimary)
                                 )
 
