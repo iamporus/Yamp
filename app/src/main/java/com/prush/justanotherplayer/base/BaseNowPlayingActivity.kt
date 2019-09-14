@@ -31,6 +31,7 @@ import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
+import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller_large.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 private val TAG = BaseNowPlayingActivity::class.java.name
@@ -125,7 +126,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
                         supportActionBar?.setDisplayHomeAsUpEnabled(true)
                         bottomSheetToolbar.title = ""
                     }
-                    BottomSheetBehavior.STATE_EXPANDED ->{
+                    BottomSheetBehavior.STATE_EXPANDED -> {
                         shortPlayerControlView.alpha = 0f
                         albumArtImageView.alpha = 1f
                         bottomSheetToolbar.alpha = 1f
@@ -213,6 +214,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         nowPlayingTitleTextView.text = track.title
         nowPlayingSubtitleTextView.text = track.artistName
 
+        shuffleBtn.setOnClickListener {
+            it.isActivated = !it.isActivated
+        }
+
         // pop up bottom sheet
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -241,6 +246,20 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             }
             else -> {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+        }
+    }
+
+    override fun onRepeatModeChanged(repeatMode: Int) {
+        when (repeatMode) {
+            Player.REPEAT_MODE_ONE -> {
+                exo_repeat_toggle.setImageResource(R.drawable.ic_repeat_one)
+            }
+            Player.REPEAT_MODE_ALL ->{
+                exo_repeat_toggle.setImageResource(R.drawable.ic_repeat)
+            }
+            Player.REPEAT_MODE_OFF -> {
+                exo_repeat_toggle.setImageResource(R.drawable.ic_repeat_off)
             }
         }
     }

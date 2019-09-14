@@ -43,8 +43,8 @@
 
 
     <ImageButton
-            android:id="@+id/shuffle"
-            style="@style/ExoMediaButton.Shuffle"
+            android:id="@+id/shuffleBtn"
+            style="@style/ExoMediaButton"
             android:layout_width="wrap_content"
             android:padding="8dp"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
             android:contentDescription="@string/shuffle_action"
-            android:src="@drawable/ic_shuffle" />
+            android:src="@drawable/shuffle_selector" />
 
 
     <ImageButton
@@ -109,7 +109,7 @@
             android:src="@drawable/ic_skip_next" />
 
     <ImageButton
-            android:id="@+id/repeat_toggle"
+            android:id="@+id/exo_repeat_toggle"
             style="@style/ExoMediaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,7 +118,6 @@
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
             android:padding="8dp"
-            android:contentDescription="@string/repeat_action"
-            android:src="@drawable/ic_repeat" />
+            android:contentDescription="@string/repeat_action" />
 
 </RelativeLayout>

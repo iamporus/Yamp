@@ -105,6 +105,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
+            app:repeat_toggle_modes="all|one|none"
             app:layout_constraintStart_toStartOf="parent"
             app:show_timeout="0" />
 
