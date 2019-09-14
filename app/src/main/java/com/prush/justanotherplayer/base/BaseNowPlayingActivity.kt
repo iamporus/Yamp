@@ -35,6 +35,7 @@ import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller_large.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 private val TAG = BaseNowPlayingActivity::class.java.name
+private val KEY_BOTTOM_SHEET_STATE = "bottomSheetState"
 
 @SuppressLint("Registered")
 abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlayingContract.View,
@@ -42,6 +43,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
+    private var bottomSheetState: Int = BottomSheetBehavior.STATE_COLLAPSED
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -61,7 +63,12 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         setSupportActionBar(toolbar)
 
-        setBottomSheet()
+        if (savedInstanceState != null) {
+            bottomSheetState =
+                savedInstanceState.getInt(KEY_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_COLLAPSED)
+        }
+
+        setBottomSheet(bottomSheetState)
 
         nowPlayingPresenter = NowPlayingPresenter(
             this,
@@ -105,17 +112,26 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         }
     }
 
-    private fun setBottomSheet() {
+    private fun setBottomSheet(defaultState: Int) {
 
         nowPlayingQueueButton.setOnClickListener { navigateToNowPlayingQueue() }
         bottomSheetToolbar.setOnClickListener { toggleSheetBehavior() }
 
         bottomSheetBehavior = BottomSheetBehavior.from(nowPlayingBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        if (defaultState == BottomSheetBehavior.STATE_EXPANDED) {
+            shortPlayerControlView.alpha = 0f
+        } else {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         bottomSheetBehavior.setBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, state: Int) {
+                Log.d(TAG, "onStateChanged $state")
+
+                bottomSheetState = state
+
                 when (state) {
                     BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
                         albumArtImageView.alpha = 0f
@@ -255,7 +271,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             Player.REPEAT_MODE_ONE -> {
                 exo_repeat_toggle.setImageResource(R.drawable.ic_repeat_one)
             }
-            Player.REPEAT_MODE_ALL ->{
+            Player.REPEAT_MODE_ALL -> {
                 exo_repeat_toggle.setImageResource(R.drawable.ic_repeat)
             }
             Player.REPEAT_MODE_OFF -> {
@@ -306,6 +322,11 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             audioPlayer.removeListener(this)
         }
 
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(KEY_BOTTOM_SHEET_STATE, bottomSheetState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
