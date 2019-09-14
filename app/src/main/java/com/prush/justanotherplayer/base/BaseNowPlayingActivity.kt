@@ -137,19 +137,22 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
                 bottomSheetState = state
 
                 when (state) {
-                    BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
                         albumArtImageView.alpha = 0f
                         supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                        shortPlayerControlView.visibility = View.VISIBLE
                     }
                     BottomSheetBehavior.STATE_DRAGGING -> {
                         setSupportActionBar(bottomSheetToolbar)
                         supportActionBar?.setDisplayHomeAsUpEnabled(true)
                         bottomSheetToolbar.title = ""
+                        shortPlayerControlView.visibility = View.VISIBLE
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         shortPlayerControlView.alpha = 0f
                         albumArtImageView.alpha = 1f
                         bottomSheetToolbar.alpha = 1f
+                        shortPlayerControlView.visibility = View.INVISIBLE
                     }
                     else -> {
                         //do nothing
@@ -158,9 +161,11 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                shortPlayerControlView.alpha = (1 - slideOffset)
-                albumArtImageView.alpha = slideOffset
-                bottomSheetToolbar.alpha = slideOffset
+                if (slideOffset in 0f..1f) {
+                    shortPlayerControlView.alpha = (1 - slideOffset)
+                    albumArtImageView.alpha = slideOffset
+                    bottomSheetToolbar.alpha = slideOffset
+                }
             }
 
         })
@@ -177,9 +182,9 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         } else {
+            shortPlayerControlView.visibility = View.VISIBLE
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
@@ -233,7 +238,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         }
 
         titleTextView.text = track.title
-        subtitleTextView.text = track.albumName
+        subtitleTextView.text = track.artistName
 
         nowPlayingTitleTextView.text = track.title
         nowPlayingSubtitleTextView.text = track.artistName
