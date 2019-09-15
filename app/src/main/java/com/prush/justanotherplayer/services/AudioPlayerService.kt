@@ -27,6 +27,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.Track_State
 import java.util.*
+import kotlin.collections.ArrayList
 
 private val TAG: String = AudioPlayerService::class.java.name
 
@@ -94,6 +95,12 @@ class AudioPlayerService : Service() {
 
         Log.d(TAG, "Received ${intent?.action}")
 
+        val concatenatingMediaSource = ConcatenatingMediaSource()
+        var tracksList: ArrayList<Track> = ArrayList()
+
+        var resetPosition = true
+        var resetState = true
+
         when (intent?.action) {
             PlaybackControls.PLAY.name -> {
 
@@ -102,84 +109,155 @@ class AudioPlayerService : Service() {
                 val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
 
                 @Suppress("UNCHECKED_CAST")
-                val tracksList: List<Track> =
-                    intent.getSerializableExtra(TRACKS_LIST) as List<Track>
+                tracksList.addAll(intent.getSerializableExtra(TRACKS_LIST) as ArrayList<Track>)
 
                 if (trackPosition != -1)
                     Collections.rotate(tracksList, 0 - trackPosition)
 
-                val concatenatingMediaSource = ConcatenatingMediaSource()
 
                 nowPlayingQueue.apply {
                     currentPlayingTrackIndex = 0
-                    trackList.clear()
                 }
 
 
                 if (shuffle) {
 
-                    val shuffledTracks = tracksList.shuffled()
-                    val shuffledOrder = mutableSetOf<Int>()
+                    nowPlayingQueue.setNowPlayingTracks(tracksList.toMutableList(), true)
 
+                    tracksList =
+                        shuffleTracks(tracksList, concatenatingMediaSource) as ArrayList<Track>
 
                     nowPlayingQueue.apply {
-                        trackList.addAll(shuffledTracks)
+                        nowPlayingQueue.setNowPlayingTracks(tracksList.toMutableList())
                         trackList[currentPlayingTrackIndex].state = Track_State.PLAYING
-                    }
-
-                    for (track in tracksList) {
-
-                        shuffledTracks.forEachIndexed { index, newTrack ->
-                            if (newTrack.id == track.id) {
-                                shuffledOrder.add(index)
-                            }
-                        }
-                    }
-
-                    concatenatingMediaSource.setShuffleOrder(
-                        ShuffleOrder.DefaultShuffleOrder(
-                            shuffledOrder.toIntArray(),
-                            2
-                        )
-                    )
-
-                    (tracksList as ArrayList).apply {
-                        clear()
-                        addAll(shuffledTracks)
+                        shuffleEnabled = true
                     }
 
                 } else {
                     nowPlayingQueue.apply {
-                        trackList.addAll(tracksList)
+                        setNowPlayingTracks(tracksList.toMutableList())
                         trackList[currentPlayingTrackIndex].state = Track_State.PLAYING
                     }
                 }
 
-                Log.d(TAG, "Now Playing Queue - $tracksList")
 
+            }
+
+            PlaybackControls.SHUFFLE_OFF.name -> {
+
+                tracksList.addAll(nowPlayingQueue.trackListUnShuffled)
+
+                val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
+
+                var tempIndex = 0
                 tracksList.forEachIndexed { index, track ->
+                    if (nowPlayingInfo.id == track.id) {
 
-                    val uri: Uri = track.getPlaybackUri()
-                    val mediaSource =
-                        ProgressiveMediaSource.Factory(dataSourceFactory)
-                            .setTag(NowPlayingInfo(track.id, index))
-                            .createMediaSource(uri)
-
-                    concatenatingMediaSource.addMediaSource(mediaSource)
+                        tempIndex = index
+                        return@forEachIndexed
+                    }
                 }
 
-                simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ALL
-                simpleExoPlayer.prepare(concatenatingMediaSource)
-                simpleExoPlayer.playWhenReady = true
+                if (tempIndex != -1)
+                    Collections.rotate(tracksList, 0 - tempIndex)
 
-                val context: Context = this
 
-                setupPlayerNotification(context, tracksList)
+                nowPlayingQueue.apply {
+                    setNowPlayingTracks(tracksList.toMutableList())
+                    currentPlayingTrackIndex = 0
+                    shuffleEnabled = false
+                }
 
-                setupMediaSessionConnector(context, tracksList)
+                resetPosition = false
+
+            }
+            PlaybackControls.SHUFFLE_ON.name -> {
+
+                tracksList.addAll(nowPlayingQueue.trackListUnShuffled)
+
+                tracksList = shuffleTracks(tracksList, concatenatingMediaSource) as ArrayList<Track>
+
+                val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
+
+                var tempIndex = 0
+
+                tracksList.forEachIndexed { index, track ->
+                    if (nowPlayingInfo.id == track.id) {
+
+                        tempIndex = index
+                        return@forEachIndexed
+                    }
+                }
+
+                if (tempIndex != -1)
+                    Collections.rotate(tracksList, 0 - tempIndex)
+
+                nowPlayingQueue.apply {
+                    setNowPlayingTracks(tracksList.toMutableList())
+                    currentPlayingTrackIndex = 0
+                    shuffleEnabled = true
+                }
+
+                resetPosition = false
+
             }
         }
+
+        Log.d(TAG, "Now Playing Queue - $tracksList")
+        tracksList.forEachIndexed { index, track ->
+
+            val uri: Uri = track.getPlaybackUri()
+            val mediaSource =
+                ProgressiveMediaSource.Factory(dataSourceFactory)
+                    .setTag(NowPlayingInfo(track.id, index))
+                    .createMediaSource(uri)
+
+            concatenatingMediaSource.addMediaSource(mediaSource)
+        }
+
+        simpleExoPlayer.repeatMode = Player.REPEAT_MODE_ALL
+        simpleExoPlayer.prepare(concatenatingMediaSource, resetPosition, resetState)
+        simpleExoPlayer.playWhenReady = true
+
+        val context: Context = this
+
+        setupPlayerNotification(context, tracksList)
+
+        setupMediaSessionConnector(context, tracksList)
+
         return START_STICKY
+    }
+
+    private fun shuffleTracks(
+        tracksList: List<Track>,
+        concatenatingMediaSource: ConcatenatingMediaSource
+    ): List<Track> {
+
+        val shuffledTracks = tracksList.shuffled()
+        val shuffledOrder = mutableSetOf<Int>()
+
+        for (track in tracksList) {
+
+            shuffledTracks.forEachIndexed { index, newTrack ->
+                if (newTrack.id == track.id) {
+                    shuffledOrder.add(index)
+                }
+            }
+        }
+
+        concatenatingMediaSource.setShuffleOrder(
+            ShuffleOrder.DefaultShuffleOrder(
+                shuffledOrder.toIntArray(),
+                2
+            )
+        )
+
+        (tracksList as ArrayList).apply {
+            clear()
+            addAll(shuffledTracks)
+        }
+
+        return shuffledTracks
     }
 
 
@@ -265,6 +343,9 @@ class AudioPlayerService : Service() {
 
     enum class PlaybackControls {
         PLAY,
+        SHUFFLE_ON,
+        SHUFFLE_OFF,
+
     }
 
 }

@@ -21,11 +21,13 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.services.NowPlayingInfo
 import com.prush.justanotherplayer.services.NowPlayingQueue
 import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
@@ -36,12 +38,13 @@ import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller_large.*
 import kotlinx.android.synthetic.main.now_playing_bottom_sheet.*
 
 private val TAG = BaseNowPlayingActivity::class.java.name
-private val KEY_BOTTOM_SHEET_STATE = "bottomSheetState"
+private const val KEY_BOTTOM_SHEET_STATE = "bottomSheetState"
 
 @SuppressLint("Registered")
 abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlayingContract.View,
     Player.EventListener {
 
+    private lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
     private var bottomSheetState: Int = BottomSheetBehavior.STATE_COLLAPSED
@@ -104,6 +107,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
     ) {
 
         audioPlayer = audioPlayerInstance
+        nowPlayingQueue = nowPlayingQueueInstance
 
         playerControlView.player = audioPlayer
         shortPlayerControlView.player = audioPlayer
@@ -243,8 +247,10 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         nowPlayingTitleTextView.text = track.title
         nowPlayingSubtitleTextView.text = track.artistName
 
+        shuffleBtn.isActivated = nowPlayingQueue.shuffleEnabled
+
         shuffleBtn.setOnClickListener {
-            it.isActivated = !it.isActivated
+            nowPlayingPresenter.changeShuffleMode(!nowPlayingQueue.shuffleEnabled)
         }
 
         // pop up bottom sheet
@@ -255,7 +261,18 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
         nowPlayingQueueButton.visibility = View.VISIBLE
 
+    }
 
+    override fun updateShuffleMode(shuffleMode: Boolean) {
+        shuffleBtn.isActivated = shuffleMode
+
+        val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
+
+        intent.action = if (shuffleMode)
+            AudioPlayerService.PlaybackControls.SHUFFLE_ON.name
+        else
+            AudioPlayerService.PlaybackControls.SHUFFLE_OFF.name
+        Util.startForegroundService(getViewActivity(), intent)
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

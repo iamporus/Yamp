@@ -10,6 +10,9 @@ class NowPlayingQueue : QueueManager {
 
     var trackList = mutableListOf<Track>()
 
+    var trackListUnShuffled = mutableListOf<Track>()
+    var shuffleEnabled: Boolean = false
+
     var currentPlayingTrackIndex: Int by Delegates.observable(0) { _, oldValue, newValue ->
         onCurrentPlayingTrackChanged?.invoke(oldValue, newValue)
     }
@@ -27,6 +30,16 @@ class NowPlayingQueue : QueueManager {
 
     override suspend fun getNowPlayingTracks(): MutableList<Track> {
         return trackList
+    }
+
+    override fun setNowPlayingTracks(tracksList: MutableList<Track>, keepCopy: Boolean) {
+        trackList.clear()
+        trackList.addAll(tracksList)
+
+        if (keepCopy) {
+            trackListUnShuffled.clear()
+            trackListUnShuffled.addAll(tracksList)
+        }
     }
 
     override fun addTrackToQueue(track: Track) {

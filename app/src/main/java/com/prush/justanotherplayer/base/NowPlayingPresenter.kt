@@ -36,6 +36,10 @@ class NowPlayingPresenter(
         }
     }
 
+    override fun changeShuffleMode(shuffleMode: Boolean) {
+        view.updateShuffleMode(shuffleMode)
+    }
+
     override fun onCleanup() {
         job.cancel()
     }

@@ -6,6 +6,8 @@ interface QueueManager {
 
     suspend fun getNowPlayingTracks(): MutableList<Track>
 
+    fun setNowPlayingTracks(tracksList: MutableList<Track>, keepCopy: Boolean = false)
+
     fun addTrackToQueue(track: Track)
 
     fun removeTrackFromQueue(track: Track)

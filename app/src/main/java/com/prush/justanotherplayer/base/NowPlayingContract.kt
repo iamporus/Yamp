@@ -15,6 +15,8 @@ interface NowPlayingContract {
         fun showNowPlayingTrackMetadata(track: Track)
 
         fun getContext(): Context
+
+        fun updateShuffleMode(shuffleMode: Boolean)
     }
 
     interface Presenter {
@@ -22,5 +24,7 @@ interface NowPlayingContract {
         fun fetchTrackMetadata(trackId: Long)
 
         fun onCleanup()
+
+        fun changeShuffleMode(shuffleMode: Boolean)
     }
 }

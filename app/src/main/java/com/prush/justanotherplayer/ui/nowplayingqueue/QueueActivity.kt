@@ -95,6 +95,10 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Pla
 
     }
 
+    override fun updateShuffleMode(shuffleMode: Boolean) {
+       //nothing TODO here
+    }
+
     override fun onPositionDiscontinuity(reason: Int) {
         queueFragment.updateNowPlaying()
     }
