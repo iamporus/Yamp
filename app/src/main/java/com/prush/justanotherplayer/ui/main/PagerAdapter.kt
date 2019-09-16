@@ -9,7 +9,7 @@ import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.ui.genreslibrary.GenresLibraryFragment
 import com.prush.justanotherplayer.ui.trackslibrary.TracksLibraryFragment
 
-class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
 

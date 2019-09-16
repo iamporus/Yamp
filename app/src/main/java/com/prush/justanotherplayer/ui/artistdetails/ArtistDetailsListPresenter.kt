@@ -12,7 +12,7 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 
 open class ArtistDetailsListPresenter(var onCarousalItemClickListener: RecyclerAdapter.OnCarousalItemClickListener) :
-    ListPresenter<Track>, RecyclerAdapter.OnItemClickListener {
+    ListPresenter<Track>, RecyclerAdapter.OnItemInteractedListener {
 
     override var itemsList: MutableList<Track> = mutableListOf()
 
@@ -74,7 +74,7 @@ open class ArtistDetailsListPresenter(var onCarousalItemClickListener: RecyclerA
         rowView: ItemRowView,
         itemViewType: Int,
         position: Int,
-        listener: RecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemInteractedListener
     ) {
 
         when (itemViewType) {

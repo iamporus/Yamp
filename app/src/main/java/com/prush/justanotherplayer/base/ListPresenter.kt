@@ -26,7 +26,7 @@ interface ListPresenter<T> {
         rowView: ItemRowView,
         itemViewType: Int,
         position: Int,
-        listener: RecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemInteractedListener
     )
 
     fun setItemsList(itemsList: MutableList<T>, adapter: RecyclerAdapter<T>)
@@ -44,4 +44,12 @@ interface ListPresenter<T> {
     fun getChildItemsCount() = -1
 
     fun getItemViewType(position: Int) = -1
+
+    fun onItemMoved(fromPosition: Int, toPosition: Int){
+
+    }
+
+    fun onItemSwiped(position: Int) {
+
+    }
 }

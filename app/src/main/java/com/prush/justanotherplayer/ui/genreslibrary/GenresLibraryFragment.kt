@@ -17,7 +17,7 @@ import com.prush.justanotherplayer.ui.genredetails.GenreDetailsFragment
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 class GenresLibraryFragment : BaseRecyclerFragment(), GenresContract.View,
-    RecyclerAdapter.OnItemClickListener {
+    RecyclerAdapter.OnItemInteractedListener {
 
     private lateinit var genresPresenter: GenresContract.Presenter
 

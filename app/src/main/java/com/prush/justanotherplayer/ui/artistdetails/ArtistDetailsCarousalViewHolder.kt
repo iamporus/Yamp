@@ -28,10 +28,10 @@ class ArtistDetailsCarousalViewHolder(itemView: View) : BaseViewHolder(itemView)
 
     }
 
-    override fun setupAdapter(clickListener: RecyclerAdapter.OnItemClickListener) {
+    override fun setupAdapter(interactedListener: RecyclerAdapter.OnItemInteractedListener) {
 
         listPresenter = AlbumCarousalListPresenter()
-        adapter = RecyclerAdapter(listPresenter, clickListener)
+        adapter = RecyclerAdapter(listPresenter, interactedListener)
         recyclerView.adapter = adapter
     }
 
@@ -45,7 +45,7 @@ interface ArtistDetailsCarousalRowView : ItemRowView {
 
     fun setupLayoutManager()
 
-    fun setupAdapter(clickListener: RecyclerAdapter.OnItemClickListener)
+    fun setupAdapter(interactedListener: RecyclerAdapter.OnItemInteractedListener)
 
     fun setupData(childItemsList: MutableList<Album>)
 }

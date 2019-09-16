@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.base_recylerview_layout.*
 private val TAG = TracksLibraryFragment::class.java.name
 
 class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
-    RecyclerAdapter.OnItemClickListener {
+    RecyclerAdapter.OnItemInteractedListener {
 
     private lateinit var tracksPresenter: TracksContract.Presenter
     private lateinit var listPresenter: ListPresenter<Track>

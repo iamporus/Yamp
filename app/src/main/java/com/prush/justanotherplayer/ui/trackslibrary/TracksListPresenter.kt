@@ -65,7 +65,7 @@ open class TracksListPresenter : ListPresenter<Track> {
         rowView: ItemRowView,
         itemViewType: Int,
         position: Int,
-        listener: RecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemInteractedListener
     ) {
 
         when (itemViewType) {

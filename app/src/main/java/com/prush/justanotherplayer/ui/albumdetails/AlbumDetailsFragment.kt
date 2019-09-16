@@ -23,7 +23,7 @@ import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
 class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View,
-    RecyclerAdapter.OnItemClickListener {
+    RecyclerAdapter.OnItemInteractedListener {
 
     private lateinit var adapter: RecyclerAdapter<Track>
     private lateinit var listPresenter: AlbumTracksListPresenter

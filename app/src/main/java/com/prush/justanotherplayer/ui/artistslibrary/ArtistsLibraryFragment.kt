@@ -17,7 +17,7 @@ import com.prush.justanotherplayer.ui.artistdetails.ArtistDetailsFragment
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
-    RecyclerAdapter.OnItemClickListener {
+    RecyclerAdapter.OnItemInteractedListener {
 
     private lateinit var artistPresenter: ArtistsContract.Presenter
 

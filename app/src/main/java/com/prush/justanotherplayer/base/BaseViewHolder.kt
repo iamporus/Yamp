@@ -1,6 +1,8 @@
 package com.prush.justanotherplayer.base
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,7 +13,10 @@ import com.prush.justanotherplayer.R
 
 class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
-    override fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener) {
+    override fun setOnClickListener(
+        position: Int,
+        listener: RecyclerAdapter.OnItemInteractedListener
+    ) {
         val button: MaterialButton = itemView.findViewById(R.id.headerActionButton)
         button.setOnClickListener {
             listener.onItemClick(position)
@@ -42,10 +47,34 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         albumArtImageView.setImageBitmap(resource)
     }
 
-    override fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener) {
+    override fun setOnClickListener(
+        position: Int,
+        listener: RecyclerAdapter.OnItemInteractedListener
+    ) {
         val rowLayout: ViewGroup = itemView.findViewById(R.id.rowLayout)
         rowLayout.setOnClickListener {
             listener.onItemClick(position)
+        }
+    }
+
+    override fun setOnLongPressListener(listener: RecyclerAdapter.OnItemInteractedListener) {
+        val rowLayout: ViewGroup = itemView.findViewById(R.id.rowLayout)
+        rowLayout.setOnLongClickListener {
+            listener.onDragStarted(this@BaseViewHolder)
+            true
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener) {
+        val handleImageView: ImageView = itemView.findViewById(R.id.dragHandleImageView)
+        handleImageView.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+
+                listener.onDragStarted(this@BaseViewHolder)
+            }
+
+            false
         }
     }
 }

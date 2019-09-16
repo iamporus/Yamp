@@ -21,7 +21,7 @@ import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsFragment
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
 class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View,
-    RecyclerAdapter.OnItemClickListener, RecyclerAdapter.OnCarousalItemClickListener {
+    RecyclerAdapter.OnItemInteractedListener, RecyclerAdapter.OnCarousalItemClickListener {
 
     private lateinit var adapter: RecyclerAdapter<Track>
     private lateinit var listPresenter: GenreDetailsListPresenter

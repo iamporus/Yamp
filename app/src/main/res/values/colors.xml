@@ -3,5 +3,6 @@
     <color name="colorPrimary">#111111</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorAccentDark">#44E91B60</color>
     <color name="toolbarIconColor">#FFFFFF</color>
 </resources>

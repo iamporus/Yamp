@@ -10,5 +10,9 @@ interface ItemRowView {
 
     fun setAlbumArt(resource: Bitmap)
 
-    fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemClickListener)
+    fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemInteractedListener)
+
+    fun setOnLongPressListener(listener: RecyclerAdapter.OnItemInteractedListener)
+
+    fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener)
 }

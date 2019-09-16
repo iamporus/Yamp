@@ -17,7 +17,7 @@ class AlbumTracksListPresenter : TracksListPresenter() {
         rowView: ItemRowView,
         itemViewType: Int,
         position: Int,
-        listener: RecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemInteractedListener
     ) {
 
         when (itemViewType) {

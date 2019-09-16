@@ -11,21 +11,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.BaseViewHolder
-import com.prush.justanotherplayer.base.HeaderViewHolder
-import com.prush.justanotherplayer.base.ItemRowView
-import com.prush.justanotherplayer.base.RecyclerAdapter
+import com.prush.justanotherplayer.base.*
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.ui.trackslibrary.TrackItemRow
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 import com.prush.justanotherplayer.utils.getAlbumArtUri
+import java.util.*
+
 
 class QueueListPresenter : TracksListPresenter() {
 
     override var itemsList: MutableList<Track> = mutableListOf()
 
-    override var rowLayoutId: Int = R.layout.track_list_item_row
+    override var rowLayoutId: Int = R.layout.queue_track_list_item_row
 
     override fun getListHeaderRowLayout(): Int {
         return R.layout.header_list_item_row
@@ -63,7 +62,7 @@ class QueueListPresenter : TracksListPresenter() {
         rowView: ItemRowView,
         itemViewType: Int,
         position: Int,
-        listener: RecyclerAdapter.OnItemClickListener
+        listener: RecyclerAdapter.OnItemInteractedListener
     ) {
 
         if (itemViewType == RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal) {
@@ -85,6 +84,8 @@ class QueueListPresenter : TracksListPresenter() {
                 setSubtitle(track.artistName + " - " + track.albumName)
                 setTrackState(track.state)
                 setOnClickListener(position, listener)
+                setOnLongPressListener(listener)
+                setOnTouchListener(listener)
             }
 
             Glide.with(context)
@@ -122,6 +123,19 @@ class QueueListPresenter : TracksListPresenter() {
 
     override fun isHeaderActionAdded(): Boolean {
         return false
+    }
+
+    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition - 1) {
+                Collections.swap(itemsList, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition) {
+                Collections.swap(itemsList, i, i - 1)
+            }
+        }
     }
 
 }

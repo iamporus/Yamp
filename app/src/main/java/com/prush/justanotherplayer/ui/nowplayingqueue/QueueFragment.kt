@@ -3,9 +3,9 @@ package com.prush.justanotherplayer.ui.nowplayingqueue
 import android.content.Context
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.prush.justanotherplayer.base.BaseRecyclerFragment
-import com.prush.justanotherplayer.base.ListPresenter
-import com.prush.justanotherplayer.base.RecyclerAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.prush.justanotherplayer.base.*
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.NowPlayingQueue
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
@@ -13,8 +13,9 @@ import kotlinx.android.synthetic.main.base_recylerview_layout.*
 private val TAG = QueueFragment::class.java.name
 
 class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
-    RecyclerAdapter.OnItemClickListener, OnConnectedToService {
+    RecyclerAdapter.OnItemInteractedListener, OnConnectedToService {
 
+    private lateinit var itemTouchHelper: ItemTouchHelper
     private lateinit var queuePresenter: QueueContract.Presenter
     private lateinit var listPresenter: ListPresenter<Track>
 
@@ -28,6 +29,10 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
 
         adapter = RecyclerAdapter(listPresenter, this)
         baseRecyclerView.adapter = adapter
+
+        val itemTouchHelperCallback = ItemTouchHelperCallback(adapter)
+        itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(baseRecyclerView)
 
         queuePresenter.loadNowPlayingTracks()
     }
@@ -57,6 +62,10 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
     override fun displayEmptyQueue() {
         Log.d(TAG, "Oops found empty")
         showEmptyLibrary()
+    }
+
+    override fun onDragStarted(viewHolder: RecyclerView.ViewHolder) {
+        itemTouchHelper.startDrag(viewHolder)
     }
 
     override fun onDestroy() {
