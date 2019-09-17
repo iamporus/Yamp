@@ -29,6 +29,15 @@ interface ListPresenter<T> {
         listener: RecyclerAdapter.OnItemInteractedListener
     )
 
+    fun getHeaderInclusivePosition(position: Int): Int {
+        return if (isHeaderAdded() && isHeaderActionAdded())
+            position - 2
+        else if (isHeaderAdded() || isHeaderActionAdded())
+            position - 1
+        else
+            position
+    }
+
     fun setItemsList(itemsList: MutableList<T>, adapter: RecyclerAdapter<T>)
 
     fun isHeaderAdded(): Boolean = false
@@ -45,7 +54,7 @@ interface ListPresenter<T> {
 
     fun getItemViewType(position: Int) = -1
 
-    fun onItemMoved(fromPosition: Int, toPosition: Int){
+    fun onItemMoved(fromPosition: Int, toPosition: Int) {
 
     }
 
