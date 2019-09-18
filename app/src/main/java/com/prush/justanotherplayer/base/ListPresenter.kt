@@ -54,7 +54,7 @@ interface ListPresenter<T> {
 
     fun getItemViewType(position: Int) = -1
 
-    fun onItemMoved(fromPosition: Int, toPosition: Int) {
+    fun onItemMoved(fromPosition: Int, toPosition: Int, adapter: RecyclerAdapter<T>) {
 
     }
 

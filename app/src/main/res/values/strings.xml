@@ -13,6 +13,7 @@
     <string name="prev_action">Previous Action</string>
     <string name="next_action">Next Action</string>
     <string name="pause_action">Pause Action</string>
+    <string name="now_playing">Now Playing</string>
     <string name="now_playing_indicator">Now Playing Indicator</string>
     <string name="now_playing_track_subtitle">%1$s - %2$s</string>
     <string name="empty_library">empty library</string>

@@ -57,24 +57,21 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         }
     }
 
-    override fun setOnLongPressListener(listener: RecyclerAdapter.OnItemInteractedListener) {
-        val rowLayout: ViewGroup = itemView.findViewById(R.id.rowLayout)
-        rowLayout.setOnLongClickListener {
-            listener.onDragStarted(this@BaseViewHolder)
-            true
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
-    override fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener) {
-        val handleImageView: ImageView = itemView.findViewById(R.id.dragHandleImageView)
-        handleImageView.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
+    override fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener?) {
+        val handleImageView: ImageView? = itemView.findViewById(R.id.dragHandleImageView)
 
-                listener.onDragStarted(this@BaseViewHolder)
+        if (listener != null) {
+            handleImageView?.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+
+                    listener.onDragStarted(this@BaseViewHolder)
+                }
+
+                false
             }
-
-            false
+        } else {
+            handleImageView?.setOnTouchListener(null)
         }
     }
 }

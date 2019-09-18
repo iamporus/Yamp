@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.snackbar.Snackbar
@@ -16,12 +15,10 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.NowPlayingInfo
 import com.prush.justanotherplayer.services.NowPlayingQueue
-import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.base_container_layout.*
 
 class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Player.EventListener {
 
-    private lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var queueFragment: QueueFragment
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
@@ -68,7 +65,6 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Pla
         super.onConnectedToService(audioPlayerInstance, nowPlayingQueueInstance)
 
         audioPlayer = audioPlayerInstance
-        nowPlayingQueue = nowPlayingQueueInstance
 
         audioPlayer.addListener(this)
 
@@ -85,18 +81,11 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Pla
 
 
     override fun showNowPlayingTrackMetadata(track: Track) {
-        headerTitleTextView.text = track.title
-        headerSubTitleTextView.text = getString(R.string.by_artist, track.artistName)
-
-        Glide.with(this)
-            .load(getAlbumArtUri(this, track.albumId))
-            .error(R.drawable.playback_track_icon)
-            .into(headerAlbumArtImageView)
-
+        //nothing TODO here
     }
 
     override fun updateShuffleMode(shuffleMode: Boolean) {
-       //nothing TODO here
+        //nothing TODO here
     }
 
     override fun onPositionDiscontinuity(reason: Int) {

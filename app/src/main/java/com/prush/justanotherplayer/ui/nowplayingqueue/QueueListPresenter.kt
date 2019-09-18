@@ -7,17 +7,21 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.*
+import com.prush.justanotherplayer.base.BaseViewHolder
+import com.prush.justanotherplayer.base.HeaderViewHolder
+import com.prush.justanotherplayer.base.ItemRowView
+import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.model.Track_State
 import com.prush.justanotherplayer.ui.trackslibrary.TrackItemRow
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 import com.prush.justanotherplayer.utils.getAlbumArtUri
-import java.util.*
 
 
 class QueueListPresenter : TracksListPresenter() {
@@ -26,17 +30,10 @@ class QueueListPresenter : TracksListPresenter() {
 
     override var rowLayoutId: Int = R.layout.queue_track_list_item_row
 
-    override fun getListHeaderRowLayout(): Int {
-        return R.layout.header_list_item_row
-    }
+    private var nowPlayingPosition: Int = 0
 
-    override fun getItemViewType(position: Int): Int {
-
-        return when (position) {
-
-            0 -> RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal
-            else -> RecyclerAdapter.ViewTypeEnum.FLAT_LIST_ITEM_VIEW.ordinal
-        }
+    override fun getHeaderInclusivePosition(position: Int): Int {
+        return position
     }
 
     override fun getViewHolder(context: Context, parent: ViewGroup, viewType: Int): BaseViewHolder {
@@ -65,77 +62,84 @@ class QueueListPresenter : TracksListPresenter() {
         listener: RecyclerAdapter.OnItemInteractedListener
     ) {
 
-        if (itemViewType == RecyclerAdapter.ViewTypeEnum.HEADER_LIST_ITEM_VIEW.ordinal) {
+        val track = itemsList[position]
 
-            (rowView as HeaderViewHolder).apply {
-                when (position) {
-                    -1 -> {
-                        setTitle(context.getString(R.string.up_next))
-                    }
+        (rowView as TrackItemRow).apply {
+
+            setTitle(track.title)
+            setSubtitle(track.artistName + " - " + track.albumName)
+            setTrackState(track.state, listener)
+            setOnClickListener(position, listener)
+        }
+
+        if (track.state == Track_State.PLAYING)
+            nowPlayingPosition = position
+
+        Glide.with(context)
+            .asBitmap()
+            .load(getAlbumArtUri(context, track.albumId))
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+
                 }
-            }
+
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    rowView.setAlbumArt(resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    rowView.setAlbumArt(
+                        BitmapFactory.decodeResource(
+                            context.resources,
+                            R.drawable.playback_track_icon
+                        )
+                    )
+                }
+
+            })
+    }
+
+    override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {
+        if (this.itemsList.isNotEmpty()) {
+
+            val trackDiffCallback = TrackDiffCallback(this.itemsList, itemsList)
+            val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
+
+            diffResult.dispatchUpdatesTo(adapter)
         } else {
 
-            val track = itemsList[position]
-
-            (rowView as TrackItemRow).apply {
-
-                setTitle(track.title)
-                setSubtitle(track.artistName + " - " + track.albumName)
-                setTrackState(track.state)
-                setOnClickListener(position, listener)
-                setOnLongPressListener(listener)
-                setOnTouchListener(listener)
-            }
-
-            Glide.with(context)
-                .asBitmap()
-                .load(getAlbumArtUri(context, track.albumId))
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
-
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        rowView.setAlbumArt(resource)
-                    }
-
-                    override fun onLoadFailed(errorDrawable: Drawable?) {
-                        super.onLoadFailed(errorDrawable)
-                        rowView.setAlbumArt(
-                            BitmapFactory.decodeResource(
-                                context.resources,
-                                R.drawable.playback_track_icon
-                            )
-                        )
-                    }
-
-                })
+            this.itemsList.addAll(itemsList)
+            adapter.notifyDataSetChanged()
         }
     }
 
     override fun isHeaderAdded(): Boolean {
-        return true
+        return false
     }
 
     override fun isHeaderActionAdded(): Boolean {
         return false
     }
 
-    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+    override fun onItemMoved(
+        fromPosition: Int,
+        toPosition: Int,
+        adapter: RecyclerAdapter<Track>
+    ) {
 
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition - 1) {
-                Collections.swap(itemsList, i, i + 1)
-            }
+        itemsList.add(toPosition, itemsList.removeAt(fromPosition))
+
+        if (toPosition <= nowPlayingPosition) {
+            itemsList[toPosition].state = Track_State.PLAYED
         } else {
-            for (i in fromPosition downTo toPosition) {
-                Collections.swap(itemsList, i, i - 1)
-            }
+            itemsList[toPosition].state = Track_State.IN_QUEUE
         }
+
+        adapter.notifyDataSetChanged()
     }
 
 }

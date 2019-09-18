@@ -1,10 +1,8 @@
 package com.prush.justanotherplayer.base
 
-import android.graphics.Canvas
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.math.abs
 
 
 class RecyclerAdapter<T>(
@@ -39,12 +37,11 @@ class RecyclerAdapter<T>(
     }
 
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
-        listPresenter.onItemMoved(fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    override fun onItemSwiped(position: Int) {
-        listPresenter.onItemSwiped(position)
+    override fun onItemDropped(fromPosition: Int, toPosition: Int) {
+        listPresenter.onItemMoved(fromPosition, toPosition, this)
     }
 
     enum class ViewTypeEnum {
@@ -73,10 +70,17 @@ interface OnItemMovedListener {
 
     fun onItemMoved(fromPosition: Int, toPosition: Int)
 
-    fun onItemSwiped(position: Int)
+    fun onItemDropped(fromPosition: Int, toPosition: Int)
 }
 
 class ItemTouchHelperCallback<T>(val adapter: RecyclerAdapter<T>) : ItemTouchHelper.Callback() {
+
+    private var fromPosition = -1
+    private var toPosition = -1
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+    }
 
     override fun getMovementFlags(
         recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder
@@ -87,54 +91,40 @@ class ItemTouchHelperCallback<T>(val adapter: RecyclerAdapter<T>) : ItemTouchHel
     }
 
     override fun isItemViewSwipeEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun isLongPressDragEnabled(): Boolean {
-        return true
+        return false
     }
 
     override fun onMove(
         recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        if (viewHolder.itemViewType != target.itemViewType) {
-            return false
+
+        if (fromPosition == -1) {
+            fromPosition = viewHolder.adapterPosition
         }
 
-        adapter.onItemMoved(viewHolder.adapterPosition, target.adapterPosition)
+        toPosition = target.adapterPosition
+
+        adapter.onItemMoved(viewHolder.adapterPosition, toPosition)
         return true
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        adapter.onItemSwiped(viewHolder.adapterPosition)
-    }
-
-    override fun onChildDraw(
-        c: Canvas,
-        recyclerView: RecyclerView,
-        viewHolder: RecyclerView.ViewHolder,
-        dX: Float,
-        dY: Float,
-        actionState: Int,
-        isCurrentlyActive: Boolean
-    ) {
-        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
-            val alpha = 1.0f - abs(dX) / viewHolder.itemView.width
-
-            viewHolder.itemView.alpha = alpha
-            viewHolder.itemView.translationX = dX
-        } else {
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-        }
-
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+        //TODO:
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
-        viewHolder.itemView.alpha = 1.0f
+        adapter.onItemDropped(fromPosition, toPosition)
+
+        fromPosition = -1
+        toPosition = -1
     }
 
 }

@@ -82,7 +82,7 @@ open class TracksListPresenter : ListPresenter<Track> {
 
                     setTitle(track.title)
                     setSubtitle(track.artistName + " - " + track.albumName)
-                    setTrackState(track.state)
+                    setTrackState(track.state, listener)
                     setOnClickListener(position, listener)
                 }
 

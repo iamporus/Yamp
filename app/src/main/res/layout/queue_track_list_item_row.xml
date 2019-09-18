@@ -85,6 +85,7 @@
             android:alpha=".5"
             android:contentDescription="@string/drag_handle"
             android:padding="4dp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

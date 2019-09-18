@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.trackslibrary
 
 import com.prush.justanotherplayer.base.ItemRowView
+import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track_State
 
 interface TrackItemRow: ItemRowView {
@@ -9,5 +10,8 @@ interface TrackItemRow: ItemRowView {
 
     fun setTrackNumber(trackNumber: Int)
 
-    fun setTrackState(state: Track_State)
+    fun setTrackState(
+        state: Track_State,
+        listener: RecyclerAdapter.OnItemInteractedListener
+    )
 }

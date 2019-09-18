@@ -123,6 +123,6 @@ open class Track() : Serializable {
     }
 
     override fun toString(): String {
-        return title
+        return title.slice(0..8)
     }
 }

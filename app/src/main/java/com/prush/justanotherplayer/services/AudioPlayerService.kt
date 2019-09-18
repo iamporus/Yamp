@@ -95,13 +95,16 @@ class AudioPlayerService : Service() {
 
         Log.d(TAG, "Received ${intent?.action}")
 
+        if (intent == null || intent.action == null)
+            return START_STICKY
+
         val concatenatingMediaSource = ConcatenatingMediaSource()
         var tracksList: ArrayList<Track> = ArrayList()
 
         var resetPosition = true
-        var resetState = true
+        val resetState = true
 
-        when (intent?.action) {
+        when (intent.action) {
             PlaybackControls.PLAY.name -> {
 
                 val trackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
@@ -204,6 +207,7 @@ class AudioPlayerService : Service() {
         }
 
         Log.d(TAG, "Now Playing Queue - $tracksList")
+
         tracksList.forEachIndexed { index, track ->
 
             val uri: Uri = track.getPlaybackUri()
