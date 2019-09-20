@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.mediautils
 
 import android.content.Context
 import android.support.v4.media.MediaDescriptionCompat
@@ -7,14 +7,16 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 
 private const val TAG = "Yamp!"
 
 class MediaSessionManager(context: Context, private val player: SimpleExoPlayer) {
 
     private var mediaSessionConnector: MediaSessionConnector
-    var mediaSession: MediaSessionCompat = MediaSessionCompat(context, TAG)
+    var mediaSession: MediaSessionCompat = MediaSessionCompat(context,
+        TAG
+    )
 
     init {
         mediaSession.isActive = false

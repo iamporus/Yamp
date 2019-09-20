@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.mediautils
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -28,8 +28,8 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.NowPlayingInfo
-import com.prush.justanotherplayer.services.NowPlayingQueue
+import com.prush.justanotherplayer.queue.NowPlayingInfo
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.activity_main.*

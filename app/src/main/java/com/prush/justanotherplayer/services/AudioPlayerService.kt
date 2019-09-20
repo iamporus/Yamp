@@ -11,7 +11,12 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.prush.justanotherplayer.audioplayer.AudioPlayer
 import com.prush.justanotherplayer.audioplayer.ExoPlayer
 import com.prush.justanotherplayer.di.Injection
+import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
+import com.prush.justanotherplayer.utils.TRACKS_LIST
 
 private val TAG: String = AudioPlayerService::class.java.name
 

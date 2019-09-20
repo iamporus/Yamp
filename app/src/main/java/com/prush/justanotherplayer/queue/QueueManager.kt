@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.queue
 
 import com.prush.justanotherplayer.model.Track
 

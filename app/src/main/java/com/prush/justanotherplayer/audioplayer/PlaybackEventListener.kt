@@ -1,8 +1,10 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.audioplayer
 
 import android.media.session.PlaybackState
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.prush.justanotherplayer.queue.NowPlayingInfo
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 
 class PlaybackEventListener(
     private val audioPlayer: SimpleExoPlayer,

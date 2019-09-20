@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.mediautils
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback

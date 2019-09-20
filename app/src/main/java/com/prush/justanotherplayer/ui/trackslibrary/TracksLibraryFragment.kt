@@ -13,9 +13,9 @@ import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.services.SHUFFLE_TRACKS
-import com.prush.justanotherplayer.services.TRACKS_LIST
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
+import com.prush.justanotherplayer.utils.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = TracksLibraryFragment::class.java.name

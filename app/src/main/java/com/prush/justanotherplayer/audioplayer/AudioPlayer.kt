@@ -2,7 +2,7 @@ package com.prush.justanotherplayer.audioplayer
 
 import android.content.Context
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.NotificationManager
+import com.prush.justanotherplayer.mediautils.NotificationManager
 
 interface AudioPlayer {
 

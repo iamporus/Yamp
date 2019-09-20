@@ -13,8 +13,8 @@ import com.prush.justanotherplayer.base.NowPlayingContract
 import com.prush.justanotherplayer.base.NowPlayingPresenter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.NowPlayingInfo
-import com.prush.justanotherplayer.services.NowPlayingQueue
+import com.prush.justanotherplayer.queue.NowPlayingInfo
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 import kotlinx.android.synthetic.main.base_container_layout.*
 
 class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Player.EventListener {

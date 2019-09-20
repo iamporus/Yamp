@@ -17,8 +17,8 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.services.TRACKS_LIST
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.TRACKS_LIST
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 

@@ -18,8 +18,8 @@ import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Artist
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.services.TRACKS_LIST
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.TRACKS_LIST
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsActivity
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsFragment
 import com.prush.justanotherplayer.utils.getAlbumArtUri

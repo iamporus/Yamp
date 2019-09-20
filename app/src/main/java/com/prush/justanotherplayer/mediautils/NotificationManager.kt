@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.mediautils
 
 import android.app.Notification
 import android.content.Context
@@ -7,7 +7,8 @@ import android.support.v4.media.session.MediaSessionCompat
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.utils.PLAYBACK_CHANNEL_ID
 
 class NotificationManager(
     context: Context,
@@ -46,7 +47,10 @@ class NotificationManager(
                 R.string.app_name,
                 R.string.app_name,
                 1,
-                MediaDescriptionAdapter(context, nowPlayingQueue),
+                MediaDescriptionAdapter(
+                    context,
+                    nowPlayingQueue
+                ),
 
                 object : PlayerNotificationManager.NotificationListener {
                     override fun onNotificationPosted(

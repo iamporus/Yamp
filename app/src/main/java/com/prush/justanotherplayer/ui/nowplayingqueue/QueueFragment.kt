@@ -13,8 +13,8 @@ import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.NowPlayingQueue
-import com.prush.justanotherplayer.services.TRACKS_LIST
+import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.utils.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = QueueFragment::class.java.name

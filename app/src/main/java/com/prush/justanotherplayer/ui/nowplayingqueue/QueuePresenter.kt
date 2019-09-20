@@ -2,7 +2,7 @@ package com.prush.justanotherplayer.ui.nowplayingqueue
 
 import android.util.Log
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.QueueManager
+import com.prush.justanotherplayer.queue.QueueManager
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

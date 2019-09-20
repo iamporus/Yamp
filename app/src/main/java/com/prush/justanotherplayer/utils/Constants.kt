@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.utils
 
 const val SELECTED_TRACK_POSITION = "selectedTrackPosition"
 const val SHUFFLE_TRACKS = "shuffleTracks"

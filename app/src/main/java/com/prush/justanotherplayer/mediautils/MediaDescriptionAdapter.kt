@@ -1,4 +1,4 @@
-package com.prush.justanotherplayer.services
+package com.prush.justanotherplayer.mediautils
 
 import android.app.PendingIntent
 import android.content.Context
@@ -12,6 +12,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.ui.main.MainActivity
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 

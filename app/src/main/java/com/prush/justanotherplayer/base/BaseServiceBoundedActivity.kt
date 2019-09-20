@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.services.NowPlayingQueue
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 
 private val TAG = BaseServiceBoundedActivity::class.java.name
 

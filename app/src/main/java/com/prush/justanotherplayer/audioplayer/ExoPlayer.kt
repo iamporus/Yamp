@@ -13,9 +13,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.R
+import com.prush.justanotherplayer.mediautils.MediaSessionManager
+import com.prush.justanotherplayer.mediautils.MediaSourceDiffUtilCallback
+import com.prush.justanotherplayer.mediautils.MediaSourceListUpdateCallback
+import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.Track_State
-import com.prush.justanotherplayer.services.*
+import com.prush.justanotherplayer.queue.NowPlayingInfo
+import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.utils.shuffleTracks
 
 private val TAG = AudioPlayer::class.java.name
@@ -48,11 +53,15 @@ class ExoPlayer : AudioPlayer {
 
         nowPlayingQueue = NowPlayingQueue()
 
-        playbackEventListener = PlaybackEventListener(simpleExoPlayer, nowPlayingQueue)
+        playbackEventListener = PlaybackEventListener(
+            simpleExoPlayer,
+            nowPlayingQueue
+        )
 
         simpleExoPlayer.addListener(playbackEventListener)
 
-        mediaSessionManager = MediaSessionManager(context, simpleExoPlayer)
+        mediaSessionManager =
+            MediaSessionManager(context, simpleExoPlayer)
         notificationManager =
             NotificationManager(
                 context,
@@ -154,10 +163,17 @@ class ExoPlayer : AudioPlayer {
 
 
         val mediaSourceDiffUtilCallback =
-            MediaSourceDiffUtilCallback(nowPlayingQueue.nowPlayingTracksList, tracksList)
+            MediaSourceDiffUtilCallback(
+                nowPlayingQueue.nowPlayingTracksList,
+                tracksList
+            )
         val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
 
-        diffResult.dispatchUpdatesTo(MediaSourceListUpdateCallback(concatenatingMediaSource))
+        diffResult.dispatchUpdatesTo(
+            MediaSourceListUpdateCallback(
+                concatenatingMediaSource
+            )
+        )
 
         nowPlayingQueue.setupQueue(tracksList, false)
 
@@ -172,10 +188,17 @@ class ExoPlayer : AudioPlayer {
     ) {
 
         val mediaSourceDiffUtilCallback =
-            MediaSourceDiffUtilCallback(nowPlayingQueue.nowPlayingTracksList, tracksList)
+            MediaSourceDiffUtilCallback(
+                nowPlayingQueue.nowPlayingTracksList,
+                tracksList
+            )
         val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
 
-        diffResult.dispatchUpdatesTo(MediaSourceListUpdateCallback(concatenatingMediaSource))
+        diffResult.dispatchUpdatesTo(
+            MediaSourceListUpdateCallback(
+                concatenatingMediaSource
+            )
+        )
 
         nowPlayingQueue.setupQueue(tracksList, nowPlayingQueue.shuffleEnabled)
 
