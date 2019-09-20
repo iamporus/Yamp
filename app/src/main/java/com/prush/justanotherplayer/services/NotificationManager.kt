@@ -37,7 +37,7 @@ class NotificationManager(
         fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean)
     }
 
-    fun setupPlayerNotification(context: Context, tracksList: List<Track>) {
+    fun setupPlayerNotification(context: Context, nowPlayingQueue: NowPlayingQueue) {
 
         playerNotificationManager =
             PlayerNotificationManager.createWithNotificationChannel(
@@ -46,7 +46,7 @@ class NotificationManager(
                 R.string.app_name,
                 R.string.app_name,
                 1,
-                MediaDescriptionAdapter(context, tracksList),
+                MediaDescriptionAdapter(context, nowPlayingQueue),
 
                 object : PlayerNotificationManager.NotificationListener {
                     override fun onNotificationPosted(

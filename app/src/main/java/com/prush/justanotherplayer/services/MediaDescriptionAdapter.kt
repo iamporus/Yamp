@@ -13,10 +13,12 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.ui.main.MainActivity
-import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 
-class MediaDescriptionAdapter(private val context: Context, private val tracksList: List<Track>) :
+class MediaDescriptionAdapter(
+    private val context: Context,
+    private val nowPlayingQueue: NowPlayingQueue
+) :
     PlayerNotificationManager.MediaDescriptionAdapter {
 
     override fun createCurrentContentIntent(player: Player?): PendingIntent? {
@@ -30,21 +32,21 @@ class MediaDescriptionAdapter(private val context: Context, private val tracksLi
 
     override fun getCurrentSubText(player: Player?): String? {
         if (player != null) {
-            return tracksList[player.currentWindowIndex].artistName
+            return getNowPlayingTrack().artistName
         }
         return ""
     }
 
     override fun getCurrentContentText(player: Player?): String? {
         if (player != null) {
-            return tracksList[player.currentWindowIndex].albumName
+            return getNowPlayingTrack().albumName
         }
         return ""
     }
 
     override fun getCurrentContentTitle(player: Player?): String {
         if (player != null) {
-            return tracksList[player.currentWindowIndex].title
+            return getNowPlayingTrack().title
         }
         return ""
     }
@@ -59,7 +61,7 @@ class MediaDescriptionAdapter(private val context: Context, private val tracksLi
             Glide.with(context)
                 .asBitmap()
                 .load(
-                    getAlbumArtUri(context, tracksList[player.currentWindowIndex].albumId)
+                    getAlbumArtUri(context, getNowPlayingTrack().albumId)
                 )
                 .into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -76,4 +78,7 @@ class MediaDescriptionAdapter(private val context: Context, private val tracksLi
         }
         return BitmapFactory.decodeResource(context.resources, R.drawable.exo_controls_play)
     }
+
+    private fun getNowPlayingTrack() =
+        nowPlayingQueue.nowPlayingTracksList[nowPlayingQueue.currentPlayingTrackIndex]
 }

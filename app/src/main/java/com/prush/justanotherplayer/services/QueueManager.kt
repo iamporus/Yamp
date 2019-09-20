@@ -6,7 +6,9 @@ interface QueueManager {
 
     suspend fun getNowPlayingTracks(): MutableList<Track>
 
-    fun setNowPlayingTracks(tracksList: MutableList<Track>, keepCopy: Boolean = false)
+    fun keepUnShuffledTracks(tracksList: MutableList<Track>)
+
+    fun setupQueue(tracksList: MutableList<Track>, enableShuffle: Boolean)
 
     fun addTrackToQueue(track: Track)
 

@@ -24,7 +24,7 @@ import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 
 
-class QueueListPresenter : TracksListPresenter() {
+class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter() {
 
     override var itemsList: MutableList<Track> = mutableListOf()
 
@@ -140,6 +140,9 @@ class QueueListPresenter : TracksListPresenter() {
         }
 
         adapter.notifyDataSetChanged()
+
+        listener.onTracksReordered(itemsList)
+
     }
 
 }

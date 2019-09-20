@@ -1,5 +1,7 @@
 package com.prush.justanotherplayer.di
 
+import com.prush.justanotherplayer.audioplayer.AudioPlayer
+import com.prush.justanotherplayer.audioplayer.ExoPlayer
 import com.prush.justanotherplayer.repositories.*
 
 /**
@@ -22,5 +24,9 @@ object Injection {
 
     fun provideGenreRepository(): IGenreRepository {
         return GenreRepository.getInstance()
+    }
+
+    fun provideAudioPlayer(): AudioPlayer{
+        return ExoPlayer()
     }
 }

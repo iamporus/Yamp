@@ -8,7 +8,7 @@ class NowPlayingInfo(var id: Long, var index: Int)
 
 class NowPlayingQueue : QueueManager {
 
-    var trackList = mutableListOf<Track>()
+    var nowPlayingTracksList = mutableListOf<Track>()
 
     var trackListUnShuffled = mutableListOf<Track>()
     var shuffleEnabled: Boolean = false
@@ -17,8 +17,8 @@ class NowPlayingQueue : QueueManager {
         onCurrentPlayingTrackChanged?.invoke(oldValue, newValue)
     }
 
-    var onCurrentPlayingTrackChanged: ((Int, Int) -> Unit)? = { oldIndex, newIndex ->
-        trackList.forEachIndexed { index, track ->
+    private var onCurrentPlayingTrackChanged: ((Int, Int) -> Unit)? = { oldIndex, newIndex ->
+        nowPlayingTracksList.forEachIndexed { index, track ->
             if (index == newIndex)
                 track.state = Track_State.PLAYING
             else if (index == oldIndex)
@@ -29,44 +29,45 @@ class NowPlayingQueue : QueueManager {
     var currentPlayingTrackId: Long = 0
 
     override suspend fun getNowPlayingTracks(): MutableList<Track> {
-        return trackList
+        return nowPlayingTracksList
     }
 
-    override fun setNowPlayingTracks(tracksList: MutableList<Track>, keepCopy: Boolean) {
-        trackList.clear()
-        trackList.addAll(tracksList)
+    override fun keepUnShuffledTracks(tracksList: MutableList<Track>) {
+        trackListUnShuffled.clear()
+        trackListUnShuffled.addAll(tracksList)
+    }
 
-        if (keepCopy) {
-            trackListUnShuffled.clear()
-            trackListUnShuffled.addAll(tracksList)
-        }
+    override fun setupQueue(tracksList: MutableList<Track>, enableShuffle: Boolean) {
+        nowPlayingTracksList.clear()
+        nowPlayingTracksList.addAll(tracksList)
+        shuffleEnabled = enableShuffle
     }
 
     override fun addTrackToQueue(track: Track) {
-        trackList.add(track)
+        nowPlayingTracksList.add(track)
     }
 
     override fun removeTrackFromQueue(track: Track) {
-        trackList.remove(track)
+        nowPlayingTracksList.remove(track)
     }
 
     override fun removeTrackFromQueue(index: Int, track: Track) {
-        trackList.removeAt(index)
+        nowPlayingTracksList.removeAt(index)
     }
 
     override fun addAlbumToQueue(albumTracks: MutableList<Track>) {
-        trackList.addAll(albumTracks)
+        nowPlayingTracksList.addAll(albumTracks)
     }
 
     override fun playNext(track: Track) {
         if (currentPlayingTrackIndex == 0)
-            trackList.add(track)
+            nowPlayingTracksList.add(track)
         else
-            trackList.add(currentPlayingTrackIndex + 1, track)
+            nowPlayingTracksList.add(currentPlayingTrackIndex + 1, track)
 
     }
 
     override fun clearNowPlayingQueue() {
-        trackList.clear()
+        nowPlayingTracksList.clear()
     }
 }

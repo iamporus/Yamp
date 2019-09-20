@@ -21,7 +21,7 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
         mediaSessionConnector = MediaSessionConnector(mediaSession)
     }
 
-    fun setupMediaSessionConnector(context: Context, tracksList: List<Track>) {
+    fun setupMediaSessionConnector(context: Context, nowPlayingQueue: NowPlayingQueue) {
 
         mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
 
@@ -29,12 +29,12 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
                 player: Player?, windowIndex: Int
             ): MediaDescriptionCompat {
 
-                if (player != null && tracksList[player.currentWindowIndex].albumArtBitmap == null) {
+                if (player != null && getNowPlayingTracks(nowPlayingQueue).albumArtBitmap == null) {
 
                     //fetch actual metadata on background thread
                     return getMediaDescriptionForLockScreen(
                         context,
-                        tracksList[player.currentWindowIndex]
+                        getNowPlayingTracks(nowPlayingQueue)
                     ) { invalidateSession() }
                 }
 
@@ -50,6 +50,9 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
 
         mediaSessionConnector.setPlayer(player)
     }
+
+    private fun getNowPlayingTracks(nowPlayingQueue: NowPlayingQueue) =
+        nowPlayingQueue.nowPlayingTracksList[nowPlayingQueue.currentPlayingTrackIndex]
 
     fun invalidateSession() {
         //This is to update the lock screen metadata when actual bitmap is fetched from the worker thread
