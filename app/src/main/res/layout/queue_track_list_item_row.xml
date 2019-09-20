@@ -21,7 +21,7 @@
             android:layout_marginLeft="8dp"
             android:contentDescription="@string/album_art"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dragHandleImageView"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -39,8 +39,8 @@
             android:maxLines="1"
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@id/dragHandleImageView"
             app:layout_constraintBottom_toTopOf="@+id/rowSubtitleTextView"
-            app:layout_constraintEnd_toStartOf="@+id/nowPlayingImageView"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
             app:layout_constraintTop_toTopOf="parent" />
@@ -59,35 +59,22 @@
             android:maxLines="1"
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/dragHandleImageView"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/nowPlayingImageView"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
             app:layout_constraintTop_toBottomOf="@+id/rowTitleTextView" />
 
     <ImageView
-            android:id="@+id/nowPlayingImageView"
+            android:id="@+id/dragHandleImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:contentDescription="@string/now_playing_indicator"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/exo_controls_play" />
-
-    <ImageView
-            android:id="@+id/dragHandleImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:alpha=".5"
             android:contentDescription="@string/drag_handle"
-            android:padding="4dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/nav_menu" />
 

@@ -4,9 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -23,6 +25,48 @@ import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 
+
+class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
+
+    override fun setTrackState(
+        state: Track_State,
+        listener: RecyclerAdapter.OnItemInteractedListener
+    ) {
+        val container: ViewGroup = itemView.findViewById(R.id.rowLayout)
+
+        val handleImageView: ImageView? = itemView.findViewById(R.id.dragHandleImageView)
+
+        when (state) {
+            Track_State.PLAYED -> {
+                container.alpha = 0.5f
+                handleImageView?.visibility = View.INVISIBLE
+                setOnTouchListener(null)
+                container.background =
+                    itemView.resources.getDrawable(R.drawable.queue_selector_ripple)
+
+            }
+            Track_State.PLAYING, Track_State.PAUSED -> {
+                container.alpha = 1f
+                handleImageView?.visibility = View.INVISIBLE
+                setOnTouchListener(null)
+
+                val gradientDrawable = GradientDrawable(
+                    GradientDrawable.Orientation.LEFT_RIGHT,
+                    intArrayOf(R.color.colorAccent, R.color.yellowIconColor)
+                )
+                gradientDrawable.gradientType = GradientDrawable.LINEAR_GRADIENT
+                container.background = gradientDrawable
+            }
+            Track_State.IN_QUEUE -> {
+                container.alpha = 1f
+                container.background =
+                    itemView.resources.getDrawable(R.drawable.queue_selector_ripple)
+                handleImageView?.visibility = View.VISIBLE
+                setOnTouchListener(listener)
+            }
+        }
+    }
+}
 
 class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter() {
 
@@ -48,7 +92,7 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
             }
             else -> {
                 itemView = LayoutInflater.from(context).inflate(rowLayoutId, parent, false)
-                TrackViewHolder(itemView)
+                QueueViewHolder(itemView)
             }
         }
     }
@@ -131,17 +175,19 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
         adapter: RecyclerAdapter<Track>
     ) {
 
-        itemsList.add(toPosition, itemsList.removeAt(fromPosition))
+        if (fromPosition >= 0 && toPosition >= 0) {
+            itemsList.add(toPosition, itemsList.removeAt(fromPosition))
 
-        if (toPosition <= nowPlayingPosition) {
-            itemsList[toPosition].state = Track_State.PLAYED
-        } else {
-            itemsList[toPosition].state = Track_State.IN_QUEUE
+            if (toPosition <= nowPlayingPosition) {
+                itemsList[toPosition].state = Track_State.PLAYED
+            } else {
+                itemsList[toPosition].state = Track_State.IN_QUEUE
+            }
+
+            adapter.notifyDataSetChanged()
+
+            listener.onTracksReordered(itemsList)
         }
-
-        adapter.notifyDataSetChanged()
-
-        listener.onTracksReordered(itemsList)
 
     }
 
