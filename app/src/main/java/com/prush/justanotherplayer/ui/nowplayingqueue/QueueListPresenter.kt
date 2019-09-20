@@ -52,7 +52,7 @@ class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
 
                 val gradientDrawable = GradientDrawable(
                     GradientDrawable.Orientation.LEFT_RIGHT,
-                    intArrayOf(R.color.colorAccent, R.color.yellowIconColor)
+                    intArrayOf(R.color.colorAccent, R.color.toolbarIconColor)
                 )
                 gradientDrawable.gradientType = GradientDrawable.LINEAR_GRADIENT
                 container.background = gradientDrawable
