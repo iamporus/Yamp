@@ -158,7 +158,8 @@ class ExoPlayer : AudioPlayer {
 
 
         if (shuffle) {
-            shuffleTracks(tempIndex, tracksList)
+            //TODO: perform shuffle after currently playing track
+            shuffleTracks(0, tracksList)
         }
 
 

@@ -16,28 +16,30 @@ class PlaybackEventListener(
         when (playbackState) {
             PlaybackState.STATE_PLAYING, PlaybackState.STATE_PAUSED -> {
 
-                if (audioPlayer.currentTag != null) {
-                    val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
-                    nowPlayingQueue.apply {
-                        currentPlayingTrackId = nowPlayingInfo.id
-                        nowPlayingQueue.currentPlayingTrackIndex = nowPlayingInfo.index
-                    }
-
-                }
+                updateNowPlaying()
             }
         }
     }
 
     override fun onPositionDiscontinuity(reason: Int) {
 
-        if (audioPlayer.currentTag != null) {
+        updateNowPlaying()
+    }
 
+    private fun updateNowPlaying() {
+        if (audioPlayer.currentTag != null) {
             val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
             nowPlayingQueue.apply {
                 currentPlayingTrackId = nowPlayingInfo.id
-                currentPlayingTrackIndex = nowPlayingInfo.index
+                nowPlayingTracksList.forEachIndexed { index, track ->
+                    if (track.id == currentPlayingTrackId) {
+                        currentPlayingTrackIndex = index
+                        return@forEachIndexed
+                    }
+                }
             }
 
         }
     }
+
 }

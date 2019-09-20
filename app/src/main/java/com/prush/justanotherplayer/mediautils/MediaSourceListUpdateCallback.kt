@@ -15,7 +15,9 @@ class MediaSourceListUpdateCallback(
     }
 
     override fun onInserted(position: Int, count: Int) {
+        //TODO: Fix IndexOutOfBounds -> Play any random track from tracks list. Go to now playing and enable shuffle.
     }
+
     override fun onChanged(position: Int, count: Int, payload: Any?) {}
     override fun onRemoved(position: Int, count: Int) {}
 }
