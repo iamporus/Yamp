@@ -3,6 +3,7 @@ package com.prush.justanotherplayer.audioplayer
 import android.content.Context
 import android.net.Uri
 import androidx.recyclerview.widget.DiffUtil
+import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -22,6 +23,8 @@ import com.prush.justanotherplayer.model.Track_State
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.utils.shuffleTracks
+import java.util.*
+import kotlin.collections.ArrayList
 
 private val TAG = AudioPlayer::class.java.name
 
@@ -80,6 +83,8 @@ class ExoPlayer : AudioPlayer {
         val tracksPlaylist = mutableListOf<Track>()
         tracksPlaylist.addAll(tracksList)
 
+        nowPlayingQueue.keepUnShuffledTracks(tracksList)
+
         if (selectedTrackPosition != -1) {
             tracksPlaylist.mapIndexed { index, track ->
                 when {
@@ -95,19 +100,19 @@ class ExoPlayer : AudioPlayer {
 
         tracksPlaylist.forEachIndexed { index, track ->
 
-            if (index >= selectedTrackPosition) {
-                val uri: Uri = track.getPlaybackUri()
-                val mediaSource =
-                    ProgressiveMediaSource.Factory(dataSourceFactory)
-                        .setTag(NowPlayingInfo(track.id, index))
-                        .createMediaSource(uri)
+            val uri: Uri = track.getPlaybackUri()
+            val mediaSource =
+                ProgressiveMediaSource.Factory(dataSourceFactory)
+                    .setTag(NowPlayingInfo(track.id, index))
+                    .createMediaSource(uri)
 
-                concatenatingMediaSource.addMediaSource(mediaSource)
-            }
+            concatenatingMediaSource.addMediaSource(mediaSource)
         }
 
         simpleExoPlayer.repeatMode = Player.REPEAT_MODE_OFF
         simpleExoPlayer.prepare(concatenatingMediaSource)
+        if (selectedTrackPosition != -1)
+            simpleExoPlayer.seekTo(selectedTrackPosition, C.TIME_UNSET)
         simpleExoPlayer.playWhenReady = true
 
         nowPlayingQueue.setupQueue(tracksPlaylist, shuffle)
@@ -119,12 +124,9 @@ class ExoPlayer : AudioPlayer {
 
     override fun shufflePlayTracks(context: Context, tracksList: MutableList<Track>) {
 
-        nowPlayingQueue.apply {
+        nowPlayingQueue.keepUnShuffledTracks(tracksList)
 
-            keepUnShuffledTracks(tracksList)
-        }
-
-        shuffleTracks(0, tracksList)
+        tracksList.shuffle()
 
         playTracks(context, tracksList, -1, true)
     }
@@ -134,6 +136,11 @@ class ExoPlayer : AudioPlayer {
         val tracksList: ArrayList<Track> = ArrayList()
 
         tracksList.addAll(nowPlayingQueue.trackListUnShuffled)
+
+
+        if (shuffle) {
+            tracksList.shuffle()
+        }
 
         val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
 
@@ -146,22 +153,26 @@ class ExoPlayer : AudioPlayer {
             }
         }
 
-        tempIndex = if (tempIndex != -1) tempIndex else 0
+        if (shuffle) {
+            Collections.rotate(tracksList, 0 - tempIndex)
 
-        tracksList.mapIndexed { index, track ->
-            when {
-                index == tempIndex -> track.state = Track_State.PLAYING
-                index < tempIndex -> track.state = Track_State.PLAYED
-                else -> track.state = Track_State.IN_QUEUE
+            tracksList.mapIndexed { index, track ->
+                when (index) {
+                    0 -> track.state = Track_State.PLAYING
+                    else -> track.state = Track_State.IN_QUEUE
+                }
+            }
+        } else {
+            tempIndex = if (tempIndex != -1) tempIndex else 0
+
+            tracksList.mapIndexed { index, track ->
+                when {
+                    index == tempIndex -> track.state = Track_State.PLAYING
+                    index < tempIndex -> track.state = Track_State.PLAYED
+                    else -> track.state = Track_State.IN_QUEUE
+                }
             }
         }
-
-
-        if (shuffle) {
-            //TODO: perform shuffle after currently playing track
-            shuffleTracks(0, tracksList)
-        }
-
 
         val mediaSourceDiffUtilCallback =
             MediaSourceDiffUtilCallback(
@@ -170,13 +181,9 @@ class ExoPlayer : AudioPlayer {
             )
         val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
 
-        diffResult.dispatchUpdatesTo(
-            MediaSourceListUpdateCallback(
-                concatenatingMediaSource
-            )
-        )
+        diffResult.dispatchUpdatesTo(MediaSourceListUpdateCallback(concatenatingMediaSource))
 
-        nowPlayingQueue.setupQueue(tracksList, false)
+        nowPlayingQueue.setupQueue(tracksList, shuffle)
 
         notificationManager.setupPlayerNotification(context, nowPlayingQueue)
 
@@ -196,9 +203,7 @@ class ExoPlayer : AudioPlayer {
         val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
 
         diffResult.dispatchUpdatesTo(
-            MediaSourceListUpdateCallback(
-                concatenatingMediaSource
-            )
+            MediaSourceListUpdateCallback(concatenatingMediaSource)
         )
 
         nowPlayingQueue.setupQueue(tracksList, nowPlayingQueue.shuffleEnabled)

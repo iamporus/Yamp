@@ -1,5 +1,6 @@
 package com.prush.justanotherplayer.mediautils
 
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
@@ -11,15 +12,20 @@ class MediaSourceListUpdateCallback(
     ListUpdateCallback {
 
     override fun onMoved(fromPosition: Int, toPosition: Int) {
-        concatenatingMediaSource.moveMediaSource(fromPosition, toPosition)
+        Log.d("Change", "onMoved fromPos - $fromPosition  toPos - $toPosition")
+//        concatenatingMediaSource.moveMediaSource(fromPosition, toPosition)
     }
 
     override fun onInserted(position: Int, count: Int) {
-        //TODO: Fix IndexOutOfBounds -> Play any random track from tracks list. Go to now playing and enable shuffle.
+        Log.d("Change", "onInserted pos - $position and count - $count")
     }
 
-    override fun onChanged(position: Int, count: Int, payload: Any?) {}
-    override fun onRemoved(position: Int, count: Int) {}
+    override fun onChanged(position: Int, count: Int, payload: Any?) {
+        Log.d("Change", "onChanged pos - $position and count - $count")
+    }
+    override fun onRemoved(position: Int, count: Int) {
+        Log.d("Change", "onRemoved pos - $position and count - $count")
+    }
 }
 
 class MediaSourceDiffUtilCallback(
