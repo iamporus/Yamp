@@ -18,6 +18,9 @@ private const val all_tracks_selection =
 private const val track_with_id_selection =
     "(" + all_tracks_selection + ") AND " + MediaStore.Audio.Media._ID + "=?"
 
+private const val track_with_name_selection =
+    "(" + all_tracks_selection + ") AND " + MediaStore.Audio.Media.TITLE + " LIKE ?"
+
 
 private val projection = arrayOf(
     MediaStore.Audio.Media._ID,
@@ -64,6 +67,17 @@ fun getTrackByIdQuery(context: Context, id: Long): Cursor? {
         projection,
         track_with_id_selection,
         arrayOf(id.toString()),
+        null
+    )
+}
+
+fun getTracksByNameQuery(context: Context, query: String): Cursor? {
+
+    return context.contentResolver.query(
+        uri,
+        projection,
+        track_with_name_selection,
+        arrayOf("$query%"),
         null
     )
 }

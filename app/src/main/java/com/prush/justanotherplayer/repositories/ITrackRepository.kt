@@ -8,4 +8,6 @@ interface ITrackRepository {
     suspend fun getAllTracks(context: Context): MutableList<Track>
 
     suspend fun getTrackById(context: Context, trackId: Long): Track
+
+    suspend fun searchTracksByName(context: Context, query: String): MutableList<Track>
 }

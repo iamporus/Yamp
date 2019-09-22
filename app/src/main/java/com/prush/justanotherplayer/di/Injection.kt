@@ -26,7 +26,15 @@ object Injection {
         return GenreRepository.getInstance()
     }
 
-    fun provideAudioPlayer(): AudioPlayer{
+    fun provideSearchRepository(): ISearchRepository {
+        return SearchRepository.getInstance(
+            provideTrackRepository(),
+            provideAlbumRepository(),
+            provideArtistRepository()
+        )
+    }
+
+    fun provideAudioPlayer(): AudioPlayer {
         return ExoPlayer()
     }
 }

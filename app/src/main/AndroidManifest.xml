@@ -26,6 +26,7 @@
         <activity android:name=".ui.artistdetails.ArtistDetailsActivity" />
         <activity android:name=".ui.genredetails.GenreDetailsActivity" />
         <activity android:name=".ui.nowplayingqueue.QueueActivity" />
+        <activity android:name=".ui.search.SearchActivity" />
 
         <service android:name=".services.AudioPlayerService" />
 
