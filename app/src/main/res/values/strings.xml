@@ -18,7 +18,9 @@
     <string name="now_playing_track_subtitle">%1$s - %2$s</string>
     <string name="empty_library">empty library</string>
     <string name="empty_library_info">Fill up some tracks in your phone to see them here.</string>
+    <string name="empty_search_info">Search for your favorite songs</string>
     <string name="shuffle_all">Shuffle All</string>
     <string name="by_artist">by %s</string>
     <string name="drag_handle">Drag Handle</string>
+    <string name="search_hint">Search Songs</string>
 </resources>
