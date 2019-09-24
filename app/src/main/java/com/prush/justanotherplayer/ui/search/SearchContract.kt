@@ -13,6 +13,8 @@ interface SearchContract {
 
         fun displayEmptyResult()
 
+        fun displayInfoText()
+
         fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
 
         fun getViewActivity(): AppCompatActivity

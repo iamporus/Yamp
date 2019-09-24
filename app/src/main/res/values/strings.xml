@@ -23,4 +23,5 @@
     <string name="by_artist">by %s</string>
     <string name="drag_handle">Drag Handle</string>
     <string name="search_hint">Search Songs</string>
+    <string name="no_results_found">No Results Found</string>
 </resources>

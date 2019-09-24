@@ -23,6 +23,13 @@ class SearchPresenter(
     override fun loadTracksStartingWith(query: String) {
 
         Log.d(TAG, "loadTracksStartingWith()")
+
+        if (query.isEmpty())
+        {
+            view.displayInfoText()
+            return
+        }
+
         view.showProgress()
 
         launch {

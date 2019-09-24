@@ -30,6 +30,7 @@ class SearchActivity : BaseServiceBoundedActivity() {
             commit()
         }
 
+        toolbar.title = ""
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -77,7 +78,9 @@ class SearchActivity : BaseServiceBoundedActivity() {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
         if (menu != null) {
-            (menu.findItem(R.id.action_search).actionView as SearchView).apply {
+
+            var searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
+            searchView.apply {
                 setSearchableInfo(
                     searchManager.getSearchableInfo(
                         ComponentName(
