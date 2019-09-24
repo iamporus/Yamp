@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+            android:key="feedback"
+            android:summary="@string/pref_feedback_summary"
+            android:title="@string/pref_feedback_title"
+            app:iconSpaceReserved="false" />
+
+    <Preference
+            android:key="say_thanks"
+            android:summary="@string/pref_say_thanks_summary"
+            android:title="@string/pref_say_thanks_title"
+            app:iconSpaceReserved="false" />
+
+    <Preference
+            android:key="licenses"
+            android:title="@string/pref_licenses_title"
+            app:iconSpaceReserved="false" />
+
+
+    <Preference
+            android:key="about"
+            android:summary="@string/pref_about_summary"
+            android:title="@string/pref_about_title"
+            app:iconSpaceReserved="false" />
+
+
+    <Preference
+            android:key="contribute"
+            android:summary="@string/pref_contribute_summary"
+            android:title="@string/pref_contribute_title"
+            app:iconSpaceReserved="false" />
+
+
+    <Preference
+            android:key="version"
+            android:summary="@string/pref_version_summary"
+            android:title="@string/pref_version_title"
+            app:iconSpaceReserved="false" />
+
+</PreferenceScreen>
