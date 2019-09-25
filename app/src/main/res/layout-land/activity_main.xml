@@ -25,6 +25,13 @@
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin">
 
+                <ImageView
+                        android:id="@+id/settingsImageView"
+                        android:layout_width="wrap_content"
+                        android:contentDescription="@string/settings_icon"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_action_settings"/>
+
                 <TextView
                         android:id="@+id/toolbarTitleTextView"
                         android:layout_width="wrap_content"

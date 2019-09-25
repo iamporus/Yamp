@@ -6,13 +6,28 @@
             android:key="feedback"
             android:summary="@string/pref_feedback_summary"
             android:title="@string/pref_feedback_title"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="mailto:iamporus@gmail.com">
+            <extra
+                    android:name="android.intent.extra.SUBJECT"
+                    android:value="Yamp! - Feedback" />
+            <extra
+                    android:name="android.intent.extra.TEXT"
+                    android:value="Yamp! is a very good music player app BUT... " />
+        </intent>
+    </Preference>
 
     <Preference
             android:key="say_thanks"
             android:summary="@string/pref_say_thanks_summary"
             android:title="@string/pref_say_thanks_title"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="market://details?id=com.prush.justanotherplayer" />
+    </Preference>
 
     <Preference
             android:key="licenses"
@@ -31,7 +46,11 @@
             android:key="contribute"
             android:summary="@string/pref_contribute_summary"
             android:title="@string/pref_contribute_title"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/iamporus/JustAnotherPlayer" />
+    </Preference>
 
 
     <Preference

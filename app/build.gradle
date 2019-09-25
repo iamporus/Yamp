@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -67,6 +69,9 @@ dependencies {
 
     //palette
     implementation "com.android.support:palette-v7:$rootProject.paletteVersion"
+
+    //oss licenses
+    implementation "com.google.android.gms:play-services-oss-licenses:$rootProject.ossLicensesVersion"
 
     //leak canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"

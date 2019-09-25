@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.settings
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,11 +15,11 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.base_container_layout)
 
-        val searchFragment = supportFragmentManager.findFragmentByTag(SETTINGS_FRAGMENT_TAG)
+        val settingsFragment = supportFragmentManager.findFragmentByTag(SETTINGS_FRAGMENT_TAG)
                 as SettingsFragment? ?: SettingsFragment.newInstance()
 
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.container, searchFragment, SETTINGS_FRAGMENT_TAG)
+            replace(R.id.container, settingsFragment, SETTINGS_FRAGMENT_TAG)
             commit()
         }
 
@@ -27,4 +28,15 @@ class SettingsActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                super.onBackPressed()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
 }

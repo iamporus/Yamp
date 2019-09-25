@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseNowPlayingActivity
 import com.prush.justanotherplayer.ui.search.SearchActivity
+import com.prush.justanotherplayer.ui.settings.SettingsActivity
 import com.prush.justanotherplayer.utils.PermissionCallbacks
 import com.prush.justanotherplayer.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,6 +38,10 @@ class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
         toolbarTitleTextView.text = getString(R.string.app_name)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        settingsImageView.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
         permissionUtils = PermissionUtils()
 
         if (savedInstanceState != null) {
