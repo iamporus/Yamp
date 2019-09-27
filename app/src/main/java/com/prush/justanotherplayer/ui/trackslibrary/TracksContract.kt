@@ -13,6 +13,8 @@ interface TracksContract {
 
         fun displayEmptyLibrary()
 
+        fun showContextMenuForTrack(track: Track)
+
         fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
 
         fun startShufflePlayback(tracksList: MutableList<Track>)
@@ -27,6 +29,8 @@ interface TracksContract {
         fun loadLibraryTracks()
 
         fun prepareTrackPlayback(selectedTrackPosition: Int)
+
+        fun prepareTrackContextMenu(position: Int)
 
         fun shuffleTrackPlayback()
 

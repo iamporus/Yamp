@@ -57,6 +57,10 @@ class TracksPresenter(
         view.startTrackPlayback(selectedTrackPosition, tracksList)
     }
 
+    override fun prepareTrackContextMenu(position: Int) {
+        view.showContextMenuForTrack(tracksList[position])
+    }
+
     override fun shuffleTrackPlayback() {
         Log.d(TAG, "Shuffling all Tracks")
         view.startShufflePlayback(tracksList)

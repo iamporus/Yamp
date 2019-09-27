@@ -58,6 +58,7 @@ class RecyclerAdapter<T>(
 
         fun onDragStarted(viewHolder: RecyclerView.ViewHolder) {}
 
+        fun onContextMenuClicked(position: Int) {}
     }
 
     interface OnCarousalItemClickListener {

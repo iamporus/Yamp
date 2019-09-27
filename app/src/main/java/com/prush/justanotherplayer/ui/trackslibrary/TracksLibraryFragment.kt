@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
@@ -52,6 +53,11 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
         }
     }
 
+    override fun onContextMenuClicked(position: Int) {
+        super.onContextMenuClicked(position)
+        tracksPresenter.prepareTrackContextMenu(position)
+    }
+
     override fun displayLibraryTracks(trackList: MutableList<Track>) {
         Log.d(TAG, "Loaded some tracks")
         listPresenter.setItemsList(trackList, adapter)
@@ -71,6 +77,11 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
         intent.putExtra(SHUFFLE_TRACKS, true)
         intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
         Util.startForegroundService(getViewActivity(), intent)
+    }
+
+    override fun showContextMenuForTrack(track: Track) {
+        Toast.makeText(context, "Context menu for ${track.title} goes here", Toast.LENGTH_SHORT)
+            .show()
     }
 
     override fun displayEmptyLibrary() {

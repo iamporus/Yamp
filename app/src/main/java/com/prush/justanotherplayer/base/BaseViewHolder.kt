@@ -57,6 +57,16 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         }
     }
 
+    override fun setOnContextMenuClickListener(
+        position: Int,
+        listener: RecyclerAdapter.OnItemInteractedListener
+    ) {
+        val moreImageView: ImageView = itemView.findViewById(R.id.moreImageView)
+        moreImageView.setOnClickListener {
+            listener.onContextMenuClicked(position)
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener?) {
         val handleImageView: ImageView? = itemView.findViewById(R.id.dragHandleImageView)

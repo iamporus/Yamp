@@ -84,6 +84,7 @@ open class TracksListPresenter : ListPresenter<Track> {
                     setSubtitle(track.artistName + " - " + track.albumName)
                     setTrackState(track.state, listener)
                     setOnClickListener(position, listener)
+                    setOnContextMenuClickListener(position, listener)
                 }
 
                 Glide.with(context)
