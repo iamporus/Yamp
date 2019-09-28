@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.base
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
@@ -17,10 +18,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.SELECTED_TRACK
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
@@ -82,6 +86,16 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         val imageView = view.findViewById<ImageView>(R.id.rowArtImageView)
         val titleTextView = view.findViewById<TextView>(R.id.rowTitleTextView)
         val subTitleTextView = view.findViewById<TextView>(R.id.rowSubtitleTextView)
+
+        val addToQueueAction = view.findViewById<TextView>(R.id.addToQueueAction)
+
+        addToQueueAction.setOnClickListener {
+            val intent = Intent(activity, AudioPlayerService::class.java)
+            intent.action = AudioPlayerService.PlaybackControls.ADD_TO_QUEUE.name
+            intent.putExtra(SELECTED_TRACK, track)
+            Util.startForegroundService(activity, intent)
+            dialog.dismiss()
+        }
 
         titleTextView.text = track.title
         subTitleTextView.text = track.artistName

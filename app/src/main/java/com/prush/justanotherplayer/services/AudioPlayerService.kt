@@ -14,6 +14,7 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.utils.SELECTED_TRACK
 import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
 import com.prush.justanotherplayer.utils.TRACKS_LIST
@@ -90,6 +91,27 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
 
                 audioPlayer.updateTracks(this, tracksList)
             }
+            PlaybackControls.ADD_TO_QUEUE.name -> {
+
+                val track = intent.getSerializableExtra(SELECTED_TRACK) as Track
+                val playbackStarted =
+                    (audioPlayer as ExoPlayer).nowPlayingQueue.nowPlayingTracksList.isNotEmpty()
+
+                if (playbackStarted) {
+
+                    audioPlayer.addTrackToQueue(this, track)
+
+                } else {
+
+                    //playback is not initiated
+
+                    val tracksList: ArrayList<Track> = ArrayList()
+
+                    @Suppress("UNCHECKED_CAST")
+                    tracksList.add(track)
+                    audioPlayer.playTracks(this, tracksList, 0)
+                }
+            }
         }
 
         return START_STICKY
@@ -114,6 +136,7 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
         SHUFFLE_ON,
         SHUFFLE_OFF,
         RE_ORDER,
+        ADD_TO_QUEUE
     }
 
 }

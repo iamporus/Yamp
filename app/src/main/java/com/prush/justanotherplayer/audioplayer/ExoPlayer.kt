@@ -22,7 +22,6 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.Track_State
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
-import com.prush.justanotherplayer.utils.shuffleTracks
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -116,6 +115,25 @@ class ExoPlayer : AudioPlayer {
         simpleExoPlayer.playWhenReady = true
 
         nowPlayingQueue.setupQueue(tracksPlaylist, shuffle)
+
+        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
+
+        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
+    }
+
+    override fun addTrackToQueue(context: Context, track: Track) {
+
+        nowPlayingQueue.addTrackToQueue(track)
+
+        val trackIndex = nowPlayingQueue.nowPlayingTracksList.size - 1
+
+        val uri: Uri = track.getPlaybackUri()
+        val mediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory)
+                .setTag(NowPlayingInfo(track.id, trackIndex))
+                .createMediaSource(uri)
+
+        concatenatingMediaSource.addMediaSource(mediaSource)
 
         notificationManager.setupPlayerNotification(context, nowPlayingQueue)
 

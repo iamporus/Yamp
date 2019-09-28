@@ -1,8 +1,8 @@
 package com.prush.justanotherplayer.audioplayer
 
 import android.content.Context
-import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.mediautils.NotificationManager
+import com.prush.justanotherplayer.model.Track
 
 interface AudioPlayer {
 
@@ -26,6 +26,8 @@ interface AudioPlayer {
         context: Context,
         tracksList: MutableList<Track>
     )
+
+    fun addTrackToQueue(context: Context, track: Track)
 
     fun cleanup()
 }
