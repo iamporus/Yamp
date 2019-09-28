@@ -60,7 +60,7 @@ class NowPlayingQueue : QueueManager {
     }
 
     override fun playNext(track: Track) {
-        if (currentPlayingTrackIndex == 0)
+        if (currentPlayingTrackIndex == -1)
             nowPlayingTracksList.add(track)
         else
             nowPlayingTracksList.add(currentPlayingTrackIndex + 1, track)

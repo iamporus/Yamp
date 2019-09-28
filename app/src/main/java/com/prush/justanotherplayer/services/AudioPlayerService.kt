@@ -91,7 +91,8 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
 
                 audioPlayer.updateTracks(this, tracksList)
             }
-            PlaybackControls.ADD_TO_QUEUE.name -> {
+            PlaybackControls.ADD_TO_QUEUE.name,
+            PlaybackControls.PLAY_NEXT.name -> {
 
                 val track = intent.getSerializableExtra(SELECTED_TRACK) as Track
                 val playbackStarted =
@@ -99,7 +100,10 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
 
                 if (playbackStarted) {
 
-                    audioPlayer.addTrackToQueue(this, track)
+                    if (intent.action == PlaybackControls.ADD_TO_QUEUE.name)
+                        audioPlayer.addTrackToQueue(this, track)
+                    else
+                        audioPlayer.playNext(this, track)
 
                 } else {
 
@@ -136,7 +140,8 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
         SHUFFLE_ON,
         SHUFFLE_OFF,
         RE_ORDER,
-        ADD_TO_QUEUE
+        ADD_TO_QUEUE,
+        PLAY_NEXT
     }
 
 }

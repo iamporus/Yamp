@@ -140,6 +140,27 @@ class ExoPlayer : AudioPlayer {
         mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
     }
 
+    override fun playNext(context: Context, track: Track) {
+
+        nowPlayingQueue.playNext(track)
+
+        val trackIndex = nowPlayingQueue.currentPlayingTrackIndex + 1
+
+        val uri: Uri = track.getPlaybackUri()
+        val mediaSource =
+            ProgressiveMediaSource.Factory(dataSourceFactory)
+                .setTag(NowPlayingInfo(track.id, trackIndex))
+                .createMediaSource(uri)
+
+        val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
+
+        concatenatingMediaSource.addMediaSource(nowPlayingInfo.index + 1, mediaSource)
+
+        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
+
+        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
+    }
+
     override fun shufflePlayTracks(context: Context, tracksList: MutableList<Track>) {
 
         nowPlayingQueue.keepUnShuffledTracks(tracksList)

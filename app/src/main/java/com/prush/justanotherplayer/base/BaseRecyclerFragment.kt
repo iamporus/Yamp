@@ -88,10 +88,19 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         val subTitleTextView = view.findViewById<TextView>(R.id.rowSubtitleTextView)
 
         val addToQueueAction = view.findViewById<TextView>(R.id.addToQueueAction)
+        val playNextAction = view.findViewById<TextView>(R.id.playNextAction)
 
         addToQueueAction.setOnClickListener {
             val intent = Intent(activity, AudioPlayerService::class.java)
             intent.action = AudioPlayerService.PlaybackControls.ADD_TO_QUEUE.name
+            intent.putExtra(SELECTED_TRACK, track)
+            Util.startForegroundService(activity, intent)
+            dialog.dismiss()
+        }
+
+        playNextAction.setOnClickListener {
+            val intent = Intent(activity, AudioPlayerService::class.java)
+            intent.action = AudioPlayerService.PlaybackControls.PLAY_NEXT.name
             intent.putExtra(SELECTED_TRACK, track)
             Util.startForegroundService(activity, intent)
             dialog.dismiss()

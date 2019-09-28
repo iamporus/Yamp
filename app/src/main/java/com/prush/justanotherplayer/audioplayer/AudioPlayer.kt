@@ -29,5 +29,7 @@ interface AudioPlayer {
 
     fun addTrackToQueue(context: Context, track: Track)
 
+    fun playNext(context: Context, track: Track)
+
     fun cleanup()
 }
