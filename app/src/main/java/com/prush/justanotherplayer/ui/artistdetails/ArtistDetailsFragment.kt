@@ -108,6 +108,11 @@ class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.Vi
         Util.startForegroundService(getViewActivity(), intent)
     }
 
+    override fun onContextMenuClicked(position: Int) {
+        super.onContextMenuClicked(position)
+        artistDetailsPresenter.prepareTrackContextMenu(position)
+    }
+
     override fun getViewActivity(): AppCompatActivity {
         return activity as AppCompatActivity
     }

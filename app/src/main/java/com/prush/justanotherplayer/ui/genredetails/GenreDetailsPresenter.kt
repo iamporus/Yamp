@@ -55,6 +55,10 @@ class GenreDetailsPresenter(
         view.startTrackPlayback(selectedTrackPosition, genre.tracksList)
     }
 
+    override fun prepareTrackContextMenu(position: Int) {
+        view.showContextMenu(genre.tracksList[position])
+    }
+
     override fun onCleanup() {
         job.cancel()
     }

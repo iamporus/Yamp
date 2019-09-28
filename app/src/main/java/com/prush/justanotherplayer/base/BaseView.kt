@@ -9,4 +9,7 @@ interface BaseView {
     fun hideProgress()
 
     fun displayError()
+
+    fun showContextMenu(any: Any)
+
 }

@@ -50,6 +50,10 @@ class AlbumDetailsPresenter(
         view.startTrackPlayback(selectedTrackPosition, album.tracksList)
     }
 
+    override fun prepareTrackContextMenu(position: Int) {
+        view.showContextMenu(album.tracksList[position])
+    }
+
     override fun onCleanup() {
         job.cancel()
     }

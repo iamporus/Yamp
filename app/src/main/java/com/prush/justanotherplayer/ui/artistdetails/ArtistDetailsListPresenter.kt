@@ -82,13 +82,15 @@ open class ArtistDetailsListPresenter(var onCarousalItemClickListener: RecyclerA
 
                 (rowView as ArtistDetailsFlatViewHolder).apply {
 
-                    val track = itemsList[position - 1]
+                    val trackPosition = position - 1
+                    val track = itemsList[trackPosition]
 
                     setTitle(track.title)
                     setSubtitle(track.albumName)
                     setTrackNumber(position)
 
-                    setOnClickListener(position - 1, listener)
+                    setOnClickListener(trackPosition, listener)
+                    setOnContextMenuClickListener(trackPosition, listener)
                 }
             }
             ViewTypeEnum.CAROUSAL_LIST_ITEM_VIEW.ordinal -> {

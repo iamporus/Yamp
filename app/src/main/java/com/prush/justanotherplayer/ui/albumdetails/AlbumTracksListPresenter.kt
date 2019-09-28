@@ -37,6 +37,7 @@ class AlbumTracksListPresenter : TracksListPresenter() {
                     setDuration(track.duration)
                     setTrackNumber(track.trackNumber)
                     setOnClickListener(position, listener)
+                    setOnContextMenuClickListener(position, listener)
                 }
             }
         }

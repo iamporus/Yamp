@@ -13,8 +13,6 @@ interface TracksContract {
 
         fun displayEmptyLibrary()
 
-        fun showContextMenuForTrack(track: Track)
-
         fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
 
         fun startShufflePlayback(tracksList: MutableList<Track>)

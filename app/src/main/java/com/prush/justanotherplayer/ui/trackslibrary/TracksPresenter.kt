@@ -58,7 +58,7 @@ class TracksPresenter(
     }
 
     override fun prepareTrackContextMenu(position: Int) {
-        view.showContextMenuForTrack(tracksList[position])
+        view.showContextMenu(tracksList[position])
     }
 
     override fun shuffleTrackPlayback() {

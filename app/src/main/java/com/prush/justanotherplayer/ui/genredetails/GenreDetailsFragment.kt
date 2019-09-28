@@ -85,6 +85,11 @@ class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View
         Util.startForegroundService(getViewActivity(), intent)
     }
 
+    override fun onContextMenuClicked(position: Int) {
+        super.onContextMenuClicked(position)
+        genreDetailsPresenter.prepareTrackContextMenu(position)
+    }
+
     override fun getViewActivity(): AppCompatActivity {
         return activity as AppCompatActivity
     }

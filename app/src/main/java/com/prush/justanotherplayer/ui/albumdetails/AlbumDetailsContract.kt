@@ -25,6 +25,8 @@ interface AlbumDetailsContract {
 
         fun prepareTrackPlayback(selectedTrackPosition: Int)
 
+        fun prepareTrackContextMenu(position: Int)
+
         fun onCleanup()
     }
 }

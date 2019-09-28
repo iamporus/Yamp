@@ -24,8 +24,7 @@ class SearchPresenter(
 
         Log.d(TAG, "loadTracksStartingWith()")
 
-        if (query.isEmpty())
-        {
+        if (query.isEmpty()) {
             view.displayInfoText()
             return
         }
@@ -68,6 +67,10 @@ class SearchPresenter(
 
         Log.d(TAG, "Track selected for playback $selectedTrackPosition")
         view.startTrackPlayback(selectedTrackPosition, tracksList)
+    }
+
+    override fun prepareTrackContextMenu(position: Int) {
+        view.showContextMenu(tracksList[position])
     }
 
     override fun onCleanup() {

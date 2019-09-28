@@ -30,6 +30,8 @@ interface ArtistDetailsContract {
 
         fun prepareTrackPlayback(selectedTrackPosition: Int)
 
+        fun prepareTrackContextMenu(position: Int)
+
         fun onCleanup()
     }
 }

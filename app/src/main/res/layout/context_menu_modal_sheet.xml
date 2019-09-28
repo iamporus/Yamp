@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/rowLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_ripple"
-        android:padding="8dp">
+        android:background="@drawable/darker_scrim"
+        android:padding="16dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <ImageView
             android:id="@+id/rowArtImageView"
@@ -26,15 +26,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:clipToPadding="false"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/moreImageView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,30 +42,49 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/moreImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/rowArtImageView"
             app:layout_constraintTop_toBottomOf="@+id/rowTitleTextView" />
 
-    <ImageView
-            android:id="@+id/moreImageView"
-            android:layout_width="wrap_content"
+    <TextView
+            android:id="@+id/playNextAction"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_marginRight="4dp"
-            android:contentDescription="@string/now_playing_indicator"
-            android:padding="4dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_action_more_vert" />
+            android:layout_marginTop="16dp"
+            android:background="@drawable/queue_selector_ripple"
+            android:drawableStart="@drawable/ic_playlist_add"
+            android:drawableLeft="@drawable/ic_playlist_add"
+            android:drawablePadding="16dp"
+            android:gravity="start|center_vertical"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/play_next"
+            app:layout_constraintTop_toBottomOf="@+id/rowArtImageView" />
+
+    <TextView
+            android:id="@+id/addToQueueAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/queue_selector_ripple"
+            android:drawableStart="@drawable/ic_playlist_add"
+            android:drawableLeft="@drawable/ic_playlist_add"
+            android:drawablePadding="16dp"
+            android:gravity="start|center_vertical"
+            android:padding="8dp"
+            android:text="@string/add_to_queue"
+            app:layout_constraintTop_toBottomOf="@+id/playNextAction" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

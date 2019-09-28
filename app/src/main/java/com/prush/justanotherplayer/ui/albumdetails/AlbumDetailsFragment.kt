@@ -93,6 +93,11 @@ class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View
         Util.startForegroundService(getViewActivity(), intent)
     }
 
+    override fun onContextMenuClicked(position: Int) {
+        super.onContextMenuClicked(position)
+        albumDetailsPresenter.prepareTrackContextMenu(position)
+    }
+
     override fun getViewActivity(): AppCompatActivity {
         return activity as AppCompatActivity
     }

@@ -47,12 +47,16 @@ class ArtistDetailsPresenter(
         return artist
     }
 
-    override fun loadAlbumDetails(album: Album){
+    override fun loadAlbumDetails(album: Album) {
         view.displayAlbumDetails(album)
     }
 
     override fun prepareTrackPlayback(selectedTrackPosition: Int) {
         view.startTrackPlayback(selectedTrackPosition, artist.tracksList)
+    }
+
+    override fun prepareTrackContextMenu(position: Int) {
+        view.showContextMenu(artist.tracksList[position])
     }
 
     override fun onCleanup() {

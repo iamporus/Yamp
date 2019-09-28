@@ -86,6 +86,11 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
         emptyLayout.text = getString(R.string.no_results_found)
     }
 
+    override fun onContextMenuClicked(position: Int) {
+        super.onContextMenuClicked(position)
+        searchPresenter.prepareTrackContextMenu(position)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         searchPresenter.onCleanup()
