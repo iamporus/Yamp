@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:orientation="vertical">
+
+    <HorizontalScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+        <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/walkthrough_background_image"
+                android:scaleType="fitStart"
+                android:src="@drawable/walkthrough_bg" />
+    </HorizontalScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/textLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:layout_marginTop="64dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/appNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:drawablePadding="16dp"
+                android:gravity="center"
+                android:paddingLeft="52dp"
+                android:paddingTop="16dp"
+                android:paddingRight="52dp"
+                android:paddingBottom="16dp"
+                android:text="@string/app_name"
+                android:textColor="#fff"
+                android:textSize="50sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <com.prush.justanotherplayer.base.TypedTextView
+                android:id="@+id/summaryTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:drawablePadding="16dp"
+                android:gravity="start"
+                android:padding="8dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="@id/appNameTextView"
+                app:layout_constraintRight_toRightOf="@id/appNameTextView"
+
+                app:layout_constraintTop_toBottomOf="@id/appNameTextView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom" />
+</FrameLayout>

@@ -1,5 +1,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Yamp!</string>
+    <string name="app_name_expanded_typed">Yet Another Music Player! </string>
+    <string name="intro_google_assistant_typed">Google Assistant Enabled. </string>
+    <string name="intro_open_source_typed">Open Source. 100% Kotlin. </string>
+    <string name="intro_share_typed">Create. Share. Motivate. </string>
     <string name="app_name_splash" translatable="false">Yet Another Music Player! Just Another Music Player!
         Yet Another Music Player! One More Music Player! Shuttle Music Player! Yet Music Player!
         Yet Another Music Player! Just Another Music Player! Yet Another Music Player!
@@ -73,4 +77,13 @@
     <string name="settings_icon">Settings Icon</string>
     <string name="play_next">Play Next</string>
     <string name="add_to_queue">Add to Queue</string>
+    <string name="github_logo">Github Logo</string>
+    <string name="next_arrow">Next Arrow</string>
+    <string name="contribute_to_open_source">Contribute to Open Source</string>
+    <string name="google_assistant_logo">Google Assistant Logo</string>
+    <string name="control_with_assistant">Control With Assistant</string>
+    <string name="play_local_music">Play Local Music</string>
+    <string name="music_library_logo">Music Library Logo</string>
+    <string name="walkthrough_background_image">WalkThrough Background Image</string>
+    <string name="go_to_library">Go to Library</string>
 </resources>

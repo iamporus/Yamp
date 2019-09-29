@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/scrim"
+        android:orientation="vertical">
+
+    <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/contentButton"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/google_assistant_logo"
+            android:src="@drawable/ic_action_assistant" />
+
+    <ImageView
+            android:id="@+id/nextArrowImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/logoImageView"
+            android:layout_alignBottom="@id/logoImageView"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:contentDescription="@string/next_arrow"
+            android:src="@drawable/ic_arrow_right" />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/contentButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"
+            android:clickable="false"
+            android:drawableTop="@drawable/ic_av_my_library_music"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/control_with_assistant"
+            android:textSize="20sp" />
+
+</RelativeLayout>
