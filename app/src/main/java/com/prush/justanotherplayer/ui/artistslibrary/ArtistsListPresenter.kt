@@ -2,16 +2,18 @@ package com.prush.justanotherplayer.ui.artistslibrary
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
-import com.prush.justanotherplayer.base.*
+import com.prush.justanotherplayer.base.BaseViewHolder
+import com.prush.justanotherplayer.base.ItemRowView
+import com.prush.justanotherplayer.base.ListPresenter
+import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Artist
+import com.prush.justanotherplayer.utils.OnBitmapLoadedListener
+import com.prush.justanotherplayer.utils.loadAlbumArt
 
 class ArtistsListPresenter : ListPresenter<Artist> {
 
@@ -41,20 +43,21 @@ class ArtistsListPresenter : ListPresenter<Artist> {
         rowView.setTitle(artist.artistName)
         rowView.setOnClickListener(position, listener)
 
-        Glide.with(context)
-            .asBitmap()
-            .error(artist.defaultAlbumArtRes)
-            .load(artist.defaultAlbumArtRes)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
+        loadAlbumArt(context, artist.defaultAlbumArtRes, object : OnBitmapLoadedListener {
+            override fun onBitmapLoaded(resource: Bitmap) {
+                rowView.setAlbumArt(resource)
+            }
 
-                }
+            override fun onBitmapLoadingFailed() {
+                rowView.setAlbumArt(
+                    BitmapFactory.decodeResource(
+                        context.resources,
+                        R.drawable.playback_track_icon
+                    )
+                )
+            }
 
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    rowView.setAlbumArt(resource)
-                }
-
-            })
+        })
 
     }
 

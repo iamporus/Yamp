@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,17 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.util.Util
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.OnBitmapLoadedListener
 import com.prush.justanotherplayer.utils.SELECTED_TRACK
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+import com.prush.justanotherplayer.utils.loadAlbumArt
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 open class BaseRecyclerFragment : Fragment(), BaseView {
@@ -109,32 +106,21 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
         titleTextView.text = track.title
         subTitleTextView.text = track.artistName
 
-        Glide.with(tempContext)
-            .asBitmap()
-            .load(getAlbumArtUri(tempContext, track.albumId))
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
+        loadAlbumArt(tempContext, track.albumId, object : OnBitmapLoadedListener {
+            override fun onBitmapLoaded(resource: Bitmap) {
+                imageView.setImageBitmap(resource)
+            }
 
-                }
-
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    imageView.setImageBitmap(resource)
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    imageView.setImageBitmap(
-                        BitmapFactory.decodeResource(
-                            tempContext.resources,
-                            R.drawable.playback_track_icon
-                        )
+            override fun onBitmapLoadingFailed() {
+                imageView.setImageBitmap(
+                    BitmapFactory.decodeResource(
+                        context?.resources,
+                        R.drawable.playback_track_icon
                     )
-                }
+                )
+            }
 
-            })
+        })
 
         dialog.setContentView(view)
         dialog.show()

@@ -3,18 +3,15 @@ package com.prush.justanotherplayer.ui.trackslibrary
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.*
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+import com.prush.justanotherplayer.utils.OnBitmapLoadedListener
+import com.prush.justanotherplayer.utils.loadAlbumArt
 
 open class TracksListPresenter : ListPresenter<Track> {
 
@@ -87,36 +84,23 @@ open class TracksListPresenter : ListPresenter<Track> {
                     setOnContextMenuClickListener(position, listener)
                 }
 
-                Glide.with(context)
-                    .asBitmap()
-                    .load(getAlbumArtUri(context, track.albumId))
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) {
+                loadAlbumArt(context, track.albumId, object : OnBitmapLoadedListener {
+                    override fun onBitmapLoaded(resource: Bitmap) {
+                        rowView.setAlbumArt(resource)
+                    }
 
-                        }
-
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            rowView.setAlbumArt(resource)
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            super.onLoadFailed(errorDrawable)
-                            rowView.setAlbumArt(
-                                BitmapFactory.decodeResource(
-                                    context.resources,
-                                    R.drawable.playback_track_icon
-                                )
+                    override fun onBitmapLoadingFailed() {
+                        rowView.setAlbumArt(
+                            BitmapFactory.decodeResource(
+                                context.resources,
+                                R.drawable.playback_track_icon
                             )
-                        }
+                        )
+                    }
 
-                    })
-
+                })
             }
         }
-
 
     }
 

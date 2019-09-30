@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.media.session.PlaybackState
 import android.os.Bundle
@@ -16,9 +15,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.palette.graphics.Palette
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.util.Util
@@ -27,11 +23,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.ui.nowplayingqueue.QueueActivity
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+import com.prush.justanotherplayer.utils.OnBitmapLoadedListener
+import com.prush.justanotherplayer.utils.loadAlbumArt
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller.*
 import kotlinx.android.synthetic.main.exo_player_bottom_sheet_controller_large.*
@@ -202,43 +199,39 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             albumArtImageView.setImageBitmap(track.albumArtBitmap)
         } else {
 
-            Glide.with(this)
-                .asBitmap()
-                .load(getAlbumArtUri(this, track.albumId))
-                .placeholder(R.drawable.playback_track_icon)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {
+            loadAlbumArt(this, track.albumId, object : OnBitmapLoadedListener {
+                override fun onBitmapLoaded(resource: Bitmap) {
 
-                    }
+                    albumArtImageView.setImageBitmap(resource)
+                    Palette.from(resource).generate { palette ->
+                        val textSwatch = palette?.darkMutedSwatch
+                        if (textSwatch == null)
+                            Log.d(TAG, "Swatch is null.")
+                        else {
 
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        albumArtImageView.setImageBitmap(resource)
-                        Palette.from(resource).generate { palette ->
-                            val textSwatch = palette?.darkMutedSwatch
-                            if (textSwatch == null)
-                                Log.d(TAG, "Swatch is null.")
-                            else {
+                            val orientation =
+                                if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+                                    GradientDrawable.Orientation.TOP_BOTTOM
+                                else
+                                    GradientDrawable.Orientation.LEFT_RIGHT
 
-                                val orientation =
-                                    if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-                                        GradientDrawable.Orientation.TOP_BOTTOM
-                                    else
-                                        GradientDrawable.Orientation.LEFT_RIGHT
+                            val gradientDrawable = GradientDrawable(
+                                orientation,
+                                intArrayOf(textSwatch.rgb, R.color.colorPrimary)
+                            )
 
-                                val gradientDrawable = GradientDrawable(
-                                    orientation,
-                                    intArrayOf(textSwatch.rgb, R.color.colorPrimary)
-                                )
-
-                                gradientView.background = gradientDrawable
-                            }
+                            gradientView.background = gradientDrawable
                         }
                     }
 
-                })
+                }
+
+                override fun onBitmapLoadingFailed() {
+                    albumArtImageView.setImageResource(track.defaultAlbumArtRes)
+                }
+
+            })
+
         }
 
         titleTextView.text = track.title

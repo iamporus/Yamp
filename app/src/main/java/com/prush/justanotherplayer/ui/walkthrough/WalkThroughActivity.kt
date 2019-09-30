@@ -150,7 +150,6 @@ class WalkThroughActivity : AppCompatActivity(),
         super.onStop()
         animator.cancel()
         animator.removeUpdateListener(animationUpdateListener)
-        lifecycle.removeObserver(summaryTextView.lifecycleObserver)
     }
 }
 

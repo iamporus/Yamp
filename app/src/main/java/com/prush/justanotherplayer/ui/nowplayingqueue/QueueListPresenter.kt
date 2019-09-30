@@ -3,16 +3,12 @@ package com.prush.justanotherplayer.ui.nowplayingqueue
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
 import com.prush.justanotherplayer.base.HeaderViewHolder
@@ -23,7 +19,8 @@ import com.prush.justanotherplayer.model.Track_State
 import com.prush.justanotherplayer.ui.trackslibrary.TrackItemRow
 import com.prush.justanotherplayer.ui.trackslibrary.TrackViewHolder
 import com.prush.justanotherplayer.ui.trackslibrary.TracksListPresenter
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+import com.prush.justanotherplayer.utils.OnBitmapLoadedListener
+import com.prush.justanotherplayer.utils.loadAlbumArt
 
 
 class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
@@ -119,32 +116,21 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
         if (track.state == Track_State.PLAYING)
             nowPlayingPosition = position
 
-        Glide.with(context)
-            .asBitmap()
-            .load(getAlbumArtUri(context, track.albumId))
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {
+        loadAlbumArt(context, track.albumId, object : OnBitmapLoadedListener {
+            override fun onBitmapLoaded(resource: Bitmap) {
+                rowView.setAlbumArt(resource)
+            }
 
-                }
-
-                override fun onResourceReady(
-                    resource: Bitmap,
-                    transition: Transition<in Bitmap>?
-                ) {
-                    rowView.setAlbumArt(resource)
-                }
-
-                override fun onLoadFailed(errorDrawable: Drawable?) {
-                    super.onLoadFailed(errorDrawable)
-                    rowView.setAlbumArt(
-                        BitmapFactory.decodeResource(
-                            context.resources,
-                            R.drawable.playback_track_icon
-                        )
+            override fun onBitmapLoadingFailed() {
+                rowView.setAlbumArt(
+                    BitmapFactory.decodeResource(
+                        context.resources,
+                        R.drawable.playback_track_icon
                     )
-                }
+                )
+            }
 
-            })
+        })
     }
 
     override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {

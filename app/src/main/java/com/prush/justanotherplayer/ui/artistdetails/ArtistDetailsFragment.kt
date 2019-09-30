@@ -2,14 +2,9 @@ package com.prush.justanotherplayer.ui.artistdetails
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.util.Util
 import com.prush.justanotherplayer.base.HeaderRecyclerFragment
 import com.prush.justanotherplayer.base.RecyclerAdapter
@@ -18,11 +13,11 @@ import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Artist
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.TRACKS_LIST
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsActivity
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsFragment
-import com.prush.justanotherplayer.utils.getAlbumArtUri
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.TRACKS_LIST
+import com.prush.justanotherplayer.utils.loadAlbumArt
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
 class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.View,
@@ -60,22 +55,12 @@ class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.Vi
 
         if (artist.artistName.isNotEmpty() && context != null) {
 
-            Glide.with(getViewActivity())
-                .asBitmap()
-                .error(artist.defaultAlbumArtRes)
-                .load(getAlbumArtUri(getViewActivity(), artist.artistId))
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onLoadCleared(placeholder: Drawable?) {
-
-                    }
-
-                    override fun onResourceReady(
-                        resource: Bitmap, transition: Transition<in Bitmap>?
-                    ) {
-                        headerAlbumArtImageView.setImageBitmap(resource)
-                    }
-
-                })
+            loadAlbumArt(
+                getViewActivity(),
+                artist.artistId,
+                headerAlbumArtImageView,
+                artist.defaultAlbumArtRes
+            )
 
             collapsingToolbarLayout.title = artist.artistName
             listPresenter.setItemsList(artist.tracksList, adapter)

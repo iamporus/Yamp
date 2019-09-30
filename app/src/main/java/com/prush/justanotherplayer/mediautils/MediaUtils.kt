@@ -39,25 +39,7 @@ fun getMediaDescriptionForLockScreen(
         e.printStackTrace()
     }
 
-
-    //TODO: fire off async loading of album art
-//    Glide.with(context)
-//        .asBitmap()
-//        .load(track.getAlbumArtUri(context))
-//        .into(object : CustomTarget<Bitmap>() {
-//            override fun onLoadCleared(placeholder: Drawable?) {
-//            }
-//
-//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-//                Log.d(
-//                    "AudioPlayerService",
-//                    "getMediaDescriptionForLockScreen -- resource ready zala re..."
-//                )
-//                track.albumArtBitmap = resource
-//                callback.invoke()
-//            }
-//
-//        })
+    //TODO: fire off async loading of album art using coroutines
 
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)

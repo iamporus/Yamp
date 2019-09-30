@@ -114,11 +114,6 @@ class ItemTouchHelperCallback<T>(val adapter: RecyclerAdapter<T>) : ItemTouchHel
         return true
     }
 
-    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
-        super.onSelectedChanged(viewHolder, actionState)
-        //TODO:
-    }
-
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
 
