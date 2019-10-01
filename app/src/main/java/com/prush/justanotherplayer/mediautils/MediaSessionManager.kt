@@ -7,6 +7,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 
 private const val TAG = "Yamp!"
@@ -14,7 +15,8 @@ private const val TAG = "Yamp!"
 class MediaSessionManager(context: Context, private val player: SimpleExoPlayer) {
 
     private var mediaSessionConnector: MediaSessionConnector
-    var mediaSession: MediaSessionCompat = MediaSessionCompat(context,
+    var mediaSession: MediaSessionCompat = MediaSessionCompat(
+        context,
         TAG
     )
 
@@ -31,13 +33,17 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
                 player: Player?, windowIndex: Int
             ): MediaDescriptionCompat {
 
-                if (player != null && getNowPlayingTracks(nowPlayingQueue).albumArtBitmap == null) {
+                if (player != null) {
 
                     //fetch actual metadata on background thread
                     return getMediaDescriptionForLockScreen(
                         context,
-                        getNowPlayingTracks(nowPlayingQueue)
-                    ) { invalidateSession() }
+                        getTrack(nowPlayingQueue, windowIndex)
+                    ) {
+                        if (windowIndex == nowPlayingQueue.nowPlayingTracksList.size - 1) {
+                            invalidateSession()
+                        }
+                    }
                 }
 
                 //return default empty metadata to lock screen
@@ -53,8 +59,9 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
         mediaSessionConnector.setPlayer(player)
     }
 
-    private fun getNowPlayingTracks(nowPlayingQueue: NowPlayingQueue) =
-        nowPlayingQueue.nowPlayingTracksList[nowPlayingQueue.currentPlayingTrackIndex]
+    private fun getTrack(nowPlayingQueue: NowPlayingQueue, windowIndex: Int): Track {
+        return nowPlayingQueue.nowPlayingTracksList[windowIndex]
+    }
 
     fun invalidateSession() {
         //This is to update the lock screen metadata when actual bitmap is fetched from the worker thread
@@ -67,3 +74,4 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
         mediaSessionConnector.setPlayer(null)
     }
 }
+

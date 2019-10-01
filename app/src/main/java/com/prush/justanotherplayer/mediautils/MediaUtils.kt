@@ -3,13 +3,15 @@ package com.prush.justanotherplayer.mediautils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
-import android.util.Log
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.getAlbumArtUri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 
 fun getMediaDescriptionForLockScreen(
@@ -18,32 +20,46 @@ fun getMediaDescriptionForLockScreen(
     callback: () -> Unit
 ): MediaDescriptionCompat {
 
-    Log.d("AudioPlayerService", "getMediaDescriptionForLockScreen called")
     val bundle = Bundle()
 
-    val bitmapDrawable =
-        context.resources.getDrawable(track.defaultAlbumArtRes) as BitmapDrawable
+    var bitmap: Bitmap?
 
-    var bitmap: Bitmap? = bitmapDrawable.bitmap
+    if (track.albumArtBitmap == null) {
 
-    try {
-        val pfd = context.contentResolver
-            .openFileDescriptor(getAlbumArtUri(context, track.albumId), "r")
+        val bitmapDrawable =
+            BitmapFactory.decodeResource(context.resources, track.defaultAlbumArtRes)
 
-        if (pfd != null) {
-            val fd = pfd.fileDescriptor
-            bitmap = BitmapFactory.decodeFileDescriptor(fd)
-            pfd.close()
+        bitmap = bitmapDrawable
+
+        val scope = CoroutineScope(
+            Job() + Dispatchers.Main
+        )
+
+        scope.launch {
+
+            try {
+                val pfd = context.contentResolver
+                    .openFileDescriptor(getAlbumArtUri(context, track.albumId), "r")
+
+                if (pfd != null) {
+                    val fd = pfd.fileDescriptor
+                    bitmap = BitmapFactory.decodeFileDescriptor(fd)
+                    pfd.close()
+
+                    track.albumArtBitmap = bitmap
+
+                    callback.invoke()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
-    } catch (e: Exception) {
-        e.printStackTrace()
+    } else {
+        bitmap = track.albumArtBitmap
     }
-
-    //TODO: fire off async loading of album art using coroutines
 
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)
-
 
     return MediaDescriptionCompat.Builder()
         .setTitle(track.title)

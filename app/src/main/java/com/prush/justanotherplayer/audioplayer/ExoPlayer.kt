@@ -22,12 +22,13 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.model.Track_State
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.coroutines.CoroutineContext
 
-private val TAG = AudioPlayer::class.java.name
-
-class ExoPlayer : AudioPlayer {
+class ExoPlayer : AudioPlayer,
+    CoroutineScope {
 
     lateinit var simpleExoPlayer: SimpleExoPlayer
     lateinit var nowPlayingQueue: NowPlayingQueue
@@ -36,6 +37,8 @@ class ExoPlayer : AudioPlayer {
     private lateinit var playbackEventListener: PlaybackEventListener
     private lateinit var mediaSessionManager: MediaSessionManager
     private lateinit var notificationManager: NotificationManager
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
     override fun init(
         context: Context,
@@ -79,6 +82,173 @@ class ExoPlayer : AudioPlayer {
         selectedTrackPosition: Int, shuffle: Boolean
     ) {
 
+        launch {
+
+            prepareMediaSource(tracksList, selectedTrackPosition, shuffle)
+
+            withContext(Dispatchers.Main) {
+                simpleExoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+                simpleExoPlayer.prepare(concatenatingMediaSource)
+                if (selectedTrackPosition != -1)
+                    simpleExoPlayer.seekTo(selectedTrackPosition, C.TIME_UNSET)
+                simpleExoPlayer.playWhenReady = true
+
+                updateExternalMetadata(context)
+            }
+        }
+    }
+
+    override fun addTrackToQueue(context: Context, track: Track) {
+
+        launch {
+            nowPlayingQueue.addTrackToQueue(track)
+
+            val trackIndex = nowPlayingQueue.nowPlayingTracksList.size - 1
+
+            val uri: Uri = track.getPlaybackUri()
+            val mediaSource =
+                ProgressiveMediaSource.Factory(dataSourceFactory)
+                    .setTag(NowPlayingInfo(track.id, trackIndex))
+                    .createMediaSource(uri)
+
+            concatenatingMediaSource.addMediaSource(mediaSource)
+
+            withContext(Dispatchers.Main) {
+
+                updateExternalMetadata(context)
+            }
+
+        }
+
+    }
+
+    override fun playNext(context: Context, track: Track) {
+
+        launch {
+            nowPlayingQueue.playNext(track)
+
+            val trackIndex = nowPlayingQueue.currentPlayingTrackIndex + 1
+
+            val uri: Uri = track.getPlaybackUri()
+            val mediaSource =
+                ProgressiveMediaSource.Factory(dataSourceFactory)
+                    .setTag(NowPlayingInfo(track.id, trackIndex))
+                    .createMediaSource(uri)
+
+            val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
+
+            concatenatingMediaSource.addMediaSource(nowPlayingInfo.index + 1, mediaSource)
+
+            withContext(Dispatchers.Main) {
+
+                updateExternalMetadata(context)
+            }
+        }
+
+    }
+
+    override fun shufflePlayTracks(context: Context, tracksList: MutableList<Track>) {
+
+        nowPlayingQueue.keepUnShuffledTracks(tracksList)
+
+        tracksList.shuffle()
+
+        playTracks(context, tracksList, -1, true)
+    }
+
+    override fun setShuffleMode(context: Context, shuffle: Boolean) {
+
+        launch {
+            val tracksList: ArrayList<Track> = ArrayList()
+
+            tracksList.addAll(nowPlayingQueue.trackListUnShuffled)
+
+
+            if (shuffle) {
+                tracksList.shuffle()
+            }
+
+            val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
+
+            var tempIndex = -1
+            tracksList.forEachIndexed { index, track ->
+                if (nowPlayingInfo.id == track.id) {
+
+                    tempIndex = index
+                    return@forEachIndexed
+                }
+            }
+
+            if (shuffle) {
+                Collections.rotate(tracksList, 0 - tempIndex)
+
+                tracksList.mapIndexed { index, track ->
+                    when (index) {
+                        0 -> track.state = Track_State.PLAYING
+                        else -> track.state = Track_State.IN_QUEUE
+                    }
+                }
+            } else {
+                tempIndex = if (tempIndex != -1) tempIndex else 0
+
+                tracksList.mapIndexed { index, track ->
+                    when {
+                        index == tempIndex -> track.state = Track_State.PLAYING
+                        index < tempIndex -> track.state = Track_State.PLAYED
+                        else -> track.state = Track_State.IN_QUEUE
+                    }
+                }
+            }
+
+            val mediaSourceDiffUtilCallback =
+                MediaSourceDiffUtilCallback(
+                    nowPlayingQueue.nowPlayingTracksList,
+                    tracksList
+                )
+            val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
+
+            diffResult.dispatchUpdatesTo(MediaSourceListUpdateCallback(concatenatingMediaSource))
+
+            nowPlayingQueue.setupQueue(tracksList, shuffle)
+
+            withContext(Dispatchers.Main) {
+
+                updateExternalMetadata(context)
+            }
+        }
+
+    }
+
+    override fun updateTracks(
+        context: Context,
+        tracksList: MutableList<Track>
+    ) {
+
+        launch {
+            val mediaSourceDiffUtilCallback =
+                MediaSourceDiffUtilCallback(
+                    nowPlayingQueue.nowPlayingTracksList,
+                    tracksList
+                )
+            val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
+
+            diffResult.dispatchUpdatesTo(
+                MediaSourceListUpdateCallback(concatenatingMediaSource)
+            )
+
+            nowPlayingQueue.setupQueue(tracksList, nowPlayingQueue.shuffleEnabled)
+
+            withContext(Dispatchers.Main) {
+
+                updateExternalMetadata(context)
+            }
+        }
+
+    }
+
+    private fun prepareMediaSource(
+        tracksList: MutableList<Track>, selectedTrackPosition: Int, shuffle: Boolean
+    ) {
         val tracksPlaylist = mutableListOf<Track>()
         tracksPlaylist.addAll(tracksList)
 
@@ -108,151 +278,18 @@ class ExoPlayer : AudioPlayer {
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
 
-        simpleExoPlayer.repeatMode = Player.REPEAT_MODE_OFF
-        simpleExoPlayer.prepare(concatenatingMediaSource)
-        if (selectedTrackPosition != -1)
-            simpleExoPlayer.seekTo(selectedTrackPosition, C.TIME_UNSET)
-        simpleExoPlayer.playWhenReady = true
-
         nowPlayingQueue.setupQueue(tracksPlaylist, shuffle)
-
-        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
-
-        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
     }
 
-    override fun addTrackToQueue(context: Context, track: Track) {
-
-        nowPlayingQueue.addTrackToQueue(track)
-
-        val trackIndex = nowPlayingQueue.nowPlayingTracksList.size - 1
-
-        val uri: Uri = track.getPlaybackUri()
-        val mediaSource =
-            ProgressiveMediaSource.Factory(dataSourceFactory)
-                .setTag(NowPlayingInfo(track.id, trackIndex))
-                .createMediaSource(uri)
-
-        concatenatingMediaSource.addMediaSource(mediaSource)
+    private fun updateExternalMetadata(context: Context) {
 
         notificationManager.setupPlayerNotification(context, nowPlayingQueue)
-
-        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
-    }
-
-    override fun playNext(context: Context, track: Track) {
-
-        nowPlayingQueue.playNext(track)
-
-        val trackIndex = nowPlayingQueue.currentPlayingTrackIndex + 1
-
-        val uri: Uri = track.getPlaybackUri()
-        val mediaSource =
-            ProgressiveMediaSource.Factory(dataSourceFactory)
-                .setTag(NowPlayingInfo(track.id, trackIndex))
-                .createMediaSource(uri)
-
-        val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
-
-        concatenatingMediaSource.addMediaSource(nowPlayingInfo.index + 1, mediaSource)
-
-        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
-
-        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
-    }
-
-    override fun shufflePlayTracks(context: Context, tracksList: MutableList<Track>) {
-
-        nowPlayingQueue.keepUnShuffledTracks(tracksList)
-
-        tracksList.shuffle()
-
-        playTracks(context, tracksList, -1, true)
-    }
-
-    override fun setShuffleMode(context: Context, shuffle: Boolean) {
-
-        val tracksList: ArrayList<Track> = ArrayList()
-
-        tracksList.addAll(nowPlayingQueue.trackListUnShuffled)
-
-
-        if (shuffle) {
-            tracksList.shuffle()
-        }
-
-        val nowPlayingInfo = simpleExoPlayer.currentTag as NowPlayingInfo
-
-        var tempIndex = -1
-        tracksList.forEachIndexed { index, track ->
-            if (nowPlayingInfo.id == track.id) {
-
-                tempIndex = index
-                return@forEachIndexed
-            }
-        }
-
-        if (shuffle) {
-            Collections.rotate(tracksList, 0 - tempIndex)
-
-            tracksList.mapIndexed { index, track ->
-                when (index) {
-                    0 -> track.state = Track_State.PLAYING
-                    else -> track.state = Track_State.IN_QUEUE
-                }
-            }
-        } else {
-            tempIndex = if (tempIndex != -1) tempIndex else 0
-
-            tracksList.mapIndexed { index, track ->
-                when {
-                    index == tempIndex -> track.state = Track_State.PLAYING
-                    index < tempIndex -> track.state = Track_State.PLAYED
-                    else -> track.state = Track_State.IN_QUEUE
-                }
-            }
-        }
-
-        val mediaSourceDiffUtilCallback =
-            MediaSourceDiffUtilCallback(
-                nowPlayingQueue.nowPlayingTracksList,
-                tracksList
-            )
-        val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
-
-        diffResult.dispatchUpdatesTo(MediaSourceListUpdateCallback(concatenatingMediaSource))
-
-        nowPlayingQueue.setupQueue(tracksList, shuffle)
-
-        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
-
-        mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
-    }
-
-    override fun updateTracks(
-        context: Context,
-        tracksList: MutableList<Track>
-    ) {
-
-        val mediaSourceDiffUtilCallback =
-            MediaSourceDiffUtilCallback(
-                nowPlayingQueue.nowPlayingTracksList,
-                tracksList
-            )
-        val diffResult = DiffUtil.calculateDiff(mediaSourceDiffUtilCallback)
-
-        diffResult.dispatchUpdatesTo(
-            MediaSourceListUpdateCallback(concatenatingMediaSource)
-        )
-
-        nowPlayingQueue.setupQueue(tracksList, nowPlayingQueue.shuffleEnabled)
-
-        notificationManager.setupPlayerNotification(context, nowPlayingQueue)
-
         mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
     }
 
     override fun cleanup() {
+
+        job.cancel()
 
         mediaSessionManager.cleanup()
         notificationManager.cleanup()
