@@ -45,7 +45,6 @@
             android:layout_height="0dp"
             android:contentDescription="@string/album_art"
             android:scaleType="centerCrop"
-            android:src="@drawable/playback_track_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

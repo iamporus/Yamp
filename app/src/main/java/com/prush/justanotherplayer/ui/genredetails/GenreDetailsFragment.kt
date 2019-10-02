@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.util.Util
+import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.HeaderRecyclerFragment
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
@@ -52,6 +53,8 @@ class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View
     }
 
     override fun displayGenreDetails(genre: Genre) {
+
+        headerAlbumArtImageView.setImageResource(R.drawable.ic_genre)
 
         if (genre.name.isNotEmpty() && context != null) {
 

@@ -106,6 +106,7 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
 
     companion object {
 
+        @JvmStatic
         fun newInstance(query: String): SearchFragment {
             return SearchFragment().apply {
                 arguments = Bundle().apply {

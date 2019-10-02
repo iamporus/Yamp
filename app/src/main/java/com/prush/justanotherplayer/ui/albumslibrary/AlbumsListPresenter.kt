@@ -2,9 +2,10 @@ package com.prush.justanotherplayer.ui.albumslibrary
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
@@ -50,10 +51,7 @@ open class AlbumsListPresenter : ListPresenter<Album> {
 
             override fun onBitmapLoadingFailed() {
                 rowView.setAlbumArt(
-                    BitmapFactory.decodeResource(
-                        context.resources,
-                        R.drawable.playback_track_icon
-                    )
+                    AppCompatResources.getDrawable(context, album.defaultAlbumArtRes)!!.toBitmap()
                 )
             }
 

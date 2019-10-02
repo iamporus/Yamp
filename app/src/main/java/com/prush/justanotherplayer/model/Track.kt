@@ -94,7 +94,7 @@ open class Track() : Serializable {
 
     constructor(cursor: Cursor) : this() {
 
-        defaultAlbumArtRes = R.drawable.playback_track_icon
+        defaultAlbumArtRes = R.drawable.ic_audiotrack
         id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
         title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
         artistId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST_ID))

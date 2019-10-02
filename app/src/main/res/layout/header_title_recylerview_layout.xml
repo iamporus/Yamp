@@ -29,7 +29,6 @@
                     android:contentDescription="@string/album_art"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_empty_library"
                     app:layout_collapseMode="parallax" />
 
             <View

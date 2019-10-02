@@ -3,7 +3,6 @@ package com.prush.justanotherplayer.base
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -112,12 +111,7 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
             }
 
             override fun onBitmapLoadingFailed() {
-                imageView.setImageBitmap(
-                    BitmapFactory.decodeResource(
-                        context?.resources,
-                        R.drawable.playback_track_icon
-                    )
-                )
+                imageView.setImageResource(R.drawable.ic_audiotrack)
             }
 
         })

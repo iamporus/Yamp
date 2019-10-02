@@ -8,13 +8,13 @@
             android:id="@id/exo_position"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/exo_progress"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:includeFontPadding="false"
             android:textColor="#FFAAAAAA"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_below="@id/exo_progress"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -22,8 +22,8 @@
             android:id="@id/exo_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:buffered_color="#222222"
             android:layout_alignParentTop="true"
+            app:buffered_color="#222222"
             app:played_color="@color/colorAccent"
             app:unplayed_color="#222222" />
 
@@ -31,13 +31,13 @@
             android:id="@id/exo_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/exo_progress"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:includeFontPadding="false"
-            android:layout_below="@+id/exo_progress"
-            android:textColor="#FFAAAAAA"
-            android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:includeFontPadding="false"
+            android:textColor="#FFAAAAAA"
             android:textSize="12sp"
             android:textStyle="bold" />
 
@@ -47,27 +47,26 @@
             style="@style/ExoMediaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/exo_prev"
-            android:layout_toStartOf="@id/exo_prev"
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
-            android:padding="8dp"
+            android:layout_toStartOf="@id/exo_prev"
+            android:layout_toLeftOf="@id/exo_prev"
             android:contentDescription="@string/shuffle_action"
+            android:padding="8dp"
             android:src="@drawable/shuffle_selector" />
 
 
     <ImageButton
             android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Play"
+            style="@style/ExoMediaButton.Previous"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/shortPlaybackControls"
-            android:layout_toStartOf="@id/shortPlaybackControls"
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
-            android:padding="8dp"
-            android:contentDescription="@string/play_action"
-            android:src="@drawable/ic_skip_previous" />
+            android:layout_toStartOf="@id/shortPlaybackControls"
+            android:layout_toLeftOf="@id/shortPlaybackControls"
+            android:contentDescription="@string/prev_action"
+            android:padding="8dp" />
 
     <FrameLayout
             android:id="@+id/shortPlaybackControls"
@@ -77,21 +76,21 @@
             android:layout_centerHorizontal="true"
             android:padding="16dp">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_play"
-                style="@style/ExoMediaButton.Play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/play_action"
-                android:src="@drawable/ic_play_circle_filled" />
+                app:srcCompat="@drawable/ic_play_circle_filled" />
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@id/exo_pause"
-                style="@style/ExoMediaButton.Pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/pause_action"
-                android:src="@drawable/ic_pause_circle_filled" />
+                app:srcCompat="@drawable/ic_pause_circle_filled" />
 
     </FrameLayout>
 
@@ -100,24 +99,23 @@
             style="@style/ExoMediaButton.Next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/shortPlaybackControls"
-            android:layout_toEndOf="@id/shortPlaybackControls"
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
-            android:padding="8dp"
+            android:layout_toEndOf="@id/shortPlaybackControls"
+            android:layout_toRightOf="@id/shortPlaybackControls"
             android:contentDescription="@string/play_action"
-            android:src="@drawable/ic_skip_next" />
+            android:padding="8dp" />
 
     <ImageButton
             android:id="@+id/exo_repeat_toggle"
             style="@style/ExoMediaButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/exo_next"
-            android:layout_toEndOf="@id/exo_next"
             android:layout_alignTop="@id/shortPlaybackControls"
             android:layout_alignBottom="@id/shortPlaybackControls"
-            android:padding="8dp"
-            android:contentDescription="@string/repeat_action"/>
+            android:layout_toEndOf="@id/exo_next"
+            android:layout_toRightOf="@id/exo_next"
+            android:contentDescription="@string/repeat_action"
+            android:padding="8dp" />
 
 </RelativeLayout>

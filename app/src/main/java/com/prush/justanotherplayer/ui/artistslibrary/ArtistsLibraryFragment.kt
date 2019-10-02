@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.prush.justanotherplayer.base.BaseRecyclerFragment
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
@@ -24,10 +22,6 @@ class ArtistsLibraryFragment : BaseRecyclerFragment(), ArtistsContract.View,
     private lateinit var listPresenter: ListPresenter<Artist>
 
     private lateinit var adapter: RecyclerAdapter<Artist>
-
-    override fun getBaseLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(activity, 2)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

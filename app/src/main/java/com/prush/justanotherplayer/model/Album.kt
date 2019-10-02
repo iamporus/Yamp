@@ -17,7 +17,7 @@ open class Album() : Serializable {
     var artistId: Long = 0
     var artistName: String = ""
 
-    var defaultAlbumArtRes: Int = R.drawable.playback_track_icon
+    var defaultAlbumArtRes: Int = R.drawable.ic_album
 
     var tracksList: MutableList<Track> = mutableListOf()
     var artistsList: MutableList<Artist> = mutableListOf()

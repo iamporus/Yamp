@@ -83,7 +83,7 @@
             android:layout_gravity="end"
             android:contentDescription="@string/play_action"
             android:padding="8dp"
-            android:src="@drawable/ic_queue_music"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:srcCompat="@drawable/ic_queue_music" />
 
 </RelativeLayout>

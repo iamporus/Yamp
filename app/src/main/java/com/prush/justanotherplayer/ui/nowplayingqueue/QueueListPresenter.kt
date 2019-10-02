@@ -2,12 +2,13 @@ package com.prush.justanotherplayer.ui.nowplayingqueue
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
@@ -123,10 +124,7 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
 
             override fun onBitmapLoadingFailed() {
                 rowView.setAlbumArt(
-                    BitmapFactory.decodeResource(
-                        context.resources,
-                        R.drawable.playback_track_icon
-                    )
+                    AppCompatResources.getDrawable(context, track.defaultAlbumArtRes)!!.toBitmap()
                 )
             }
 

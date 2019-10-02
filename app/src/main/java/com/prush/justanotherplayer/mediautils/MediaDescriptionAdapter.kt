@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
@@ -63,10 +65,10 @@ class MediaDescriptionAdapter(
 
                 override fun onBitmapLoadingFailed() {
                     callback?.onBitmap(
-                        BitmapFactory.decodeResource(
-                            context.resources,
-                            R.drawable.playback_track_icon
-                        )
+                        AppCompatResources.getDrawable(
+                            context,
+                            R.drawable.ic_audiotrack
+                        )?.toBitmap()
                     )
                 }
 

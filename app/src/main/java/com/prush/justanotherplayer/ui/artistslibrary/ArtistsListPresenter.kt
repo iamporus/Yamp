@@ -2,9 +2,10 @@ package com.prush.justanotherplayer.ui.artistslibrary
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.BaseViewHolder
@@ -17,7 +18,7 @@ import com.prush.justanotherplayer.utils.loadAlbumArt
 
 class ArtistsListPresenter : ListPresenter<Artist> {
 
-    override var rowLayoutId: Int = R.layout.album_list_item_row
+    override var rowLayoutId: Int = R.layout.artist_list_item_row
 
     override var itemsList: MutableList<Artist> = mutableListOf()
 
@@ -50,10 +51,10 @@ class ArtistsListPresenter : ListPresenter<Artist> {
 
             override fun onBitmapLoadingFailed() {
                 rowView.setAlbumArt(
-                    BitmapFactory.decodeResource(
-                        context.resources,
-                        R.drawable.playback_track_icon
-                    )
+                    AppCompatResources.getDrawable(
+                        context,
+                        R.drawable.ic_artist
+                    )!!.toBitmap()
                 )
             }
 

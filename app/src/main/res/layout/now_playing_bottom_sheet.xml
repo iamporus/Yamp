@@ -47,7 +47,6 @@
             android:layout_height="256dp"
             android:contentDescription="@string/album_art"
             android:scaleType="fitXY"
-            android:src="@drawable/playback_track_icon"
             app:layout_constraintBottom_toTopOf="@+id/metadataLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

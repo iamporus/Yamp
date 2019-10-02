@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.util.Util
+import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.base.HeaderRecyclerFragment
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
@@ -49,6 +50,8 @@ class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View
     }
 
     override fun displayAlbumDetails(album: Album) {
+
+        headerAlbumArtImageView.setImageResource(R.drawable.ic_album)
 
         if (album.albumName.isNotEmpty() && context != null) {
 

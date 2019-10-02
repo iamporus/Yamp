@@ -30,7 +30,7 @@
                         android:layout_width="wrap_content"
                         android:contentDescription="@string/settings_icon"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_action_settings"/>
+                        app:srcCompat="@drawable/ic_settings"/>
 
                 <TextView
                         android:id="@+id/toolbarTitleTextView"
