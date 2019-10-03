@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.DiffUtil
 import com.prush.justanotherplayer.R
@@ -35,14 +36,7 @@ class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
         val handleImageView: ImageView? = itemView.findViewById(R.id.dragHandleImageView)
 
         when (state) {
-            Track_State.PLAYED -> {
-                container.alpha = 0.5f
-                handleImageView?.visibility = View.INVISIBLE
-                setOnTouchListener(null)
-                container.background =
-                    itemView.resources.getDrawable(R.drawable.queue_selector_ripple)
 
-            }
             Track_State.PLAYING, Track_State.PAUSED -> {
                 container.alpha = 1f
                 handleImageView?.visibility = View.INVISIBLE
@@ -55,10 +49,10 @@ class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
                 gradientDrawable.gradientType = GradientDrawable.LINEAR_GRADIENT
                 container.background = gradientDrawable
             }
-            Track_State.IN_QUEUE -> {
+            Track_State.IN_QUEUE, Track_State.PLAYED -> {
                 container.alpha = 1f
                 container.background =
-                    itemView.resources.getDrawable(R.drawable.queue_selector_ripple)
+                    ContextCompat.getDrawable(itemView.context, R.drawable.queue_selector_ripple)
                 handleImageView?.visibility = View.VISIBLE
                 setOnTouchListener(listener)
             }

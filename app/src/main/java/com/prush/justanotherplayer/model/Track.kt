@@ -119,6 +119,8 @@ open class Track() : Serializable {
     var albumName: String = ""
     var trackNumber: Int = 0
     var defaultAlbumArtRes: Int = 0
+
+    @Transient
     var albumArtBitmap: Bitmap? = null
     var state: Track_State = Track_State.IN_QUEUE
 
