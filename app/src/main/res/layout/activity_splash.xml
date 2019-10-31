@@ -20,6 +20,6 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:textAppearance="?attr/textAppearanceHeadline2"
+            android:textAppearance="?attr/textAppearanceHeadline3"
             android:layout_gravity="center"/>
 </FrameLayout>
