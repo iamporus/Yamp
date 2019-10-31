@@ -128,7 +128,7 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
     override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {
         if (this.itemsList.isNotEmpty()) {
 
-            val trackDiffCallback = TrackDiffCallback(this.itemsList, itemsList)
+            val trackDiffCallback = QueueTrackDiffCallback(this.itemsList, itemsList)
             val diffResult = DiffUtil.calculateDiff(trackDiffCallback)
 
             diffResult.dispatchUpdatesTo(adapter)
@@ -165,6 +165,30 @@ class QueueListPresenter(var listener: OnTracksReordered) : TracksListPresenter(
             adapter.notifyDataSetChanged()
 
             listener.onTracksReordered(itemsList)
+        }
+
+    }
+
+    inner class QueueTrackDiffCallback(
+        private val oldTracksList: MutableList<Track>,
+        private val newTracksList: MutableList<Track>
+    ) : DiffUtil.Callback() {
+
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldTracksList[oldItemPosition].id == newTracksList[newItemPosition].id
+        }
+
+        override fun getOldListSize(): Int {
+            return oldTracksList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newTracksList.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldTracksList[oldItemPosition].state == newTracksList[newItemPosition].state
         }
 
     }

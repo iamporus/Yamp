@@ -12,8 +12,9 @@ import com.prush.justanotherplayer.base.ItemTouchHelperCallback
 import com.prush.justanotherplayer.base.ListPresenter
 import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
-import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.utils.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
@@ -55,11 +56,11 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
     }
 
     override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
-//        val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
-//        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
-//        intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-//        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
-//        Util.startForegroundService(getViewActivity(), intent)
+        val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
+        intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
+        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        Util.startForegroundService(getViewActivity(), intent)
     }
 
     override fun updateNowPlaying() {
