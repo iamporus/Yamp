@@ -14,10 +14,10 @@
 
     <View
             android:id="@+id/gradientView"
-            android:clickable="true"
-            android:focusable="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true" />
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/bottomSheetToolbar"
@@ -41,14 +41,14 @@
 
     <ImageView
             android:id="@+id/albumArtImageView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/album_art"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
             android:id="@+id/metadataLayout"
@@ -57,8 +57,8 @@
             android:orientation="vertical"
             android:padding="40dp"
             app:layout_constraintBottom_toTopOf="@+id/playerControlView"
-            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
             app:layout_constraintTop_toBottomOf="@+id/shortPlayerControlView">
 
         <TextView
@@ -95,5 +95,12 @@
             app:layout_constraintStart_toEndOf="@+id/albumArtImageView"
             app:repeat_toggle_modes="all|one|none"
             app:show_timeout="0" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="296dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
