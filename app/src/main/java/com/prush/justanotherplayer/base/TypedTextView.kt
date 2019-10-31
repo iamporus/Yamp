@@ -485,7 +485,7 @@ class TypedTextView : AppCompatTextView, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    private fun onViewStarted() {
+    fun onViewStarted() {
         //resume typing if view was stopped before entire text was displayed.
         if (mTypedText != null && mIndex != 0 && mIndex != mTypedText!!.length) {
             //resume playing keystrokes
@@ -495,7 +495,7 @@ class TypedTextView : AppCompatTextView, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    private fun onViewStopped() {
+    fun onViewStopped() {
         //stop typing as view is now in stopped state.
         removeCallbacks()
 
