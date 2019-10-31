@@ -61,7 +61,6 @@ fun getMediaDescriptionForLockScreen(
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
     bundle.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)
 
-    track.albumArtBitmap?.recycle()
     track.albumArtBitmap = null
 
     return MediaDescriptionCompat.Builder()
