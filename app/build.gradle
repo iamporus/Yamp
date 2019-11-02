@@ -70,6 +70,9 @@ dependencies {
     //oss licenses
     implementation "com.google.android.gms:play-services-oss-licenses:$rootProject.ossLicensesVersion"
 
+    //firebase analytics
+    implementation "com.google.firebase:firebase-analytics:$rootProject.firebaseAnalyticsVersion"
+
     //leak canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"
 
@@ -87,3 +90,5 @@ dependencies {
     testImplementation "org.mockito:mockito-inline:$rootProject.mockitoInlineVersion"
 
 }
+
+apply plugin: 'com.google.gms.google-services'

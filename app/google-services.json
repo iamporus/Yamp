@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "60781805785",
+    "firebase_url": "https://yamp-fa172.firebaseio.com",
+    "project_id": "yamp-fa172",
+    "storage_bucket": "yamp-fa172.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:60781805785:android:2106a691891669a7a13ec8",
+        "android_client_info": {
+          "package_name": "com.prush.justanotherplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "60781805785-dr1jk2uu5odducbhv7nupbul23gps33e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdMcdjJhiPPNTPFJ_u8m4No4ADQLqQXgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "60781805785-dr1jk2uu5odducbhv7nupbul23gps33e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
