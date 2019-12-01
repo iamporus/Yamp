@@ -26,7 +26,8 @@
                 android:name=".ui.walkthrough.WalkThroughActivity"
                 android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.main.MainActivity" />
+        <activity android:name=".ui.main.MainActivity"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".ui.albumdetails.AlbumDetailsActivity" />
         <activity android:name=".ui.artistdetails.ArtistDetailsActivity" />
