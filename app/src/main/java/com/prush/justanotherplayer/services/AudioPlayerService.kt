@@ -2,17 +2,19 @@ package com.prush.justanotherplayer.services
 
 import android.app.Notification
 import android.app.Service
-import android.content.Context
 import android.content.Intent
+import android.media.session.PlaybackState
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.prush.justanotherplayer.audioplayer.AudioPlayer
 import com.prush.justanotherplayer.audioplayer.ExoPlayer
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
+import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.utils.SELECTED_TRACK
 import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
@@ -21,7 +23,7 @@ import com.prush.justanotherplayer.utils.TRACKS_LIST
 
 private val TAG: String = AudioPlayerService::class.java.name
 
-class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedListener {
+class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedListener, Player.EventListener {
 
     private lateinit var audioPlayer: AudioPlayer
 
@@ -43,10 +45,13 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
     override fun onCreate() {
         super.onCreate()
 
-        val context: Context = this
-
         audioPlayer = Injection.provideAudioPlayer()
-        audioPlayer.init(context, this)
+        audioPlayer.apply {
+            init(this@AudioPlayerService)
+            setNotificationPostedListener(this@AudioPlayerService)
+            setPlayerEventListener(this@AudioPlayerService)
+        }
+
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -127,6 +132,43 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
 
     override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
         stopSelf()
+    }
+
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        when (playbackState) {
+            PlaybackState.STATE_PLAYING, PlaybackState.STATE_PAUSED -> {
+
+                updateNowPlaying()
+            }
+            PlaybackState.STATE_STOPPED ->{
+
+                stopForeground(true)
+                stopSelf()
+            }
+        }
+    }
+
+    override fun onPositionDiscontinuity(reason: Int) {
+
+        updateNowPlaying()
+    }
+
+    private fun updateNowPlaying() {
+            if ((audioPlayer as ExoPlayer).simpleExoPlayer.currentTag != null) {
+                val nowPlayingInfo: NowPlayingInfo = (audioPlayer as ExoPlayer).simpleExoPlayer.currentTag as NowPlayingInfo
+
+                (audioPlayer as ExoPlayer).nowPlayingQueue.apply {
+                    currentPlayingTrackId = nowPlayingInfo.id
+                    nowPlayingTracksList.forEachIndexed { index, track ->
+                        if (track.id == currentPlayingTrackId) {
+                            currentPlayingTrackIndex = index
+                            return@forEachIndexed
+                        }
+                    }
+                }
+
+        }
+
     }
 
     override fun onDestroy() {

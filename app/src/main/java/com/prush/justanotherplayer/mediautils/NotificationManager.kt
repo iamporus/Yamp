@@ -40,35 +40,32 @@ class NotificationManager(
 
     fun setupPlayerNotification(context: Context, nowPlayingQueue: NowPlayingQueue) {
 
-        playerNotificationManager =
-            PlayerNotificationManager.createWithNotificationChannel(
-                context,
-                PLAYBACK_CHANNEL_ID,
-                R.string.app_name,
-                R.string.app_name,
-                1,
-                MediaDescriptionAdapter(
-                    context,
-                    nowPlayingQueue
-                ),
+        playerNotificationManager = PlayerNotificationManager(context, PLAYBACK_CHANNEL_ID, 1, MediaDescriptionAdapter(
+            context,
+            nowPlayingQueue
+        ),
+            object : PlayerNotificationManager.NotificationListener {
+                override fun onNotificationPosted(
+                    notificationId: Int,
+                    notification: Notification?,
+                    ongoing: Boolean
+                ) {
+                    listener.onNotificationPosted(notificationId, notification)
+                }
 
-                object : PlayerNotificationManager.NotificationListener {
-                    override fun onNotificationPosted(
-                        notificationId: Int,
-                        notification: Notification?,
-                        ongoing: Boolean
-                    ) {
-                        listener.onNotificationPosted(notificationId, notification)
-                    }
+                override fun onNotificationCancelled(
+                    notificationId: Int, dismissedByUser: Boolean
+                ) {
+                    listener.onNotificationCancelled(notificationId, dismissedByUser)
+                }
+            })
 
-                    override fun onNotificationCancelled(
-                        notificationId: Int, dismissedByUser: Boolean
-                    ) {
-                        listener.onNotificationCancelled(notificationId, dismissedByUser)
-                    }
-                })
-
-        playerNotificationManager.setPlayer(player)
+        playerNotificationManager.apply {
+            setPlayer(player)
+            setFastForwardIncrementMs(0)
+            setRewindIncrementMs(0)
+            setUseStopAction(true)
+        }
 
         mediaSession.isActive = true
         playerNotificationManager.setMediaSessionToken(mediaSession.sessionToken)

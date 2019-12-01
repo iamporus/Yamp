@@ -1,12 +1,13 @@
 package com.prush.justanotherplayer.audioplayer
 
 import android.content.Context
+import com.google.android.exoplayer2.Player
 import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
 
 interface AudioPlayer {
 
-    fun init(context: Context, listener: NotificationManager.OnNotificationPostedListener)
+    fun init(context: Context)
 
     fun playTracks(
         context: Context,
@@ -30,6 +31,14 @@ interface AudioPlayer {
     fun addTrackToQueue(context: Context, track: Track)
 
     fun playNext(context: Context, track: Track)
+
+    fun setNotificationPostedListener(listener: NotificationManager.OnNotificationPostedListener) {
+        //default method
+    }
+
+    fun setPlayerEventListener(listener: Player.EventListener) {
+        //default method
+    }
 
     fun cleanup()
 }

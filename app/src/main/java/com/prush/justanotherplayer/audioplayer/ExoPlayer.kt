@@ -30,22 +30,21 @@ import kotlin.coroutines.CoroutineContext
 class ExoPlayer : AudioPlayer,
     CoroutineScope {
 
+    lateinit var context: Context
     lateinit var simpleExoPlayer: SimpleExoPlayer
     lateinit var nowPlayingQueue: NowPlayingQueue
     private lateinit var dataSourceFactory: DefaultDataSourceFactory
     private lateinit var concatenatingMediaSource: ConcatenatingMediaSource
-    private lateinit var playbackEventListener: PlaybackEventListener
     private lateinit var mediaSessionManager: MediaSessionManager
     private lateinit var notificationManager: NotificationManager
+    private lateinit var playerEventListener: Player.EventListener
     private val job = Job()
     override val coroutineContext: CoroutineContext = (Dispatchers.IO + job)
 
-    override fun init(
-        context: Context,
-        listener: NotificationManager.OnNotificationPostedListener
-    ) {
+    override fun init(context: Context) {
         val trackSelector = DefaultTrackSelector()
 
+        this.context = context
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
         dataSourceFactory = DefaultDataSourceFactory(
             context,
@@ -58,15 +57,12 @@ class ExoPlayer : AudioPlayer,
 
         nowPlayingQueue = NowPlayingQueue()
 
-        playbackEventListener = PlaybackEventListener(
-            simpleExoPlayer,
-            nowPlayingQueue
-        )
-
-        simpleExoPlayer.addListener(playbackEventListener)
-
         mediaSessionManager =
             MediaSessionManager(context, simpleExoPlayer)
+
+    }
+
+    override fun setNotificationPostedListener(listener: NotificationManager.OnNotificationPostedListener) {
         notificationManager =
             NotificationManager(
                 context,
@@ -74,6 +70,11 @@ class ExoPlayer : AudioPlayer,
                 simpleExoPlayer,
                 listener
             )
+    }
+
+    override fun setPlayerEventListener(listener: Player.EventListener) {
+        playerEventListener = listener
+        simpleExoPlayer.addListener(playerEventListener)
     }
 
     override fun playTracks(
@@ -294,7 +295,7 @@ class ExoPlayer : AudioPlayer,
         mediaSessionManager.cleanup()
         notificationManager.cleanup()
 
-        simpleExoPlayer.removeListener(playbackEventListener)
+        simpleExoPlayer.removeListener(playerEventListener)
         simpleExoPlayer.release()
     }
 }

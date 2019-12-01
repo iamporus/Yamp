@@ -284,7 +284,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
                 }
 
             }
-            PlaybackState.STATE_NONE, PlaybackState.STATE_STOPPED -> {
+            PlaybackState.STATE_NONE -> {
                 nowPlayingQueueButton.visibility = View.GONE
             }
             else -> {
