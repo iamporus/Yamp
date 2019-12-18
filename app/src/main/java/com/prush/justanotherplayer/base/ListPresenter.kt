@@ -61,4 +61,6 @@ interface ListPresenter<T> {
     fun onItemSwiped(position: Int) {
 
     }
+
+    fun onViewRecycled(holder: BaseViewHolder)
 }

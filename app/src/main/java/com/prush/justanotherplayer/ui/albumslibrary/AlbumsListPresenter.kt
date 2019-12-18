@@ -58,6 +58,10 @@ open class AlbumsListPresenter : ListPresenter<Album> {
         })
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        holder.cleanup()
+    }
+
     override fun setItemsList(itemsList: MutableList<Album>, adapter: RecyclerAdapter<Album>) {
         if (this.itemsList.isNotEmpty()) {
 

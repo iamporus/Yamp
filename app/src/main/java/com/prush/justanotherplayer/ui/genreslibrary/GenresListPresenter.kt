@@ -61,6 +61,9 @@ class GenresListPresenter : ListPresenter<Genre> {
 
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+    }
+
     override fun setItemsList(itemsList: MutableList<Genre>, adapter: RecyclerAdapter<Genre>) {
         this.itemsList.clear()
         this.itemsList.addAll(itemsList)

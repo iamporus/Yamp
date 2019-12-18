@@ -8,42 +8,43 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.prush.justanotherplayer.R
 
-class HeaderViewHolder(itemView: View) : BaseViewHolder(itemView) {
+class HeaderViewHolder(private val rowItemView: View) : BaseViewHolder(rowItemView) {
 
     override fun setOnClickListener(
         position: Int,
         listener: RecyclerAdapter.OnItemInteractedListener
     ) {
-        val button: MaterialButton = itemView.findViewById(R.id.headerActionButton)
+        val button: MaterialButton = rowItemView.findViewById(R.id.headerActionButton)
         button.setOnClickListener {
             listener.onItemClick(position)
         }
     }
 
     fun setActionText(text: String) {
-        val button: MaterialButton = itemView.findViewById(R.id.headerActionButton)
+        val button: MaterialButton = rowItemView.findViewById(R.id.headerActionButton)
         button.text = text
     }
 }
 
-open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+open class BaseViewHolder(private val rowItemView: View) : RecyclerView.ViewHolder(rowItemView),
     ItemRowView {
 
     override fun setTitle(title: String) {
-        val titleTextView: TextView = itemView.findViewById(R.id.rowTitleTextView)
+        val titleTextView: TextView = rowItemView.findViewById(R.id.rowTitleTextView)
         titleTextView.text = title
     }
 
     override fun setSubtitle(subtitle: String) {
-        val subtitleTextView: TextView = itemView.findViewById(R.id.rowSubtitleTextView)
+        val subtitleTextView: TextView = rowItemView.findViewById(R.id.rowSubtitleTextView)
         subtitleTextView.text = subtitle
     }
 
     override fun setAlbumArt(resource: Bitmap) {
-        val albumArtImageView: ImageView = itemView.findViewById(R.id.rowArtImageView)
+        val albumArtImageView: ImageView = rowItemView.findViewById(R.id.rowArtImageView)
         albumArtImageView.setImageBitmap(resource)
     }
 
@@ -51,7 +52,7 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         position: Int,
         listener: RecyclerAdapter.OnItemInteractedListener
     ) {
-        val rowLayout: ViewGroup = itemView.findViewById(R.id.rowLayout)
+        val rowLayout: ViewGroup = rowItemView.findViewById(R.id.rowLayout)
         rowLayout.setOnClickListener {
             listener.onItemClick(position)
         }
@@ -61,7 +62,7 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         position: Int,
         listener: RecyclerAdapter.OnItemInteractedListener
     ) {
-        val moreImageView: ImageView = itemView.findViewById(R.id.moreImageView)
+        val moreImageView: ImageView = rowItemView.findViewById(R.id.moreImageView)
         moreImageView.setOnClickListener {
             listener.onContextMenuClicked(position)
         }
@@ -69,7 +70,7 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
 
     @SuppressLint("ClickableViewAccessibility")
     override fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener?) {
-        val handleImageView: ImageView? = itemView.findViewById(R.id.dragHandleImageView)
+        val handleImageView: ImageView? = rowItemView.findViewById(R.id.dragHandleImageView)
 
         if (listener != null) {
             handleImageView?.setOnTouchListener { _, event ->
@@ -83,5 +84,11 @@ open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         } else {
             handleImageView?.setOnTouchListener(null)
         }
+    }
+
+    override fun cleanup() {
+        val albumArtImageView: ImageView? = rowItemView.findViewById(R.id.rowArtImageView)
+        if (albumArtImageView != null)
+            Glide.with(rowItemView).clear(albumArtImageView)
     }
 }

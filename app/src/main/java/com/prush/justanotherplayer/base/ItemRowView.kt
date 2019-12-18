@@ -15,4 +15,6 @@ interface ItemRowView {
     fun setOnClickListener(position: Int, listener: RecyclerAdapter.OnItemInteractedListener)
 
     fun setOnTouchListener(listener: RecyclerAdapter.OnItemInteractedListener?)
+
+    fun cleanup()
 }

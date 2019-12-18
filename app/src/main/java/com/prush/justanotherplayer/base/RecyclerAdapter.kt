@@ -36,6 +36,11 @@ class RecyclerAdapter<T>(
         )
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        super.onViewRecycled(holder)
+        listPresenter.onViewRecycled(holder)
+    }
+
     override fun onItemMoved(fromPosition: Int, toPosition: Int) {
         notifyItemMoved(fromPosition, toPosition)
     }

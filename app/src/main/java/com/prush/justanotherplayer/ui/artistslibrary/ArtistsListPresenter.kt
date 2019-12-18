@@ -62,6 +62,9 @@ class ArtistsListPresenter : ListPresenter<Artist> {
 
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+    }
+
     override fun setItemsList(itemsList: MutableList<Artist>, adapter: RecyclerAdapter<Artist>) {
         if (this.itemsList.isNotEmpty()) {
 

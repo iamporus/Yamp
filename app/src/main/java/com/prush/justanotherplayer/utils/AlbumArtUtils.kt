@@ -8,10 +8,14 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import java.io.File
 import java.io.FileNotFoundException
+import com.bumptech.glide.request.RequestOptions
+
+
 
 fun getAlbumArtUri(context: Context, albumId: Long): Uri {
 
@@ -58,9 +62,12 @@ fun loadAlbumArt(context: Context, contentId: Long, imageView: ImageView, errorR
     Glide.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
+        .override(200, 200)
         .error(errorResource)
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
+                // called when imageView is cleared. If you are referencing the bitmap
+                // somewhere else too other than this imageView clear it here
             }
 
             override fun onResourceReady(
@@ -82,6 +89,7 @@ fun loadAlbumArt(
     Glide.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
+        .apply(RequestOptions().override(200, 200).format(DecodeFormat.PREFER_RGB_565))
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
             }
@@ -109,6 +117,7 @@ fun loadAlbumArt(
     Glide.with(context)
         .asBitmap()
         .load(resourceId)
+        .apply(RequestOptions().override(200, 200).format(DecodeFormat.PREFER_RGB_565))
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
             }

@@ -105,6 +105,10 @@ open class TracksListPresenter : ListPresenter<Track> {
 
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        holder.cleanup()
+    }
+
     override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {
         if (this.itemsList.isNotEmpty()) {
 

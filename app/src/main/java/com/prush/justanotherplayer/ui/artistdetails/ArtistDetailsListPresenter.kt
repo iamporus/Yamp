@@ -118,6 +118,10 @@ open class ArtistDetailsListPresenter(var onCarousalItemClickListener: RecyclerA
         }
     }
 
+    override fun onViewRecycled(holder: BaseViewHolder) {
+        holder.cleanup()
+    }
+
     override fun setItemsList(itemsList: MutableList<Track>, adapter: RecyclerAdapter<Track>) {
 
         this.itemsList.clear()
