@@ -67,6 +67,7 @@ class SearchPresenter(
 
         Log.d(TAG, "Track selected for playback $selectedTrackPosition")
         view.startTrackPlayback(selectedTrackPosition, tracksList)
+        //TODO: pass in albumID and selectedTrackPosition
     }
 
     override fun prepareTrackContextMenu(position: Int) {

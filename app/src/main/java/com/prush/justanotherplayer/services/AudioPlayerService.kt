@@ -16,6 +16,7 @@ import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
+import com.prush.justanotherplayer.repositories.ITrackRepository
 import com.prush.justanotherplayer.utils.SELECTED_TRACK
 import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
@@ -26,6 +27,7 @@ private val TAG: String = AudioPlayerService::class.java.name
 class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedListener, Player.EventListener {
 
     private lateinit var audioPlayer: AudioPlayer
+    private lateinit var tracksRepository: ITrackRepository
 
     override fun onBind(intent: Intent?): IBinder? {
         return AudioServiceBinder()
@@ -46,6 +48,8 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
         super.onCreate()
 
         audioPlayer = Injection.provideAudioPlayer()
+        tracksRepository = Injection.provideTrackRepository()
+
         audioPlayer.apply {
             init(this@AudioPlayerService)
             setNotificationPostedListener(this@AudioPlayerService)

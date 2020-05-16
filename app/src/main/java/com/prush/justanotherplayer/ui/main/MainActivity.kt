@@ -116,8 +116,8 @@ class MainActivity : BaseNowPlayingActivity(), PermissionCallbacks {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.action_search -> {
 
                 val intent = Intent(this, SearchActivity::class.java)

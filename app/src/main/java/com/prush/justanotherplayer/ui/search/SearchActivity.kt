@@ -51,17 +51,18 @@ class SearchActivity : BaseServiceBoundedActivity() {
         if (intent != null) {
             if (intent.action == Intent.ACTION_SEARCH) {
                 val query = intent.getStringExtra(SearchManager.QUERY)
+                query?.let {
+                    val searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_FRAGMENT_TAG)
+                            as SearchFragment? ?: SearchFragment.newInstance(query)
 
-                val searchFragment = supportFragmentManager.findFragmentByTag(SEARCH_FRAGMENT_TAG)
-                        as SearchFragment? ?: SearchFragment.newInstance(query)
-
-                searchFragment.searchTracks(query)
+                    searchFragment.searchTracks(query)
+                }
             }
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 super.onBackPressed()
             }
@@ -79,7 +80,7 @@ class SearchActivity : BaseServiceBoundedActivity() {
 
         if (menu != null) {
 
-            var searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
+            val searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
             searchView.apply {
                 setSearchableInfo(
                     searchManager.getSearchableInfo(

@@ -46,7 +46,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
     private lateinit var audioPlayer: SimpleExoPlayer
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
     private var bottomSheetState: Int = BottomSheetBehavior.STATE_COLLAPSED
-    protected lateinit var firebaseAnalytics: FirebaseAnalytics
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     @Suppress("MemberVisibilityCanBePrivate")
     protected lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -327,8 +327,8 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }

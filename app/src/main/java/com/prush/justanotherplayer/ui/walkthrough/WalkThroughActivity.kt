@@ -136,7 +136,9 @@ class WalkThroughActivity : AppCompatActivity(),
         summaryTextView.apply {
 
             splitSentences(false)
+            showCursor(false)
             setSentencePause(SENTENCE_PAUSE_DURATION)
+            setTypingSpeed(50)
             setTypedText(R.string.app_name_expanded_typed)
         }
     }

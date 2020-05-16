@@ -53,6 +53,7 @@ class GenreDetailsPresenter(
 
     override fun prepareTrackPlayback(selectedTrackPosition: Int) {
         view.startTrackPlayback(selectedTrackPosition, genre.tracksList)
+        //TODO: pass in genreID and selectedTrackPosition
     }
 
     override fun prepareTrackContextMenu(position: Int) {

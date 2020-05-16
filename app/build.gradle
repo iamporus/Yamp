@@ -74,8 +74,9 @@ dependencies {
     //oss licenses
     implementation "com.google.android.gms:play-services-oss-licenses:$rootProject.ossLicensesVersion"
 
-    //firebase analytics
+    //firebase
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebaseAnalyticsVersion"
+    implementation "com.google.firebase:firebase-crashlytics:$rootProject.firebaseCrashlyticsVersion"
 
     //multiDexing
     implementation "com.android.support:multidex:$rootProject.multiDexVersion"
