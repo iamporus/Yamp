@@ -62,7 +62,7 @@ fun loadAlbumArt(context: Context, contentId: Long, imageView: ImageView, errorR
     Glide.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
-        .override(200, 200)
+//        .override(200, 200)
         .error(errorResource)
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
@@ -89,7 +89,7 @@ fun loadAlbumArt(
     Glide.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
-        .apply(RequestOptions().override(200, 200).format(DecodeFormat.PREFER_RGB_565))
+        .apply(RequestOptions().format(DecodeFormat.PREFER_RGB_565))
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
             }
@@ -117,7 +117,7 @@ fun loadAlbumArt(
     Glide.with(context)
         .asBitmap()
         .load(resourceId)
-        .apply(RequestOptions().override(200, 200).format(DecodeFormat.PREFER_RGB_565))
+        .apply(RequestOptions().format(DecodeFormat.PREFER_RGB_565))
         .into(object : CustomTarget<Bitmap>() {
             override fun onLoadCleared(placeholder: Drawable?) {
             }
