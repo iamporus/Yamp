@@ -53,7 +53,7 @@ class QueueViewHolder(itemView: View) : TrackViewHolder(itemView) {
                 container.alpha = 1f
                 container.background =
                     ContextCompat.getDrawable(itemView.context, R.drawable.queue_selector_ripple)
-                handleImageView?.visibility = View.VISIBLE
+                handleImageView?.visibility = View.INVISIBLE
                 setOnTouchListener(listener)
             }
         }

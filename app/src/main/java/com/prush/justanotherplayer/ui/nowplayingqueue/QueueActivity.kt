@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.material.snackbar.Snackbar
@@ -16,6 +17,7 @@ import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 import kotlinx.android.synthetic.main.base_container_layout.*
+
 
 class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Player.EventListener {
 
@@ -45,6 +47,14 @@ class QueueActivity : BaseServiceBoundedActivity(), NowPlayingContract.View, Pla
             this,
             Injection.provideTrackRepository()
         )
+
+        val newLayoutParams =
+            container.layoutParams as CoordinatorLayout.LayoutParams
+        newLayoutParams.topMargin = 0
+        newLayoutParams.leftMargin = 0
+        newLayoutParams.rightMargin = 0
+        newLayoutParams.bottomMargin = 0
+        container.layoutParams = newLayoutParams
 
     }
 
