@@ -1,6 +1,6 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Yamp</string>
-    <string name="app_name_expanded_typed">Yet Another Music Player </string>
+    <string name="app_name_expanded_typed">Yet Another Music Player.</string>
     <string name="intro_google_assistant_typed">Google Assistant Enabled. </string>
     <string name="intro_open_source_typed">Open Source. 100% Kotlin. </string>
     <string name="intro_share_typed">Create. Share. Motivate. </string>
