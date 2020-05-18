@@ -43,7 +43,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
     Player.EventListener {
 
     private lateinit var nowPlayingQueue: NowPlayingQueue
-    private lateinit var audioPlayer: SimpleExoPlayer
+    private var audioPlayer: SimpleExoPlayer? = null
     private lateinit var nowPlayingPresenter: NowPlayingPresenter
     private var bottomSheetState: Int = BottomSheetBehavior.STATE_COLLAPSED
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -113,10 +113,15 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
         playerControlView.player = audioPlayer
         shortPlayerControlView.player = audioPlayer
 
-        audioPlayer.addListener(this@BaseNowPlayingActivity)
+        audioPlayer?.apply {
+            addListener(this@BaseNowPlayingActivity)
+            fetchTrackMetadata()
+        }
+    }
 
-        if (audioPlayer.currentTag != null) {
-            val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
+    private fun SimpleExoPlayer.fetchTrackMetadata() {
+        if (currentTag != null) {
+            val nowPlayingInfo: NowPlayingInfo = currentTag as NowPlayingInfo
             nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
         }
     }
@@ -278,11 +283,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             PlaybackState.STATE_PLAYING,
             PlaybackState.STATE_PAUSED -> {
 
-                if (audioPlayer.currentTag != null) {
-                    val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
-                    nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
-                }
-
+                audioPlayer?.fetchTrackMetadata()
             }
             PlaybackState.STATE_NONE -> {
                 nowPlayingQueueButton.visibility = View.GONE
@@ -309,10 +310,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
 
     // gets called when current track playback completes and playback of next track starts
     override fun onPositionDiscontinuity(reason: Int) {
-        if (audioPlayer.currentTag != null) {
-            val nowPlayingInfo: NowPlayingInfo = audioPlayer.currentTag as NowPlayingInfo
-            nowPlayingPresenter.fetchTrackMetadata(nowPlayingInfo.id)
-        }
+        audioPlayer?.fetchTrackMetadata()
     }
 
     override fun displayError(error: String) {
@@ -346,7 +344,7 @@ abstract class BaseNowPlayingActivity : BaseServiceBoundedActivity(), NowPlaying
             playerControlView.player = null
             shortPlayerControlView.player = null
 
-            audioPlayer.removeListener(this)
+            audioPlayer?.removeListener(this)
         }
 
     }
