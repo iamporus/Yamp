@@ -38,7 +38,7 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            searchQuery = arguments!!.getString(SearchManager.QUERY)
+            searchQuery = requireArguments().getString(SearchManager.QUERY)
         }
     }
 

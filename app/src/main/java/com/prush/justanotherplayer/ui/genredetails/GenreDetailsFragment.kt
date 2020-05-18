@@ -33,7 +33,7 @@ class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            genreId = arguments!!.getLong(GENRE_ID)
+            genreId = requireArguments().getLong(GENRE_ID)
         }
     }
 

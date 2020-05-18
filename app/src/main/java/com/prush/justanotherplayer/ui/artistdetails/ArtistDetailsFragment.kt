@@ -33,7 +33,7 @@ class ArtistDetailsFragment : HeaderRecyclerFragment(), ArtistDetailsContract.Vi
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            artistId = arguments!!.getLong(ARTIST_ID)
+            artistId = requireArguments().getLong(ARTIST_ID)
         }
     }
 

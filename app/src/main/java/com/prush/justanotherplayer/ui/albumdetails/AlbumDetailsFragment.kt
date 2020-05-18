@@ -30,7 +30,7 @@ class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            albumId = arguments!!.getLong(ALBUM_ID)
+            albumId = requireArguments().getLong(ALBUM_ID)
         }
     }
 

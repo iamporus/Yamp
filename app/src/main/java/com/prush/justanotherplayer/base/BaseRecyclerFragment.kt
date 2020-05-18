@@ -74,7 +74,7 @@ open class BaseRecyclerFragment : Fragment(), BaseView {
 
         val track = any as Track
 
-        val tempContext: Context = this.context!!
+        val tempContext: Context = this.requireContext()
 
         val view = layoutInflater.inflate(R.layout.context_menu_modal_sheet, null, false)
         val dialog = BottomSheetDialog(tempContext, R.style.Theme_Design_BottomSheetDialog)
