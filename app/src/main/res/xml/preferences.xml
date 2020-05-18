@@ -39,7 +39,9 @@
             android:key="about"
             android:summary="@string/pref_about_summary"
             android:title="@string/pref_about_title"
-            app:iconSpaceReserved="false" />
+            app:iconSpaceReserved="false" >
+        <intent android:action="com.prush.justanotherplayer.activities.WalkThroughActivity"/>
+    </Preference>
 
 
     <Preference
