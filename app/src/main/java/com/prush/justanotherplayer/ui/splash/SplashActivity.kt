@@ -9,7 +9,7 @@ import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.ui.main.MainActivity
 import com.prush.justanotherplayer.ui.walkthrough.WalkThroughActivity
 
-private const val KEY_FIRST_INSTANCE = "firstInstance"
+const val KEY_FIRST_INSTANCE = "firstInstance"
 private const val SPLASH_DURATION = 800L
 
 class SplashActivity : AppCompatActivity(), SplashActivityView {
@@ -22,7 +22,6 @@ class SplashActivity : AppCompatActivity(), SplashActivityView {
                 getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE)
 
             if (sharedPreferences.getBoolean(KEY_FIRST_INSTANCE, true)) {
-                sharedPreferences.edit().putBoolean(KEY_FIRST_INSTANCE, false).apply()
 
                 val intent = Intent(this, WalkThroughActivity::class.java)
                 startActivity(intent)

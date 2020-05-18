@@ -1,6 +1,7 @@
 package com.prush.justanotherplayer.ui.walkthrough
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.prush.justanotherplayer.R
 import com.prush.justanotherplayer.ui.main.MainActivity
+import com.prush.justanotherplayer.ui.splash.KEY_FIRST_INSTANCE
 import com.prush.justanotherplayer.ui.walkthrough.WalkThroughFragment.Companion.RESOURCE_ID
 import kotlinx.android.synthetic.main.walkthrough_intro.*
 import kotlinx.android.synthetic.main.walkthrough_layout.*
@@ -187,6 +189,9 @@ class WalkThroughFragment : Fragment() {
                 startMainActivity()
             }
         }
+
+        arrowClickedListener = activity as OnNextArrowClickedListener
+
         if (nextArrowImageView != null) {
             nextArrowImageView.setOnClickListener {
                 arrowClickedListener.onNextArrowClicked()
@@ -195,9 +200,17 @@ class WalkThroughFragment : Fragment() {
     }
 
     private fun startMainActivity() {
-        val intent = Intent(activity, MainActivity::class.java)
-        startActivity(intent)
-        activity?.finish()
+
+        val sharedPreferences =
+            context?.getSharedPreferences(getString(R.string.app_name), Context.MODE_PRIVATE)
+        sharedPreferences?.let {
+            it.edit().putBoolean(KEY_FIRST_INSTANCE, false).apply()
+
+            val intent = Intent(activity, MainActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+        }
+
     }
 
     companion object {
@@ -211,7 +224,6 @@ class WalkThroughFragment : Fragment() {
         ): WalkThroughFragment {
             return WalkThroughFragment().apply {
                 arguments = args
-                arrowClickedListener = listener
             }
         }
     }

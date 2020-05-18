@@ -2,4 +2,6 @@
 <resources>
     <item name="app_name_text_size" type="dimen">50sp</item>
     <item name="subtitle_text_size" type="dimen">20sp</item>
+    <item name="walkthrough_icon_margin" type="dimen">32dp</item>
+
 </resources>

@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/walkthrough_icon_margin"
             android:clickable="false"
             android:drawableTop="@drawable/ic_av_my_library_music"
             android:gravity="center"
