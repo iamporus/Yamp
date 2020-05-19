@@ -35,6 +35,7 @@ task clean(type: Delete) {
 
 ext {
     lifecycleCompilerVersion = '2.2.0'
+    glideCompilerVersion = '4.11.0'
     mdcVersion = '1.0.0'
     coreKtxVersion = '1.2.0'
     mediaVersion = '1.1.0'

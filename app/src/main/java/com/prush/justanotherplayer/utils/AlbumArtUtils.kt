@@ -7,15 +7,12 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import java.io.File
 import java.io.FileNotFoundException
 import com.bumptech.glide.request.RequestOptions
-
-
 
 fun getAlbumArtUri(context: Context, albumId: Long): Uri {
 
@@ -59,7 +56,7 @@ interface OnBitmapLoadedListener {
 
 fun loadAlbumArt(context: Context, contentId: Long, imageView: ImageView, errorResource: Int = -1) {
 
-    Glide.with(context)
+    GlideApp.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
 //        .override(200, 200)
@@ -86,7 +83,7 @@ fun loadAlbumArt(
     onBitmapLoadedListener: OnBitmapLoadedListener
 ) {
 
-    Glide.with(context)
+    GlideApp.with(context)
         .asBitmap()
         .load(getAlbumArtUri(context, contentId))
         .apply(RequestOptions().format(DecodeFormat.PREFER_RGB_565))
@@ -114,7 +111,7 @@ fun loadAlbumArt(
     resourceId: Int,
     onBitmapLoadedListener: OnBitmapLoadedListener
 ) {
-    Glide.with(context)
+    GlideApp.with(context)
         .asBitmap()
         .load(resourceId)
         .apply(RequestOptions().format(DecodeFormat.PREFER_RGB_565))
