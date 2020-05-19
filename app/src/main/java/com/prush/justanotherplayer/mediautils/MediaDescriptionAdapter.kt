@@ -21,7 +21,7 @@ class MediaDescriptionAdapter(
 ) :
     PlayerNotificationManager.MediaDescriptionAdapter {
 
-    override fun createCurrentContentIntent(player: Player?): PendingIntent? {
+    override fun createCurrentContentIntent(player: Player): PendingIntent? {
 
         return PendingIntent.getActivity(
             context, 0,
@@ -30,50 +30,38 @@ class MediaDescriptionAdapter(
         )
     }
 
-    override fun getCurrentSubText(player: Player?): String? {
-        if (player != null) {
-            return getNowPlayingTrack().artistName
-        }
-        return ""
+    override fun getCurrentSubText(player: Player): String? {
+        return getNowPlayingTrack().artistName
     }
 
-    override fun getCurrentContentText(player: Player?): String? {
-        if (player != null) {
-            return getNowPlayingTrack().albumName
-        }
-        return ""
+    override fun getCurrentContentText(player: Player): String? {
+        return getNowPlayingTrack().albumName
     }
 
-    override fun getCurrentContentTitle(player: Player?): String {
-        if (player != null) {
-            return getNowPlayingTrack().title
-        }
-        return ""
+    override fun getCurrentContentTitle(player: Player): String {
+        return getNowPlayingTrack().title
     }
 
     override fun getCurrentLargeIcon(
-        player: Player?,
-        callback: PlayerNotificationManager.BitmapCallback?
+        player: Player,
+        callback: PlayerNotificationManager.BitmapCallback
     ): Bitmap? {
 
-        if (player != null) {
+        loadAlbumArt(context, getNowPlayingTrack().albumId, object : OnBitmapLoadedListener {
+            override fun onBitmapLoaded(resource: Bitmap) {
+                callback.onBitmap(resource)
+            }
 
-            loadAlbumArt(context, getNowPlayingTrack().albumId, object : OnBitmapLoadedListener {
-                override fun onBitmapLoaded(resource: Bitmap) {
-                    callback?.onBitmap(resource)
-                }
+            override fun onBitmapLoadingFailed() {
+                callback.onBitmap(
+                    AppCompatResources.getDrawable(
+                        context,
+                        R.drawable.ic_audiotrack
+                    )!!.toBitmap()
+                )
+            }
 
-                override fun onBitmapLoadingFailed() {
-                    callback?.onBitmap(
-                        AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.ic_audiotrack
-                        )?.toBitmap()
-                    )
-                }
-
-            })
-        }
+        })
         return BitmapFactory.decodeResource(context.resources, R.drawable.exo_controls_play)
     }
 

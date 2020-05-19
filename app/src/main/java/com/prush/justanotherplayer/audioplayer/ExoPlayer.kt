@@ -51,7 +51,7 @@ class ExoPlayer : AudioPlayer,
             Util.getUserAgent(context, context.getString(R.string.app_name))
         )
 
-        simpleExoPlayer.addAnalyticsListener(EventLogger(DefaultTrackSelector()))
+        simpleExoPlayer.addAnalyticsListener(EventLogger(trackSelector))
 
         concatenatingMediaSource = ConcatenatingMediaSource()
 
@@ -68,6 +68,7 @@ class ExoPlayer : AudioPlayer,
                 context,
                 mediaSessionManager.mediaSession,
                 simpleExoPlayer,
+                nowPlayingQueue,
                 listener
             )
     }
@@ -284,6 +285,7 @@ class ExoPlayer : AudioPlayer,
 
     private fun updateExternalMetadata(context: Context) {
 
+        notificationManager.cleanup()
         notificationManager.setupPlayerNotification(context, nowPlayingQueue)
         mediaSessionManager.setupMediaSessionConnector(context, nowPlayingQueue)
     }
@@ -295,7 +297,8 @@ class ExoPlayer : AudioPlayer,
         mediaSessionManager.cleanup()
         notificationManager.cleanup()
 
-        simpleExoPlayer.removeListener(playerEventListener)
+        simpleExoPlayer.stop()
         simpleExoPlayer.release()
+        simpleExoPlayer.removeListener(playerEventListener)
     }
 }

@@ -3,7 +3,6 @@ package com.prush.justanotherplayer.services
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
-import android.media.session.PlaybackState
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
@@ -16,18 +15,25 @@ import com.prush.justanotherplayer.mediautils.NotificationManager
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingInfo
 import com.prush.justanotherplayer.queue.NowPlayingQueue
-import com.prush.justanotherplayer.repositories.ITrackRepository
-import com.prush.justanotherplayer.utils.SELECTED_TRACK
-import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
-import com.prush.justanotherplayer.utils.TRACKS_LIST
+import com.prush.justanotherplayer.queue.QueueManager
+import com.prush.justanotherplayer.repositories.*
+import com.prush.justanotherplayer.utils.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 private val TAG: String = AudioPlayerService::class.java.name
 
-class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedListener, Player.EventListener {
+class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedListener,
+    Player.EventListener {
 
+    private lateinit var queueManager: QueueManager
     private lateinit var audioPlayer: AudioPlayer
     private lateinit var tracksRepository: ITrackRepository
+    private lateinit var albumRepository: IAlbumRepository
+    private lateinit var artistRepository: IArtistRepository
+    private lateinit var genreRepository: IGenreRepository
+    private lateinit var searchRepository: ISearchRepository
 
     override fun onBind(intent: Intent?): IBinder? {
         return AudioServiceBinder()
@@ -49,6 +55,10 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
 
         audioPlayer = Injection.provideAudioPlayer()
         tracksRepository = Injection.provideTrackRepository()
+        albumRepository = Injection.provideAlbumRepository()
+        artistRepository = Injection.provideArtistRepository()
+        genreRepository = Injection.provideGenreRepository()
+        searchRepository = Injection.provideSearchRepository()
 
         audioPlayer.apply {
             init(this@AudioPlayerService)
@@ -70,15 +80,114 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
             PlaybackControls.PLAY.name -> {
 
                 val selectedTrackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
-                val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
-                val tracksList: ArrayList<Track> =
-                    intent.getSerializableExtra(TRACKS_LIST) as ArrayList<Track>
 
-                if (shuffle) {
-                    audioPlayer.shufflePlayTracks(this, tracksList)
-                } else {
-                    audioPlayer.playTracks(this, tracksList, selectedTrackPosition)
+                val playContext: PLAY_CONTEXT =
+                    intent.getSerializableExtra(PLAY_CONTEXT_TYPE) as PLAY_CONTEXT
+
+                when (playContext) {
+
+                    PLAY_CONTEXT.LIBRARY_TRACKS -> {
+
+                        val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
+
+                        CoroutineScope(IO).launch {
+
+                            val tracksList = tracksRepository.getAllTracks(applicationContext)
+
+                            if (shuffle) {
+                                audioPlayer.shufflePlayTracks(applicationContext, tracksList)
+                            } else {
+                                audioPlayer.playTracks(
+                                    applicationContext,
+                                    tracksList,
+                                    selectedTrackPosition
+                                )
+                            }
+
+                        }
+                    }
+                    PLAY_CONTEXT.ALBUM_TRACKS -> {
+
+                        val albumId = intent.getLongExtra(SELECTED_ALBUM_ID, 0L)
+
+                        CoroutineScope(IO).launch {
+
+                            val album = albumRepository.getAlbumById(applicationContext, albumId)
+
+                            audioPlayer.playTracks(
+                                applicationContext,
+                                album.tracksList,
+                                selectedTrackPosition
+                            )
+                        }
+                    }
+                    PLAY_CONTEXT.ARTIST_TRACKS -> {
+
+                        val artistId = intent.getLongExtra(SELECTED_ARTIST_ID, 0L)
+
+                        CoroutineScope(IO).launch {
+
+                            val artist =
+                                artistRepository.getArtistById(applicationContext, artistId)
+
+                            audioPlayer.playTracks(
+                                applicationContext,
+                                artist.tracksList,
+                                selectedTrackPosition
+                            )
+                        }
+                    }
+                    PLAY_CONTEXT.GENRE_TRACKS -> {
+
+                        val genreId = intent.getLongExtra(SELECTED_GENRE_ID, 0L)
+
+                        CoroutineScope(IO).launch {
+
+                            val genre = genreRepository.getGenreById(applicationContext, genreId)
+
+                            audioPlayer.playTracks(
+                                applicationContext,
+                                genre.tracksList,
+                                selectedTrackPosition
+                            )
+                        }
+                    }
+                    PLAY_CONTEXT.SEARCH_TRACKS -> {
+
+                        val searchQuery = intent.getStringExtra(SEARCH_QUERY)
+
+                        searchQuery?.let {
+                            CoroutineScope(IO).launch {
+
+                                val searchResult =
+                                    searchRepository.searchAll(applicationContext, searchQuery)
+
+                                audioPlayer.playTracks(
+                                    applicationContext,
+                                    searchResult.tracks,
+                                    selectedTrackPosition
+                                )
+                            }
+                        }
+                    }
+                    PLAY_CONTEXT.QUEUE_TRACKS -> {
+
+                        CoroutineScope(IO).launch {
+
+                            queueManager = (audioPlayer as ExoPlayer).nowPlayingQueue
+                            val nowPlayingTracks = queueManager.getNowPlayingTracks()
+
+                            audioPlayer.playTracks(
+                                applicationContext,
+                                nowPlayingTracks,
+                                selectedTrackPosition
+                            )
+                        }
+
+                    }
                 }
+
+
             }
 
             PlaybackControls.SHUFFLE_OFF.name -> {
@@ -131,23 +240,31 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
     }
 
     override fun onNotificationPosted(notificationId: Int, notification: Notification?) {
+
         startForeground(notificationId, notification)
     }
 
     override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+        // removed call to stopSelf() here. This was killing the service when app is restarted
+        // again to play some other track and pressing back
+
+
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
         stopSelf()
     }
 
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         when (playbackState) {
-            PlaybackState.STATE_PLAYING, PlaybackState.STATE_PAUSED -> {
 
-                updateNowPlaying()
-            }
-            PlaybackState.STATE_STOPPED ->{
+            Player.STATE_IDLE, Player.STATE_ENDED -> {
 
                 stopForeground(true)
-                stopSelf()
+            }
+            else -> {
+                //TODO: figure out what to do here
             }
         }
     }
@@ -158,18 +275,19 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
     }
 
     private fun updateNowPlaying() {
-            if ((audioPlayer as ExoPlayer).simpleExoPlayer.currentTag != null) {
-                val nowPlayingInfo: NowPlayingInfo = (audioPlayer as ExoPlayer).simpleExoPlayer.currentTag as NowPlayingInfo
+        if ((audioPlayer as ExoPlayer).simpleExoPlayer.currentTag != null) {
+            val nowPlayingInfo: NowPlayingInfo =
+                (audioPlayer as ExoPlayer).simpleExoPlayer.currentTag as NowPlayingInfo
 
-                (audioPlayer as ExoPlayer).nowPlayingQueue.apply {
-                    currentPlayingTrackId = nowPlayingInfo.id
-                    nowPlayingTracksList.forEachIndexed { index, track ->
-                        if (track.id == currentPlayingTrackId) {
-                            currentPlayingTrackIndex = index
-                            return@forEachIndexed
-                        }
+            (audioPlayer as ExoPlayer).nowPlayingQueue.apply {
+                currentPlayingTrackId = nowPlayingInfo.id
+                nowPlayingTracksList.forEachIndexed { index, track ->
+                    if (track.id == currentPlayingTrackId) {
+                        currentPlayingTrackIndex = index
+                        return@forEachIndexed
                     }
                 }
+            }
 
         }
 

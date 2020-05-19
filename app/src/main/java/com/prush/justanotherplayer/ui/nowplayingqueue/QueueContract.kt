@@ -7,13 +7,13 @@ import com.prush.justanotherplayer.model.Track
 
 interface QueueContract {
 
-    interface View : BaseView{
+    interface View : BaseView {
 
         fun displayNowPlayingTracks(trackList: MutableList<Track>)
 
         fun displayEmptyQueue()
 
-        fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
+        fun startTrackPlayback(selectedTrackPosition: Int)
 
         fun updateNowPlaying()
 

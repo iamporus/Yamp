@@ -30,28 +30,18 @@ class MediaSessionManager(context: Context, private val player: SimpleExoPlayer)
         mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
 
             override fun getMediaDescription(
-                player: Player?, windowIndex: Int
+                player: Player, windowIndex: Int
             ): MediaDescriptionCompat {
 
-                if (player != null) {
-
-                    //fetch actual metadata on background thread
-                    return getMediaDescriptionForLockScreen(
-                        context,
-                        getTrack(nowPlayingQueue, windowIndex)
-                    ) {
-                        if (windowIndex == nowPlayingQueue.nowPlayingTracksList.size - 1) {
-                            invalidateSession()
-                        }
+                //fetch actual metadata on background thread
+                return getMediaDescriptionForLockScreen(
+                    context,
+                    getTrack(nowPlayingQueue, windowIndex)
+                ) {
+                    if (windowIndex == nowPlayingQueue.nowPlayingTracksList.size - 1) {
+                        invalidateSession()
                     }
                 }
-
-                //return default empty metadata to lock screen
-                return MediaSessionConnector.DefaultMediaMetadataProvider(
-                    mediaSession.controller,
-                    TAG
-                )
-                    .getMetadata(player).description
             }
 
         })

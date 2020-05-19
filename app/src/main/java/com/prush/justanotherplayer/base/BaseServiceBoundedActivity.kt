@@ -12,7 +12,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.prush.justanotherplayer.services.AudioPlayerService
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 
-private val TAG = BaseServiceBoundedActivity::class.java.name
+private val TAG = AudioPlayerService::class.java.name
 
 @SuppressLint("Registered")
 open class BaseServiceBoundedActivity : AppCompatActivity() {
@@ -21,7 +21,6 @@ open class BaseServiceBoundedActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         boundToService = bindService(
             Intent(this, AudioPlayerService::class.java),
             serviceConnection,

@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.base.BaseView
 import com.prush.justanotherplayer.model.Genre
-import com.prush.justanotherplayer.model.Track
 
 interface GenresContract {
 
@@ -27,7 +26,7 @@ interface GenresContract {
 
         fun loadGenreDetails(selectedTrackPosition: Int)
 
-        fun startGenrePlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int)
+        fun startGenrePlayback(selectedTrackPosition: Int)
 
         fun onCleanup()
     }

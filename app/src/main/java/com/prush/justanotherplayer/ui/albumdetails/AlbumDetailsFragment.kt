@@ -13,9 +13,7 @@ import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.TRACKS_LIST
-import com.prush.justanotherplayer.utils.loadAlbumArt
+import com.prush.justanotherplayer.utils.*
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
 class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View,
@@ -69,15 +67,17 @@ class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View
     }
 
     override fun onItemClick(selectedTrackPosition: Int) {
+        //TODO: shuffle when selected = 0
         albumDetailsPresenter.prepareTrackPlayback(selectedTrackPosition)
     }
 
-    override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
+    override fun startTrackPlayback(selectedTrackPosition: Int) {
 
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.ALBUM_TRACKS)
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        intent.putExtra(SELECTED_ALBUM_ID, albumId)
         Util.startForegroundService(getViewActivity(), intent)
     }
 

@@ -2,7 +2,6 @@ package com.prush.justanotherplayer.ui.genreslibrary
 
 import android.util.Log
 import com.prush.justanotherplayer.model.Genre
-import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.repositories.IGenreRepository
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -52,7 +51,7 @@ class GenrePresenter(
         view.displayGenreDetails(genresList[selectedTrackPosition])
     }
 
-    override fun startGenrePlayback(tracksList: MutableList<Track>, selectedTrackPosition: Int) {
+    override fun startGenrePlayback(selectedTrackPosition: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

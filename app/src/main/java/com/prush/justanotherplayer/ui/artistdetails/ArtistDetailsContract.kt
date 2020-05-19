@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.prush.justanotherplayer.base.BaseView
 import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Artist
-import com.prush.justanotherplayer.model.Track
 
 interface ArtistDetailsContract {
 
@@ -15,7 +14,7 @@ interface ArtistDetailsContract {
 
         fun displayAlbumDetails(album: Album)
 
-        fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>)
+        fun startTrackPlayback(selectedTrackPosition: Int)
 
         fun getViewActivity(): AppCompatActivity
 

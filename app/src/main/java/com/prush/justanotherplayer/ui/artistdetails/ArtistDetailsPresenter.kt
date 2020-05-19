@@ -52,7 +52,7 @@ class ArtistDetailsPresenter(
     }
 
     override fun prepareTrackPlayback(selectedTrackPosition: Int) {
-        view.startTrackPlayback(selectedTrackPosition, artist.tracksList)
+        view.startTrackPlayback(selectedTrackPosition)
         //TODO: pass in artistId and selectedTrackPosition
     }
 

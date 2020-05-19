@@ -14,6 +14,8 @@ import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.queue.NowPlayingQueue
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT_TYPE
 import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
 import com.prush.justanotherplayer.utils.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
@@ -58,8 +60,8 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
     override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.QUEUE_TRACKS)
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
         Util.startForegroundService(getViewActivity(), intent)
     }
 
@@ -83,7 +85,9 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
             action = AudioPlayerService.PlaybackControls.RE_ORDER.name
             putExtra(TRACKS_LIST, ArrayList(itemsList))
         }
-        Util.startForegroundService(activity, intent)
+        context?.let {
+            Util.startForegroundService(it, intent)
+        }
     }
 
     override fun onDestroy() {

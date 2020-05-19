@@ -47,7 +47,7 @@ class AlbumDetailsPresenter(
     }
 
     override fun prepareTrackPlayback(selectedTrackPosition: Int) {
-        view.startTrackPlayback(selectedTrackPosition, album.tracksList)
+        view.startTrackPlayback(selectedTrackPosition)
         //TODO: pass in albumID and selectedTrackPosition
     }
 

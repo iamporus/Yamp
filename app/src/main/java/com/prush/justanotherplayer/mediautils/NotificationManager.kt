@@ -3,7 +3,6 @@ package com.prush.justanotherplayer.mediautils
 import android.app.Notification
 import android.content.Context
 import android.support.v4.media.session.MediaSessionCompat
-
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.prush.justanotherplayer.R
@@ -14,6 +13,7 @@ class NotificationManager(
     context: Context,
     private val mediaSession: MediaSessionCompat,
     private val player: SimpleExoPlayer,
+    nowPlayingQueue: NowPlayingQueue,
     private val listener: OnNotificationPostedListener
 ) {
 
@@ -26,8 +26,10 @@ class NotificationManager(
                 PLAYBACK_CHANNEL_ID,
                 R.string.app_name,
                 R.string.app_name,
-                1,
-                null
+                1, MediaDescriptionAdapter(
+                    context,
+                    nowPlayingQueue
+                )
             )
 
     }
@@ -40,25 +42,31 @@ class NotificationManager(
 
     fun setupPlayerNotification(context: Context, nowPlayingQueue: NowPlayingQueue) {
 
-        playerNotificationManager = PlayerNotificationManager(context, PLAYBACK_CHANNEL_ID, 1, MediaDescriptionAdapter(
-            context,
-            nowPlayingQueue
-        ),
-            object : PlayerNotificationManager.NotificationListener {
-                override fun onNotificationPosted(
-                    notificationId: Int,
-                    notification: Notification?,
-                    ongoing: Boolean
-                ) {
-                    listener.onNotificationPosted(notificationId, notification)
-                }
+        playerNotificationManager =
+            PlayerNotificationManager(
+                context,
+                PLAYBACK_CHANNEL_ID,
+                1,
+                MediaDescriptionAdapter(
+                    context,
+                    nowPlayingQueue
+                ),
+                object : PlayerNotificationManager.NotificationListener {
+                    override fun onNotificationPosted(
+                        notificationId: Int,
+                        notification: Notification,
+                        ongoing: Boolean
+                    ) {
+                        if (ongoing)
+                            listener.onNotificationPosted(notificationId, notification)
+                    }
 
-                override fun onNotificationCancelled(
-                    notificationId: Int, dismissedByUser: Boolean
-                ) {
-                    listener.onNotificationCancelled(notificationId, dismissedByUser)
-                }
-            })
+                    override fun onNotificationCancelled(
+                        notificationId: Int, dismissedByUser: Boolean
+                    ) {
+                        listener.onNotificationCancelled(notificationId, dismissedByUser)
+                    }
+                })
 
         playerNotificationManager.apply {
             setPlayer(player)

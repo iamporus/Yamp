@@ -14,10 +14,12 @@ import com.prush.justanotherplayer.model.Album
 import com.prush.justanotherplayer.model.Genre
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.TRACKS_LIST
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsActivity
 import com.prush.justanotherplayer.ui.albumdetails.AlbumDetailsFragment
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT_TYPE
+import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
+import com.prush.justanotherplayer.utils.SELECTED_GENRE_ID
 
 import kotlinx.android.synthetic.main.header_recylerview_layout.*
 
@@ -79,12 +81,13 @@ class GenreDetailsFragment : HeaderRecyclerFragment(), GenreDetailsContract.View
         startActivity(intent)
     }
 
-    override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
+    override fun startTrackPlayback(selectedTrackPosition: Int) {
 
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.GENRE_TRACKS)
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        intent.putExtra(SELECTED_GENRE_ID, genreId)
         Util.startForegroundService(getViewActivity(), intent)
     }
 

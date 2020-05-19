@@ -13,9 +13,7 @@ import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
-import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.SHUFFLE_TRACKS
-import com.prush.justanotherplayer.utils.TRACKS_LIST
+import com.prush.justanotherplayer.utils.*
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = TracksLibraryFragment::class.java.name
@@ -66,7 +64,7 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.LIBRARY_TRACKS)
         Util.startForegroundService(getViewActivity(), intent)
     }
 
@@ -74,7 +72,6 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(SHUFFLE_TRACKS, true)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
         Util.startForegroundService(getViewActivity(), intent)
     }
 

@@ -9,10 +9,10 @@ import android.support.v4.media.MediaMetadataCompat
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.utils.getAlbumArtUri
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.withContext
 
 fun getMediaDescriptionForLockScreen(
     context: Context,
@@ -31,12 +31,7 @@ fun getMediaDescriptionForLockScreen(
 
         bitmap = bitmapDrawable
 
-        val scope = CoroutineScope(
-            Job() + Dispatchers.Main
-        )
-
-        scope.launch {
-
+        CoroutineScope(IO).launch {
             try {
                 val pfd = context.contentResolver
                     .openFileDescriptor(getAlbumArtUri(context, track.albumId), "r")
@@ -48,7 +43,9 @@ fun getMediaDescriptionForLockScreen(
 
                     track.albumArtBitmap = bitmap
 
-                    callback.invoke()
+                    withContext(Main) {
+                        callback.invoke()
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

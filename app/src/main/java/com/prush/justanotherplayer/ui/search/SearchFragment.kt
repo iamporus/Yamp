@@ -15,8 +15,10 @@ import com.prush.justanotherplayer.base.RecyclerAdapter
 import com.prush.justanotherplayer.di.Injection
 import com.prush.justanotherplayer.model.Track
 import com.prush.justanotherplayer.services.AudioPlayerService
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT
+import com.prush.justanotherplayer.utils.PLAY_CONTEXT_TYPE
+import com.prush.justanotherplayer.utils.SEARCH_QUERY
 import com.prush.justanotherplayer.utils.SELECTED_TRACK_POSITION
-import com.prush.justanotherplayer.utils.TRACKS_LIST
 import kotlinx.android.synthetic.main.base_recylerview_layout.*
 
 private val TAG = SearchFragment::class.java.name
@@ -53,6 +55,7 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
     }
 
     fun searchTracks(query: String) {
+        searchQuery = query
         searchPresenter.loadTracksStartingWith(query)
     }
 
@@ -72,7 +75,8 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
-        intent.putExtra(TRACKS_LIST, ArrayList(tracksList))
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.SEARCH_TRACKS)
+        intent.putExtra(SEARCH_QUERY, searchQuery)
         Util.startForegroundService(getViewActivity(), intent)
     }
 

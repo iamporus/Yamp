@@ -57,7 +57,7 @@ class QueuePresenter(
     override fun prepareTrackPlayback(selectedTrackPosition: Int) {
 
         Log.d(TAG, "Track selected for playback $selectedTrackPosition")
-        view.startTrackPlayback(selectedTrackPosition, tracksList)
+        view.startTrackPlayback(selectedTrackPosition)
     }
 
 
