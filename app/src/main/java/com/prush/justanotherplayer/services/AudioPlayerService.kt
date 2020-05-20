@@ -79,115 +79,60 @@ class AudioPlayerService : Service(), NotificationManager.OnNotificationPostedLi
         when (intent.action) {
             PlaybackControls.PLAY.name -> {
 
-                val selectedTrackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
+                CoroutineScope(IO).launch {
 
-                val playContext: PLAY_CONTEXT =
-                    intent.getSerializableExtra(PLAY_CONTEXT_TYPE) as PLAY_CONTEXT
+                    val selectedTrackPosition = intent.getIntExtra(SELECTED_TRACK_POSITION, -1)
+                    val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
 
-                when (playContext) {
+                    val playContext: PLAY_CONTEXT =
+                        intent.getSerializableExtra(PLAY_CONTEXT_TYPE) as PLAY_CONTEXT
+                    var tracksList = mutableListOf<Track>()
 
-                    PLAY_CONTEXT.LIBRARY_TRACKS -> {
+                    when (playContext) {
 
-                        val shuffle = intent.getBooleanExtra(SHUFFLE_TRACKS, false)
-
-                        CoroutineScope(IO).launch {
-
-                            val tracksList = tracksRepository.getAllTracks(applicationContext)
-
-                            if (shuffle) {
-                                audioPlayer.shufflePlayTracks(applicationContext, tracksList)
-                            } else {
-                                audioPlayer.playTracks(
-                                    applicationContext,
-                                    tracksList,
-                                    selectedTrackPosition
-                                )
-                            }
-
+                        PLAY_CONTEXT.LIBRARY_TRACKS -> {
+                            tracksList = tracksRepository.getAllTracks(applicationContext)
                         }
-                    }
-                    PLAY_CONTEXT.ALBUM_TRACKS -> {
-
-                        val albumId = intent.getLongExtra(SELECTED_ALBUM_ID, 0L)
-
-                        CoroutineScope(IO).launch {
-
+                        PLAY_CONTEXT.ALBUM_TRACKS -> {
+                            val albumId = intent.getLongExtra(SELECTED_ALBUM_ID, 0L)
                             val album = albumRepository.getAlbumById(applicationContext, albumId)
-
-                            audioPlayer.playTracks(
-                                applicationContext,
-                                album.tracksList,
-                                selectedTrackPosition
-                            )
+                            tracksList = album.tracksList
                         }
-                    }
-                    PLAY_CONTEXT.ARTIST_TRACKS -> {
-
-                        val artistId = intent.getLongExtra(SELECTED_ARTIST_ID, 0L)
-
-                        CoroutineScope(IO).launch {
-
+                        PLAY_CONTEXT.ARTIST_TRACKS -> {
+                            val artistId = intent.getLongExtra(SELECTED_ARTIST_ID, 0L)
                             val artist =
                                 artistRepository.getArtistById(applicationContext, artistId)
-
-                            audioPlayer.playTracks(
-                                applicationContext,
-                                artist.tracksList,
-                                selectedTrackPosition
-                            )
+                            tracksList = artist.tracksList
                         }
-                    }
-                    PLAY_CONTEXT.GENRE_TRACKS -> {
-
-                        val genreId = intent.getLongExtra(SELECTED_GENRE_ID, 0L)
-
-                        CoroutineScope(IO).launch {
-
+                        PLAY_CONTEXT.GENRE_TRACKS -> {
+                            val genreId = intent.getLongExtra(SELECTED_GENRE_ID, 0L)
                             val genre = genreRepository.getGenreById(applicationContext, genreId)
-
-                            audioPlayer.playTracks(
-                                applicationContext,
-                                genre.tracksList,
-                                selectedTrackPosition
-                            )
+                            tracksList = genre.tracksList
                         }
-                    }
-                    PLAY_CONTEXT.SEARCH_TRACKS -> {
-
-                        val searchQuery = intent.getStringExtra(SEARCH_QUERY)
-
-                        searchQuery?.let {
-                            CoroutineScope(IO).launch {
-
+                        PLAY_CONTEXT.SEARCH_TRACKS -> {
+                            val searchQuery = intent.getStringExtra(SEARCH_QUERY)
+                            searchQuery?.let {
                                 val searchResult =
                                     searchRepository.searchAll(applicationContext, searchQuery)
-
-                                audioPlayer.playTracks(
-                                    applicationContext,
-                                    searchResult.tracks,
-                                    selectedTrackPosition
-                                )
+                                tracksList = searchResult.tracks
                             }
                         }
-                    }
-                    PLAY_CONTEXT.QUEUE_TRACKS -> {
-
-                        CoroutineScope(IO).launch {
-
+                        PLAY_CONTEXT.QUEUE_TRACKS -> {
                             queueManager = (audioPlayer as ExoPlayer).nowPlayingQueue
-                            val nowPlayingTracks = queueManager.getNowPlayingTracks()
-
-                            audioPlayer.playTracks(
-                                applicationContext,
-                                nowPlayingTracks,
-                                selectedTrackPosition
-                            )
+                            tracksList = queueManager.getNowPlayingTracks()
                         }
+                    }
 
+                    if (shuffle) {
+                        audioPlayer.shufflePlayTracks(applicationContext, tracksList)
+                    } else {
+                        audioPlayer.playTracks(
+                            applicationContext,
+                            tracksList,
+                            selectedTrackPosition
+                        )
                     }
                 }
-
-
             }
 
             PlaybackControls.SHUFFLE_OFF.name -> {
