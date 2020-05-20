@@ -76,7 +76,11 @@ class AlbumDetailsFragment : HeaderRecyclerFragment(), AlbumDetailsContract.View
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.ALBUM_TRACKS)
-        intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
+        if (selectedTrackPosition == -1)
+            intent.putExtra(SHUFFLE_TRACKS, true)
+        else
+            intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
+
         intent.putExtra(SELECTED_ALBUM_ID, albumId)
         Util.startForegroundService(getViewActivity(), intent)
     }

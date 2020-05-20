@@ -72,6 +72,7 @@ class TracksLibraryFragment : BaseRecyclerFragment(), TracksContract.View,
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(SHUFFLE_TRACKS, true)
+        intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.LIBRARY_TRACKS)
         Util.startForegroundService(getViewActivity(), intent)
     }
 
