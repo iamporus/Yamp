@@ -151,10 +151,11 @@ class ExoPlayer : AudioPlayer,
 
     override fun shufflePlayTracks(context: Context, tracksList: MutableList<Track>) {
 
-        nowPlayingQueue.keepUnShuffledTracks(tracksList)
+        if (tracksList.size > 1) {
+            nowPlayingQueue.keepUnShuffledTracks(tracksList)
 
-        tracksList.shuffle()
-
+            tracksList.shuffle()
+        }
         playTracks(context, tracksList, -1, true)
     }
 
