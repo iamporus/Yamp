@@ -78,6 +78,7 @@ class SearchFragment : BaseRecyclerFragment(), SearchContract.View,
         intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.SEARCH_TRACKS)
         intent.putExtra(SEARCH_QUERY, searchQuery)
         Util.startForegroundService(getViewActivity(), intent)
+        activity?.finish()
     }
 
     override fun displayInfoText() {

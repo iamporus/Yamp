@@ -57,12 +57,13 @@ class QueueFragment : BaseRecyclerFragment(), QueueContract.View,
         listPresenter.setItemsList(trackList, adapter)
     }
 
-    override fun startTrackPlayback(selectedTrackPosition: Int, tracksList: MutableList<Track>) {
+    override fun startTrackPlayback(selectedTrackPosition: Int) {
         val intent = Intent(getViewActivity(), AudioPlayerService::class.java)
         intent.action = AudioPlayerService.PlaybackControls.PLAY.name
         intent.putExtra(PLAY_CONTEXT_TYPE, PLAY_CONTEXT.QUEUE_TRACKS)
         intent.putExtra(SELECTED_TRACK_POSITION, selectedTrackPosition)
         Util.startForegroundService(getViewActivity(), intent)
+        activity?.finish()
     }
 
     override fun updateNowPlaying() {
