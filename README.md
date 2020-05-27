@@ -5,17 +5,20 @@ an open-source Music Player built using 100% Kotlin to showcase the usage of [Ex
 <p align="center">
 <img width="824"  src="https://github.com/iamporus/JustAnotherPlayer/blob/master/graphics/feature_graphic.png">
 </p>
-<br/>
+
 
 <img align="left" width="200" src="https://github.com/iamporus/JustAnotherPlayer/blob/master/graphics/home.png">
 <img align="right" width="200" src="https://github.com/iamporus/JustAnotherPlayer/blob/master/graphics/now_playing.png">
  
 ### 🎵 Features:
  
-  - Minimalistic clutter-free UI
-  - Light-weight
-  - Playback control using Google Assistant
-  - Open-source
+    Minimalistic 
+ 
+    Light-weight
+    
+    Modern
+    
+    Open-source
  
 [<img width="200" src="https://github.com/iamporus/JustAnotherPlayer/blob/master/graphics/google_play_badge.png">](https://play.google.com/store/apps/details?id=com.prush.justanotherplayer&hl=en)
 
