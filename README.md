@@ -1,4 +1,4 @@
-#  Yamp (JustAnotherPlayer)
+#  Yamp
 
 an open-source Music Player built using 100% Kotlin to showcase the usage of [ExoPlayer](https://github.com/google/ExoPlayer) library for music playback on Android.
 
