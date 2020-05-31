@@ -12,10 +12,10 @@
                 android:data="mailto:iamporus@gmail.com">
             <extra
                     android:name="android.intent.extra.SUBJECT"
-                    android:value="Yamp! - Feedback" />
+                    android:value="Yamp - Feedback" />
             <extra
                     android:name="android.intent.extra.TEXT"
-                    android:value="Yamp! is a very good music player app BUT... " />
+                    android:value="Yamp is a very good music player app BUT... " />
         </intent>
     </Preference>
 
