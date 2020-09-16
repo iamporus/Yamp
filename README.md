@@ -29,7 +29,6 @@ an open-source Music Player built using 100% Kotlin to showcase the usage of [Ex
 - [ ] Now Playing Queue Reorder
 - [ ] Playlists support
 - [ ] Playback from outside / Deep Linking
-- [ ] Cast to devices (Google Cast)
 
 ### Upcoming Code Changes
 
