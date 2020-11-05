@@ -50,7 +50,7 @@ dependencies {
     kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.lifecycleCompilerVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideCompilerVersion"
 
-    //Material Design Component
+    //Material Design Component (Not bumping it to latest yet. Some issue with used layouts)
     implementation "com.google.android.material:material:$rootProject.mdcVersion"
 
     //androidX
@@ -79,14 +79,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-oss-licenses:$rootProject.ossLicensesVersion"
 
     //firebase
-    implementation "com.google.firebase:firebase-analytics:$rootProject.firebaseAnalyticsVersion"
-    implementation "com.google.firebase:firebase-crashlytics:$rootProject.firebaseCrashlyticsVersion"
+    implementation "com.google.firebase:firebase-analytics-ktx:$rootProject.firebaseAnalyticsVersion"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:$rootProject.firebaseCrashlyticsVersion"
 
     //multiDexing
     implementation "com.android.support:multidex:$rootProject.multiDexVersion"
-
-    //crashlytics
-    implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlyticsVersion"
 
     //leak canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$rootProject.leakCanaryVersion"
