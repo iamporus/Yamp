@@ -11,12 +11,12 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.prush.justanotherplayer"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 200531
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

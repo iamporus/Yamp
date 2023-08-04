@@ -10,6 +10,7 @@ const val SELECTED_TRACK = "selectedTrack"
 const val TRACKS_LIST = "tracksList"
 const val PLAYBACK_CHANNEL_ID = "Yamp!"
 const val PLAY_CONTEXT_TYPE = "playContextType"
+const val PRIVACY_POLICY_URL = "https://iamporus.github.io/privacy-policy-template/"
 
 enum class PLAY_CONTEXT {
     LIBRARY_TRACKS,

@@ -56,6 +56,11 @@
 
 
     <Preference
+        android:key="privacyPolicy"
+        android:title="@string/pref_policy_title"
+        app:iconSpaceReserved="false" />
+
+    <Preference
             android:key="version"
             android:summary="@string/pref_version_summary"
             android:title="@string/pref_version_title"
